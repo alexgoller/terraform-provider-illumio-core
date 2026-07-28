@@ -312,7 +312,7 @@ func resourceIllumioIPListRead(ctx context.Context, d *schema.ResourceData, m in
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_ip_list")
 	}
 
 	d.SetId(data.S("href").Data().(string))

@@ -17,6 +17,7 @@ NOTES:
 
 BUG FIXES:
 
+* Fix `terraform plan` hard-erroring with `not-found: <href>` when a managed object is deleted outside Terraform. Every resource returned the raw client error from its read, so the configuration became wedged — plan, apply and destroy all failed until the user ran `terraform state rm` by hand. Reads now remove the object from state so the next plan recreates it, as Terraform expects. Affects all resources that read from the PCE; previously only labels, label types and unmanaged workloads recovered, and only because Illumio soft-deletes those.
 * Fix `go build ./...` failing on a fresh clone. The `**/terraform.*` pattern in `.gitignore` matched `vendor/**/terraform.go`, so the vendored files defining `hc-install`'s `simpleVersionRe` and `terraform-exec`'s `Terraform` type were never committed.
 * `provision` no longer reports success when it fails to provision a policy object. Previously an unrecognised resource type was dropped by a `switch` with no `default` case, an href missing from the pending set was only logged as a warning, and the process exited 0 in both cases.
 * `provision` no longer panics with an index-out-of-range error on a line in `hrefs.csv` that contains no comma.

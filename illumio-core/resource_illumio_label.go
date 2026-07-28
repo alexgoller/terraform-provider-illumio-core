@@ -146,7 +146,7 @@ func resourceIllumioLabelRead(ctx context.Context, d *schema.ResourceData, m int
 
 	_, data, err := illumioClient.Get(labelHref, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_label")
 	}
 
 	for _, key := range []string{

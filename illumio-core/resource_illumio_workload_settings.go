@@ -218,7 +218,7 @@ func resourceIllumioWorkloadSettingsRead(ctx context.Context, d *schema.Resource
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_workload_settings")
 	}
 
 	d.SetId(href)

@@ -629,7 +629,7 @@ func resourceIllumioUnmanagedWorkloadRead(ctx context.Context, d *schema.Resourc
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_unmanaged_workload")
 	}
 
 	for _, key := range []string{

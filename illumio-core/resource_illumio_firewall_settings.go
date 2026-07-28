@@ -173,7 +173,7 @@ func resourceIllumioFirewallSettingsRead(ctx context.Context, d *schema.Resource
 
 	_, data, err := illumioClient.Get(fmt.Sprintf("/orgs/%d/sec_policy/draft/firewall_settings", orgID), nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_firewall_settings")
 	}
 
 	firewallSettingsKeys := []string{

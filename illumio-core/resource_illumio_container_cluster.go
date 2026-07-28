@@ -175,7 +175,7 @@ func resourceIllumioContainerClusterRead(ctx context.Context, d *schema.Resource
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_container_cluster")
 	}
 
 	resourceIllumioContainerClusterReadResult(d, data)

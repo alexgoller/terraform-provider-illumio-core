@@ -337,7 +337,7 @@ func resourceIllumioEnforcementBoundaryRead(ctx context.Context, d *schema.Resou
 
 	_, data, err := illumioClient.Get(d.Id(), nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_enforcement_boundary")
 	}
 
 	for _, key := range []string{

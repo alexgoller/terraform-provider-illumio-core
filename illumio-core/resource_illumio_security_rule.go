@@ -649,7 +649,7 @@ func resourceIllumioSecurityRuleRead(ctx context.Context, d *schema.ResourceData
 
 	_, data, err := illumioClient.Get(d.Id(), nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_security_rule")
 	}
 
 	// extract the parent HREF and set it

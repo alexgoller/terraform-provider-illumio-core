@@ -429,7 +429,7 @@ func resourceIllumioDenyRuleRead(ctx context.Context, d *schema.ResourceData, m 
 
 	_, data, err := illumioClient.Get(d.Id(), nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_deny_rule")
 	}
 
 	// A deny rule href is {rule_set_href}/deny_rules/{id}, so the parent is

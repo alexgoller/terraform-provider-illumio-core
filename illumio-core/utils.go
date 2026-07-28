@@ -100,6 +100,7 @@ var (
 	isEnforcementBoundaryHref                                           = generateHrefValidationFunction(SEC_POLICY_PREFIX+"enforcement_boundaries/[1-9][0-9]*", "Enforcement Boundary")
 	isRuleSetHref                                                       = generateHrefValidationFunction(SEC_POLICY_PREFIX+"rule_sets/[1-9][0-9]*", "Ruleset")
 	isSecurityRuleHref                                                  = generateHrefValidationFunction(SEC_POLICY_PREFIX+"rule_sets/[1-9][0-9]*/sec_rules/[1-9][0-9]*", "Security Rule")
+	isDenyRuleHref                                                      = generateHrefValidationFunction(SEC_POLICY_PREFIX+"rule_sets/[1-9][0-9]*/deny_rules/[1-9][0-9]*", "Deny Rule")
 	isFirewallSettingsHref                                              = generateHrefValidationFunction(SEC_POLICY_PREFIX+"firewall_settings", "Firewall Settings")
 	isWorkloadInterfaceHref                                             = generateHrefValidationFunction("workloads/"+UUID_V4_REGEX+"/interfaces/.*", "Workload Interface")
 	isVulnerabilityReportHref                                           = generateHrefValidationFunction("vulnerability_reports/.*", "Vulnerability Report")

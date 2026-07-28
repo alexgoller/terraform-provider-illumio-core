@@ -2,6 +2,9 @@
 
 FEATURES:
 
+* **New Resource:** `illumio-core_deny_rule` — manages deny rules nested under a rule set at `{rule_set_href}/deny_rules`. Ordinary deny rules and override-deny rules are the same object at the same endpoint, distinguished by the `override` flag; the policy evaluation order is override-deny > allow > deny. Consumers are the sources that initiate the connection and providers are the destinations.
+* **New Data Source:** `illumio-core_deny_rule`
+* **New Data Source:** `illumio-core_deny_rules` — requires `rule_set_href`; returns both ordinary and override-deny rules in one list.
 * **New Resource:** `illumio-core_provisioning` — provisions draft security policy objects into the active policy version from Terraform, replacing the external `provision` binary and the `hrefs.csv` side channel. State-tracked, visible in `terraform plan`, and usable in Terraform Cloud/CI where the binary cannot run.
 
 ENHANCEMENTS:
@@ -12,6 +15,9 @@ ENHANCEMENTS:
 
 NOTES:
 
+* Deny rules permit a narrower actor set than security rules: `actors = "ams"`, `label`, `label_group`, `ip_list` and `workload`. `virtual_service` and `virtual_server` are **not** valid deny-rule actors and are rejected at plan time.
+* ICMP has no inline representation in a deny rule's `ingress_services` — `proto` accepts only `6` (TCP) and `17` (UDP). Reference an ICMP service by `href` instead.
+* Deny rules are provisioned as part of their containing rule set.
 * `illumio-core_provisioning` requires a `lifecycle.replace_triggered_by` block referencing the policy resources to provision in the same apply. A policy object's HREF does not change when its contents change, so without it a contents-only edit is not provisioned until the following apply.
 * Destroying `illumio-core_provisioning` makes no API call and does not revert policy. `terraform destroy` does not provision deletions.
 

@@ -1,3 +1,15 @@
+## Unreleased
+
+BUG FIXES:
+
+* Fix `go build ./...` failing on a fresh clone. The `**/terraform.*` pattern in `.gitignore` matched `vendor/**/terraform.go`, so the vendored files defining `hc-install`'s `simpleVersionRe` and `terraform-exec`'s `Terraform` type were never committed.
+* `provision` no longer reports success when it fails to provision a policy object. Previously an unrecognised resource type was dropped by a `switch` with no `default` case, an href missing from the pending set was only logged as a warning, and the process exited 0 in both cases.
+* `provision` no longer panics with an index-out-of-range error on a line in `hrefs.csv` that contains no comma.
+* `provision` now derives the policy object type from the href instead of a hardcoded list of six resource types, so object types the binary does not know about — including `virtual_servers`, which had no field on the change subset at all — are provisioned correctly rather than silently discarded.
+* `provision` now discovers pending objects by walking the full `sec_policy/pending` response rather than a fixed allowlist with `firewall_settings` special-cased.
+* `provision` now exits 0 when there is nothing to provision. Previously a missing `hrefs.csv` was a fatal error, so `terraform apply && provision` failed on every apply that changed no policy objects. It also no longer requires PCE credentials for such a no-op run.
+* `provision` now leaves `hrefs.csv` in place when a run fails, so it can be retried after the cause is fixed, and reports a failed cleanup as an error that explicitly states provisioning itself succeeded.
+
 ## 1.1.6 (Dec 7, 2023)
 
 BUG FIXES:

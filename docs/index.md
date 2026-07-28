@@ -226,6 +226,8 @@ The `provision` command can now be run after a Terraform operation to move creat
 $ terraform apply && provision
 ```
 
+`provision` exits non-zero if it cannot provision everything it was asked to. It fails without contacting the PCE if `hrefs.csv` contains any line it cannot parse, and it leaves the file in place on failure so the run can be retried after the problem is fixed. Objects with no pending change are reported at `[INFO]` and skipped, which is expected when an object was already provisioned or was created and deleted in the same apply.
+
 ### Managing Object Dependencies
 
 Many objects in the PCE depend on or are referenced by other objects. These dependencies, coupled with the current approach to provisioning, can lead to situations with hanging objects when running apply or destory operations.

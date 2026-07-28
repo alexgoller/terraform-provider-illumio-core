@@ -447,7 +447,7 @@ func resourceIllumioRuleSetRead(ctx context.Context, d *schema.ResourceData, m i
 
 	_, data, err := illumioClient.Get(d.Id(), nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_rule_set")
 	}
 
 	for _, key := range []string{

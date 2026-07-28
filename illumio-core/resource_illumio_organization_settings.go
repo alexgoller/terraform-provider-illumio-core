@@ -74,7 +74,7 @@ func resourceIllumioOrganizationSettingsRead(ctx context.Context, d *schema.Reso
 
 	_, data, err := illumioClient.Get(fmt.Sprintf("/orgs/%v/settings/events", orgID), nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_organization_settings")
 	}
 
 	d.SetId(fmt.Sprintf("/orgs/%v/settings/events", orgID))

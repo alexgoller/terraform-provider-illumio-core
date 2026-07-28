@@ -497,7 +497,7 @@ func resourceIllumioVENRead(ctx context.Context, d *schema.ResourceData, m inter
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_ven")
 	}
 
 	setIllumioVENState(data, d)

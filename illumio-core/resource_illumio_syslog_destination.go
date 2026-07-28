@@ -260,7 +260,7 @@ func resourceIllumioSyslogDestinationRead(ctx context.Context, d *schema.Resourc
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_syslog_destination")
 	}
 
 	setIllumioSyslogDestinationState(data, d)

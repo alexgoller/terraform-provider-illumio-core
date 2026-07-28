@@ -347,7 +347,7 @@ func resourceIllumioContainerClusterWorkloadProfileRead(ctx context.Context, d *
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_container_cluster_workload_profile")
 	}
 
 	// extract the parent HREF and set it

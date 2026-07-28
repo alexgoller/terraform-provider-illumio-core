@@ -191,7 +191,7 @@ func resourceIllumioLabelGroupRead(ctx context.Context, d *schema.ResourceData, 
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_label_group")
 	}
 	// set computed/optional values from api response
 	for _, key := range []string{

@@ -162,7 +162,7 @@ func resourceIllumioTrafficCollectorSettingsRead(ctx context.Context, d *schema.
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_traffic_collector_settings")
 	}
 
 	setIllumioTrafficCollectorSettingState(d, data)

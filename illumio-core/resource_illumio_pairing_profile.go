@@ -279,7 +279,7 @@ func resourceIllumioPairingProfileRead(ctx context.Context, d *schema.ResourceDa
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
-		return diag.FromErr(err)
+		return handleReadError(err, d, "illumio-core_pairing_profile")
 	}
 
 	d.SetId(data.S("href").Data().(string))

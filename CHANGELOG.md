@@ -9,6 +9,7 @@ FEATURES:
 
 ENHANCEMENTS:
 
+* `scripts/build-mirror.sh` builds this fork into a Terraform provider mirror, so it can be installed with a normal `terraform init` while it is not published to a registry. Produces both a filesystem-mirror layout and the `index.json` / `<version>.json` files of the provider network mirror protocol, with `zh:` hashes. See the "Using this fork" guide.
 * New provider setting `write_href_file` (default `true`, deprecated). Set to `false` when using `illumio-core_provisioning` so `hrefs.csv` is no longer written.
 * `resourceTypeFromHref` and pending-policy collection now have a single implementation shared by the `provision` binary and the provider (`models.ResourceTypeFromHref` and `client.(*V2).PendingPolicyHrefs`), so the two can no longer disagree about what is provisionable.
 * Client unit tests no longer require PCE credentials. The credential check was a `log.Fatal` in `init()`, which killed the whole test binary; tests needing a PCE now skip instead.

@@ -156,6 +156,106 @@ data "illumio-core_deny_rules" "check" {
 
 On the upstream provider it fails with `Invalid data source type`.
 
+## Distributing the fork to testers (no registry)
+
+While the fork is not published to a registry, the supported way to install it
+is a **provider mirror**. `scripts/build-mirror.sh` builds one:
+
+```bash
+# Host platform only
+scripts/build-mirror.sh
+
+# A specific set, or everything
+PLATFORMS="darwin_arm64 linux_amd64" scripts/build-mirror.sh
+PLATFORMS=all VERSION=0.0.2 scripts/build-mirror.sh
+```
+
+It produces `mirror/registry.terraform.io/illumio/illumio-core/` containing a
+`.zip` per platform plus the `index.json` / `<version>.json` files of the
+provider network mirror protocol. The same directory works either way.
+
+Serving the fork under `registry.terraform.io/illumio/illumio-core` is
+deliberate: existing configurations keep `source = "illumio/illumio-core"` and
+need no edits. Only the version pin changes.
+
+### Local testing — filesystem mirror
+
+Put this in `~/.terraformrc`:
+
+```hcl
+provider_installation {
+  filesystem_mirror {
+    path    = "/absolute/path/to/mirror"
+    include = ["registry.terraform.io/illumio/illumio-core"]
+  }
+  direct {
+    exclude = ["registry.terraform.io/illumio/illumio-core"]
+  }
+}
+```
+
+```hcl
+terraform {
+  required_providers {
+    illumio-core = {
+      source  = "illumio/illumio-core"
+      version = "0.0.1"
+    }
+  }
+}
+```
+
+`terraform init` then installs the fork:
+
+```
+- Installing illumio/illumio-core v0.0.1...
+- Installed illumio/illumio-core v0.0.1 (unauthenticated)
+```
+
+Unlike `dev_overrides`, this is a real install: `init` works normally and a
+`.terraform.lock.hcl` is written.
+
+### Sharing with a team — network mirror
+
+Serve the `mirror/` directory from any static HTTPS host (S3, GitHub Pages,
+nginx):
+
+```hcl
+provider_installation {
+  network_mirror {
+    url     = "https://example.com/terraform/"
+    include = ["registry.terraform.io/illumio/illumio-core"]
+  }
+  direct {
+    exclude = ["registry.terraform.io/illumio/illumio-core"]
+  }
+}
+```
+
+The `include`/`exclude` pair matters: it routes **only** this provider to the
+mirror, leaving every other provider coming from the registry as normal.
+
+### Things to know
+
+- **`(unauthenticated)` is expected.** Registry providers are GPG-signed by the
+  publisher; mirrored providers are not. It is a statement of fact, not a
+  warning that something is wrong.
+- **Network mirrors must be HTTPS.** Terraform rejects `http://` URLs with
+  `Invalid URL for provider installation source`, so a plain local HTTP server
+  cannot be used for testing.
+- **`terraform providers lock` does not work against a scoped mirror.** It
+  fails with `the previously-selected version 0.0.1 is no longer available`,
+  because the provider is excluded from `direct` installation. `terraform init`
+  still records a hash for the platform it ran on. For a mixed-platform team,
+  run `init` once per platform and combine the resulting lock entries, or accept
+  the "incomplete lock file information" warning during testing.
+- **Pick a version that upstream will never publish** (`0.0.1` here). Terraform
+  resolves by version, so a distinctive one makes it impossible to silently get
+  the upstream provider instead.
+- **Bump the version whenever you rebuild**, or clear `.terraform/` in
+  consuming configurations. Terraform caches by version, so rebuilding the same
+  version does not reliably reach existing workspaces.
+
 ## Provider configuration
 
 Configuration is unchanged from upstream, plus one new setting.

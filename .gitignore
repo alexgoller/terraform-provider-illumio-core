@@ -42,3 +42,6 @@ env.bat
 
 # misc
 TODO
+
+# provider mirror build output
+mirror/

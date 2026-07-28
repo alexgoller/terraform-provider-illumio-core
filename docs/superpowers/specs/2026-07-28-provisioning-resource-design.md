@@ -1,7 +1,7 @@
 # `illumio-core_provisioning`: Terraform-Native Policy Provisioning — Design
 
 Date: 2026-07-28
-Status: Approved design, not yet implemented
+Status: Approved design, core mechanism proven by spike (§4.1), not yet implemented
 Relates to: PR #1 (`fix/provision-hardening`), which hardens the existing binary but does not change the architecture
 
 ## 1. Problem
@@ -131,14 +131,55 @@ Setting a *new* value on `pending_hrefs` produces a real planned change, so
 `terraform plan` shows exactly which objects will be provisioned — the first
 time provisioning state has ever been visible in a plan.
 
-⚠️ **Verify this first.** The entire design rests on the assumption that
+✅ **Verified by spike (2026-07-28).** The design rested on the assumption that
 `SetNew`/`SetNewComputed` inside `CustomizeDiff` produces a planned *update* on
-a resource whose configured attributes are all unchanged. This is the standard
-SDKv2 mechanism for remote-state-driven diffs, but it must be proven with a
-throwaway resource before the rest of the resource is built. If it does not
-hold, fall back to the `triggers` map approach — an explicit map of values the
-user wires to the objects' `updated_at` attributes — and revise §4 accordingly.
-Nothing else in this spec changes if that fallback is needed.
+a resource whose configured attributes are all unchanged. A throwaway resource
+was added to this provider (same SDK v2.32.0, same provider plumbing), driven
+by a simulated pending set, and exercised with Terraform v1.15.6. See §4.1. The
+`triggers`-map fallback is **not** needed and has been dropped from the design.
+
+### 4.1 Spike results
+
+Throwaway `illumio-core_spike` resource: one unchanging required attribute
+(`name`), two computed attributes (`pending`, `version`), and a `CustomizeDiff`
+that calls `SetNew("pending", …)` and `SetNewComputed("version")` when a
+simulated pending set is non-empty.
+
+| Step | Condition | Result |
+|---|---|---|
+| 1 | create | `version = 1`, `pending = []` |
+| 2 | plan, pending empty | exit 0 — no changes |
+| 3 | plan, pending non-empty | **exit 2 — update in-place planned** |
+| 4 | apply | Update ran; `version` 1 → 2, `pending` cleared |
+| 5 | plan, pending still non-empty | exit 2 — still wants to provision (correct) |
+| 6 | plan, pending cleared | exit 0 — clean |
+| 7 | destroy | clean |
+
+Plan output at step 3 — note it names the exact objects, which is the property
+the whole design is for:
+
+```
+  # illumio-core_spike.s will be updated in-place
+  ~ resource "illumio-core_spike" "s" {
+        id      = "spike-unchanging"
+        name    = "unchanging"
+      ~ pending = [
+          + "/orgs/1/sec_policy/draft/rule_sets/3",
+          + "/orgs/1/sec_policy/draft/ip_lists/7",
+        ]
+      ~ version = 1 -> (known after apply)
+    }
+Plan: 0 to add, 1 to change, 0 to destroy.
+```
+
+Two things this establishes beyond the bare hypothesis:
+
+- The diff is not cosmetic — step 4 proves `Update` is genuinely invoked, so
+  the resource can do real work in response.
+- The loop converges. Step 6 shows that once the pending set empties, the
+  resource settles to a clean plan rather than diffing forever.
+
+The spike resource was removed after the run and is not part of the codebase.
 
 `GET /orgs/{org}/sec_policy/pending` returns `{}` (HTTP 200) when nothing is
 pending, so the clean case is unambiguous and needs no special-casing.
@@ -279,11 +320,11 @@ recommend one provisioning resource per configuration.
 
 ## 9. Testing
 
-### 9.0 Spike (before anything else)
+### 9.0 Spike — done
 
-A throwaway resource proving that `CustomizeDiff` + `SetNew` on a computed
-attribute yields a planned update with no configured-attribute change (§4). If
-this fails, switch to the `triggers` fallback before writing the resource.
+Completed 2026-07-28; results in §4.1. `CustomizeDiff` + `SetNew` on a computed
+attribute yields a planned update with no configured-attribute change, `Update`
+is genuinely invoked, and the loop converges. No fallback needed.
 
 ### 9.1 Unit
 

@@ -19,17 +19,18 @@ import (
 )
 
 const (
-	pceHostKey     = "pce_host"
-	apiUsernameKey = "api_username"
-	apiSecretKey   = "api_secret"
-	timeoutKey     = "request_timeout"
-	backoffTimeKey = "backoff_time"
-	maxRetriesKey  = "max_retries"
-	proxyURLKey    = "proxy_url"
-	proxyCredsKey  = "proxy_creds"
-	orgIDKey       = "org_id"
-	insecureKey    = "insecure"
-	caFileKey      = "ca_file"
+	pceHostKey       = "pce_host"
+	apiUsernameKey   = "api_username"
+	apiSecretKey     = "api_secret"
+	timeoutKey       = "request_timeout"
+	backoffTimeKey   = "backoff_time"
+	maxRetriesKey    = "max_retries"
+	proxyURLKey      = "proxy_url"
+	proxyCredsKey    = "proxy_creds"
+	orgIDKey         = "org_id"
+	insecureKey      = "insecure"
+	caFileKey        = "ca_file"
+	writeHrefFileKey = "write_href_file"
 
 	hrefFilename = "hrefs.csv"
 
@@ -113,6 +114,16 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("ILLUMIO_PROXY_URL", nil),
 				Description: "Proxy Server URL with port number. This can also be set by environment variable `ILLUMIO_PROXY_URL`",
 			},
+			writeHrefFileKey: {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+				Deprecated: "The hrefs.csv file and the provision binary are deprecated in favour of the " +
+					"illumio-core_provisioning resource, and will be removed in a future major version.",
+				Description: "Whether to record provisionable object HREFs to hrefs.csv for the external `provision` " +
+					"binary. Set to false when using the `illumio-core_provisioning` resource, otherwise the file " +
+					"accumulates entries that are never consumed. Default value: true",
+			},
 			proxyCredsKey: {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -146,6 +157,7 @@ func Provider() *schema.Provider {
 			"illumio-core_organization_settings":              resourceIllumioOrganizationSettings(),
 			"illumio-core_service_binding":                    resourceIllumioServiceBinding(),
 			"illumio-core_enforcement_boundary":               resourceIllumioEnforcementBoundary(),
+			"illumio-core_provisioning":                       resourceIllumioProvisioning(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"illumio-core_firewall_settings":                   datasourceIllumioFirewallSettings(),
@@ -232,6 +244,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	providerConfig := Config{
 		IllumioClient: illumioV2Client,
 		HrefFilename:  hrefFilename,
+		WriteHrefFile: d.Get(writeHrefFileKey).(bool),
 	}
 	return providerConfig, diagnostics
 }
@@ -277,10 +290,19 @@ func validateInput(d *schema.ResourceData) diag.Diagnostics {
 type Config struct {
 	IllumioClient *client.V2
 	HrefFilename  string
+	// WriteHrefFile controls whether policy mutations are recorded to
+	// hrefs.csv for the deprecated provision binary. Users of the
+	// illumio-core_provisioning resource turn this off so the file does not
+	// accumulate entries nothing ever consumes.
+	WriteHrefFile bool
 }
 
 // StoreHref - Writes href to hrefs.csv file for provisioning of resource
 func (c Config) StoreHref(resourceType, href string) {
+	if !c.WriteHrefFile {
+		return
+	}
+
 	fileMutex.Lock()
 	defer fileMutex.Unlock()
 

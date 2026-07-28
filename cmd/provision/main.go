@@ -12,7 +12,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Jeffail/gabs/v2"
 	"github.com/illumio/terraform-provider-illumio-core/client"
 	"github.com/illumio/terraform-provider-illumio-core/models"
 	"golang.org/x/time/rate"
@@ -23,10 +22,6 @@ const (
 	// Each line is "resource_type,href"; the resource type is advisory and
 	// retained for backward compatibility, while the href is authoritative.
 	filename = "hrefs.csv"
-
-	// secPolicySegment marks the start of a security policy object path.
-	// Only objects below it can be provisioned.
-	secPolicySegment = "sec_policy"
 )
 
 // hrefEntry is one provisionable policy object read from the href file.
@@ -36,40 +31,6 @@ type hrefEntry struct {
 	ResourceType string
 	Href         string
 	Line         int
-}
-
-// resourceTypeFromHref derives the security policy change-subset collection
-// name from a policy object href.
-//
-//	/orgs/1/sec_policy/draft/rule_sets/3            -> rule_sets
-//	/orgs/1/sec_policy/draft/firewall_settings      -> firewall_settings
-//	/orgs/1/sec_policy/draft/rule_sets/3/sec_rules/5 -> rule_sets
-//
-// Nested objects such as sec rules and deny rules resolve to their parent rule
-// set, which is the object the PCE actually provisions.
-//
-// Deriving the type from the href removes the need for a hardcoded list of
-// known resource types: a policy object type this binary has never heard of is
-// handled correctly, instead of being dropped with a warning.
-func resourceTypeFromHref(href string) (string, error) {
-	trimmed := strings.Trim(strings.TrimSpace(href), "/")
-	if trimmed == "" {
-		return "", errors.New("empty href")
-	}
-
-	parts := strings.Split(trimmed, "/")
-	for i, part := range parts {
-		if part != secPolicySegment {
-			continue
-		}
-		// parts[i+1] is the policy version, parts[i+2] is the collection name.
-		if i+2 >= len(parts) || parts[i+2] == "" {
-			return "", fmt.Errorf("href %q ends at the policy version and names no policy object", href)
-		}
-		return parts[i+2], nil
-	}
-
-	return "", fmt.Errorf("href %q is not a security policy object (no %q path segment); only security policy objects can be provisioned", href, secPolicySegment)
 }
 
 // parseHrefFile reads href entries, returning one error per unusable line
@@ -101,7 +62,7 @@ func parseHrefFile(r io.Reader) ([]hrefEntry, []error) {
 			continue
 		}
 
-		rtype, err := resourceTypeFromHref(href)
+		rtype, err := models.ResourceTypeFromHref(href)
 		if err != nil {
 			errs = append(errs, fmt.Errorf("line %d: %w", lineNo, err))
 			continue
@@ -119,37 +80,6 @@ func parseHrefFile(r io.Reader) ([]hrefEntry, []error) {
 	}
 
 	return entries, errs
-}
-
-// collectPendingHrefs returns the set of hrefs in a GET /sec_policy/pending
-// response.
-//
-// It walks every key in the response rather than a fixed allowlist, so policy
-// object types added by future PCE versions are discovered automatically.
-// Collections arrive as arrays of objects; singletons such as
-// firewall_settings arrive as a bare object.
-func collectPendingHrefs(data *gabs.Container) map[string]bool {
-	pending := map[string]bool{}
-	if data == nil {
-		return pending
-	}
-
-	for _, value := range data.ChildrenMap() {
-		switch value.Data().(type) {
-		case []interface{}:
-			for _, child := range value.Children() {
-				if href, ok := child.S("href").Data().(string); ok && href != "" {
-					pending[href] = true
-				}
-			}
-		case map[string]interface{}:
-			if href, ok := value.S("href").Data().(string); ok && href != "" {
-				pending[href] = true
-			}
-		}
-	}
-
-	return pending
 }
 
 func main() {
@@ -202,12 +132,11 @@ func run() int {
 	}
 
 	orgID := illumioV2Client.OrgID
-	_, cont, err := illumioV2Client.Get(fmt.Sprintf("/orgs/%d/sec_policy/pending", orgID), nil)
+	pending, err := illumioV2Client.PendingPolicyHrefs()
 	if err != nil {
-		log.Printf("[ERROR] Error fetching pending security policy: %v", err)
+		log.Printf("[ERROR] %v", err)
 		return 1
 	}
-	pending := collectPendingHrefs(cont)
 
 	changeSubset := models.NewSecurityPolicyChangeSubset()
 	for _, entry := range entries {

@@ -189,6 +189,88 @@ state. This is standard for providers that reconcile against a remote system,
 but it does mean `terraform plan` requires working PCE credentials. This must be
 documented prominently.
 
+### 4.2 The spike was necessary but not sufficient
+
+Implementation found a flaw the spike could not have caught, because the spike
+simulated the pending set independently of apply ordering.
+
+`CustomizeDiff` alone **converges in two applies, not one**. At plan time the
+policy object has not been updated in the PCE yet, so it is not yet pending, so
+no provisioning is planned. Apply #1 updates the object and leaves it in draft.
+Only the *next* plan sees it pending.
+
+Measured on a live PCE:
+
+```
+apply #1 after a contents-only change:
+  Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+  provisioning version: 4   (unchanged)
+  pending rule_sets: ['/orgs/.../rule_sets/17732923532914146']   >>> LEFT IN DRAFT
+plan #2:
+  # illumio-core_provisioning.policy will be updated in-place
+```
+
+Silently leaving policy in draft after a successful `terraform apply` is the
+exact failure class this whole effort exists to remove, so this had to be
+fixed rather than documented.
+
+**Rejected fix — a `triggers` map.** Adding `triggers` and populating it with
+`jsonencode(illumio-core_rule_set.app)` fails outright:
+
+```
+Error: Provider produced inconsistent final plan
+... produced an invalid new value for .triggers["app"]:
+    "updated_at":"2026-07-28T16:20:24.397Z"  (planned)
+    "updated_at":"2026-07-28T16:20:45.923Z"  (actual)
+```
+
+Encoding a whole resource embeds computed attributes that change *during*
+apply. Restricting the trigger to configured attributes works but requires the
+user to enumerate every attribute that might change — forget one and
+provisioning is silently skipped, reintroducing the same bug in a new place.
+The `triggers` attribute was implemented, tested, and removed.
+
+**Adopted fix — `lifecycle.replace_triggered_by`.** Terraform core already has
+the primitive, so this needs no provider attribute at all:
+
+```hcl
+resource "illumio-core_provisioning" "policy" {
+  hrefs = [illumio-core_rule_set.app.href]
+
+  lifecycle {
+    replace_triggered_by = [illumio-core_rule_set.app]
+  }
+}
+```
+
+Core evaluates it against the referenced resource's *planned* changes, so it
+needs no plan-stable value and cannot suffer the inconsistent-plan error.
+Replacement is destroy-then-create; Delete is a no-op and Create provisions, so
+replacement is exactly the desired behaviour. The `hrefs` dependency edge
+guarantees the create runs after the objects are updated.
+
+Measured on a live PCE:
+
+```
+single apply after a contents-only change:
+  Apply complete! Resources: 1 added, 1 changed, 1 destroyed.
+  version: 6 -> 7
+  pending rule_sets: []        >>> CONVERGED IN ONE APPLY
+  subsequent plan: exit 0      (clean)
+```
+
+### 4.3 Both mechanisms are kept, because they solve different problems
+
+The original framing treated the pending query and triggers as competing
+answers to one question. They are not:
+
+| Mechanism | Solves |
+|---|---|
+| `CustomizeDiff` pending query | Drift — policy changed outside this configuration (PCE UI, another tool, a partially failed run). Verified: an out-of-band `PUT` to a rule set makes the next plan show a provisioning change naming that href. |
+| `lifecycle.replace_triggered_by` | Ordering — provisioning happens in the same apply as a Terraform-driven change |
+
+Neither subsumes the other, so both are part of the design.
+
 ## 5. Lifecycle
 
 | Op | Behaviour |
@@ -240,11 +322,17 @@ elements of `GET /orgs/{org}/sec_policy`:
 }
 ```
 
-**To confirm during implementation:** the exact POST response body has not been
-observed — verifying it would require provisioning real policy, which the
-read-only design probe deliberately avoided. If the response does not carry the
-version object, fall back to `GET /orgs/{org}/sec_policy?max_results=1` directly
-after the POST. The implementation must handle both.
+**Confirmed 2026-07-28 against PCE 26.30.2.** `POST /sec_policy` returns 201
+with the full version object:
+
+```
+keys: commit_message, created_at, created_by, href, object_counts,
+      version, workloads_affected
+```
+
+So the primary path is used in practice. The `GET /sec_policy?max_results=1`
+fallback is retained as defensive handling for PCE versions that may not
+populate the response, but it is not the expected path.
 
 ## 6. Shared code
 

@@ -3,7 +3,6 @@
 package client
 
 import (
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -22,18 +21,27 @@ var (
 )
 
 func init() {
-	if apiHost == "" {
-		log.Fatal("Illumio Host for tests is missing, please set in ILLUMIO_PCE_HOST env var")
-	} else if apiUsername == "" || apiKeySecret == "" {
-		log.Fatal("Credentials for client tests is missing, " +
-			"please set in [ILLUMIO_API_KEY_USERNAME, ILLUMIO_API_KEY_SECRET] env var")
-	}
-
 	var err error
 	orgID, err = strconv.Atoi(os.Getenv("ILLUMIO_PCE_ORG_ID"))
 
 	if err != nil {
 		orgID = 1
+	}
+}
+
+// requireCredentials skips a test that needs a reachable PCE.
+//
+// This check used to be a log.Fatal in init(), which killed the whole test
+// binary and made it impossible to run any unit test in this package without
+// PCE credentials.
+func requireCredentials(t *testing.T) {
+	t.Helper()
+
+	if apiHost == "" {
+		t.Skip("skipping: ILLUMIO_PCE_HOST is not set")
+	}
+	if apiUsername == "" || apiKeySecret == "" {
+		t.Skip("skipping: ILLUMIO_API_KEY_USERNAME and ILLUMIO_API_KEY_SECRET are not set")
 	}
 }
 
@@ -55,6 +63,8 @@ func GetTestClient() (*V2, error) {
 }
 
 func TestClient(t *testing.T) {
+	requireCredentials(t)
+
 	_, err := GetTestClient()
 	if err != nil {
 		t.Error("Error in creating client")
@@ -62,6 +72,8 @@ func TestClient(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
+	requireCredentials(t)
+
 	testClient, err := GetTestClient()
 	if err != nil {
 		t.Error("Error in creating client")
@@ -117,6 +129,8 @@ func TestExpectedHTTPErrors(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
+	requireCredentials(t)
+
 	href := "/orgs/1/labels/1"
 
 	tests := []struct {

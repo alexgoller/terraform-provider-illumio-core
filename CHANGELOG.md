@@ -1,5 +1,20 @@
 ## Unreleased
 
+FEATURES:
+
+* **New Resource:** `illumio-core_provisioning` — provisions draft security policy objects into the active policy version from Terraform, replacing the external `provision` binary and the `hrefs.csv` side channel. State-tracked, visible in `terraform plan`, and usable in Terraform Cloud/CI where the binary cannot run.
+
+ENHANCEMENTS:
+
+* New provider setting `write_href_file` (default `true`, deprecated). Set to `false` when using `illumio-core_provisioning` so `hrefs.csv` is no longer written.
+* `resourceTypeFromHref` and pending-policy collection now have a single implementation shared by the `provision` binary and the provider (`models.ResourceTypeFromHref` and `client.(*V2).PendingPolicyHrefs`), so the two can no longer disagree about what is provisionable.
+* Client unit tests no longer require PCE credentials. The credential check was a `log.Fatal` in `init()`, which killed the whole test binary; tests needing a PCE now skip instead.
+
+NOTES:
+
+* `illumio-core_provisioning` requires a `lifecycle.replace_triggered_by` block referencing the policy resources to provision in the same apply. A policy object's HREF does not change when its contents change, so without it a contents-only edit is not provisioned until the following apply.
+* Destroying `illumio-core_provisioning` makes no API call and does not revert policy. `terraform destroy` does not provision deletions.
+
 BUG FIXES:
 
 * Fix `go build ./...` failing on a fresh clone. The `**/terraform.*` pattern in `.gitignore` matched `vendor/**/terraform.go`, so the vendored files defining `hc-install`'s `simpleVersionRe` and `terraform-exec`'s `Terraform` type were never committed.

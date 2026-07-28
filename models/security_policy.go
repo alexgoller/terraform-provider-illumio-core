@@ -2,7 +2,49 @@
 
 package models
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
+
+// secPolicySegment marks the start of a security policy object path. Only
+// objects below it can be provisioned.
+const secPolicySegment = "sec_policy"
+
+// ResourceTypeFromHref derives the security policy change-subset collection
+// name from a policy object href.
+//
+//	/orgs/1/sec_policy/draft/rule_sets/3             -> rule_sets
+//	/orgs/1/sec_policy/draft/firewall_settings       -> firewall_settings
+//	/orgs/1/sec_policy/draft/rule_sets/3/sec_rules/5 -> rule_sets
+//
+// Nested objects such as sec rules and deny rules resolve to their parent rule
+// set, which is the object the PCE actually provisions.
+//
+// Deriving the type from the href removes any need for a hardcoded list of
+// known resource types, so a policy object type this provider has never heard
+// of is handled correctly rather than being silently discarded.
+func ResourceTypeFromHref(href string) (string, error) {
+	trimmed := strings.Trim(strings.TrimSpace(href), "/")
+	if trimmed == "" {
+		return "", errors.New("empty href")
+	}
+
+	parts := strings.Split(trimmed, "/")
+	for i, part := range parts {
+		if part != secPolicySegment {
+			continue
+		}
+		// parts[i+1] is the policy version, parts[i+2] is the collection name.
+		if i+2 >= len(parts) || parts[i+2] == "" {
+			return "", fmt.Errorf("href %q ends at the policy version and names no policy object", href)
+		}
+		return parts[i+2], nil
+	}
+
+	return "", fmt.Errorf("href %q is not a security policy object (no %q path segment); only security policy objects can be provisioned", href, secPolicySegment)
+}
 
 // SecurityPolicyChangeSubset represents the change subset of a security policy
 // provisioning request, keyed by the PCE policy object collection name

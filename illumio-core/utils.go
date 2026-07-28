@@ -106,6 +106,7 @@ var (
 	isTrafficCollectorSettingsHref                                      = generateHrefValidationFunction("settings/traffic_collector/"+UUID_V4_REGEX, "Traffic Collector Settings")
 	isSyslogDestinationHref                                             = generateHrefValidationFunction("settings/syslog/destinations/"+UUID_V4_REGEX, "Syslog Destination")
 	isServiceBindingHref                                                = generateHrefValidationFunction("service_bindings/"+UUID_V4_REGEX, "Service Binding")
+	isProvisionableHref                                                 = generateHrefValidationFunction(SEC_POLICY_PREFIX+".+", "Provisionable security policy object")
 	isValidColorCode                                                    = hexColorCodeValidationFunction()
 )
 

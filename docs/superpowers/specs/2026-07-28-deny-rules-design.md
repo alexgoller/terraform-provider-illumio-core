@@ -1,7 +1,7 @@
 # Deny Rules in `terraform-provider-illumio-core` — Design
 
 Date: 2026-07-28
-Status: Approved, pending live-PCE probe
+Status: Implemented and verified against a live PCE (26.30.2 build 36)
 Supersedes scope discussion in: `DENY_RULES_IMPLEMENTATION_BRIEF.md` (still authoritative for history and rationale)
 
 ## 1. Goal
@@ -109,12 +109,48 @@ confirming brief §2.6.
   appears in a storage or request schema. The brief's "one `deny_rules` array"
   rule holds for CRUD; the split in analysis output is presentational.
 
-### 2.6 Known limitation
+### 2.6 Resolved by the live probe
 
-There is **no POST or PUT deny-rule schema anywhere in 26.3**. Writability of
-`description` and `network_type` cannot be established from schema. The GET
-shape and the `illumio-py` model both imply writable. This is provisional and
-must be settled by the live probe.
+There is **no POST or PUT deny-rule schema anywhere in 26.3**, so writability of
+`description` and `network_type` could not be established from schema. This was
+settled empirically against a live PCE (26.30.2 build 36) — see §2.7.
+
+### 2.7 Live probe results (2026-07-28, PCE 26.30.2 build 36)
+
+Read-only probe:
+
+| Request | Result |
+|---|---|
+| `GET {rule_set_href}/deny_rules` | **200** — the endpoint exists |
+| `GET {rule_set_href}/override_deny_rules` | **404** — confirms the brief |
+| `GET /orgs/{org}/sec_policy/draft/deny_rules` | **404** — no top-level collection |
+| `GET {rule_set_href}` | embeds one `deny_rules` array, **no** `override_deny_rules` |
+
+Field shape observed on live deny rules — 20 keys, exactly matching §4.2:
+
+```
+all_ips_except_for_in_consumers, all_ips_except_for_in_providers, caps,
+consumers, created_at, created_by, deleted_at, deleted_by, description,
+egress_services, enabled, href, ingress_services, network_type, override,
+providers, unscoped_consumers, update_type, updated_at, updated_by
+```
+
+`name`, `external_data_set` and `external_data_reference` are **absent**,
+confirming brief §2.4's caution against inferring them from other policy
+objects.
+
+Write verification via a full Terraform lifecycle against a disposable draft
+rule set (created and destroyed; never provisioned):
+
+- `description` **is writable** — set on create and changed on update, read back
+  correctly. The §4.2 "provisional" marker is removed.
+- `network_type` is returned as `"brn"` (the PCE default). Declaring it
+  `Optional + Computed` produces no drift.
+- `override` toggled `false` → `true` **on the same href**; the endpoint does
+  not change.
+- `enabled = false` round-trips without drift.
+- Both inline `{proto, port}` and service-`href` ingress services work.
+- `terraform plan` is empty after apply, after update, and after import.
 
 ## 3. Prerequisite: repair the build baseline
 
@@ -177,8 +213,8 @@ resource type and no endpoint switching.
 | `rule_set_href` | string | Required, `ForceNew`, validated as a rule-set HREF |
 | `enabled` | bool | Optional, default `true` |
 | `override` | bool | Optional, default `false` |
-| `description` | string | Optional (provisional, §2.6) |
-| `network_type` | string | Optional, `ValidateFunc` over `brn`/`non_brn`/`all` (provisional, §2.6) |
+| `description` | string | Optional (writability confirmed live, §2.7) |
+| `network_type` | string | Optional + Computed, `ValidateFunc` over `brn`/`non_brn`/`all` |
 | `providers` | set | Required, `MinItems: 1` |
 | `consumers` | set | Required, `MinItems: 1` |
 | `ingress_services` | set | Required, `MinItems: 1` |
@@ -245,21 +281,35 @@ Implements the existing `ToMap()` contract via `toMap`.
 Note `DenyRuleActor` is a single type for both sides; unlike the security rule,
 providers and consumers have identical permitted selectors per §2.2.
 
-### 4.4 Shared helper extraction
+### 4.4 Helper strategy — revised during implementation
 
-`illumio-core/resource_illumio_security_rule.go` is 832 lines, much of it actor
-and ingress-service schema/expand/flatten. Rather than copy it, extract into a
-new `illumio-core/rule_actors.go`:
+The original plan was to extract shared actor and ingress-service helpers out of
+`resource_illumio_security_rule.go` (832 lines) and have both resources call
+them. **This was not done**, for two reasons found while implementing:
 
-- `actorSchema(permitted []string) *schema.Resource`
-- `expandActors(...)` / `flattenActors(...)`
-- `ingressServiceSchema()`, `expandIngressServices(...)`, `flattenIngressServices(...)`
-- `egressServiceSchema()` and its expand/flatten
+1. **The actor logic is not actually shared.** Deny rules permit a strictly
+   narrower actor set (§2.2). A "shared" helper would have to be parameterised
+   by permitted selectors, and the two call sites would share almost nothing
+   beyond the loop.
+2. **The ingress-service logic is coupled to allow-rule semantics.**
+   `expandIllumioSecurityRuleIngressService` takes a `setEmpty` flag derived
+   from `resolve_labels_as.providers == ["virtual_services"]`, a concept that
+   does not exist for deny rules. Extracting it would mean rewriting it, and
+   the security-rule resource is covered only by acceptance tests requiring a
+   PCE — so the refactor could not be verified as behaviour-preserving.
 
-The security-rule resource is refactored to call these with its own permitted
-set. Deny-specific validation stays separate from allow-specific validation.
-This refactor must be behaviour-preserving: the existing security-rule tests
-must pass unchanged before and after.
+Instead, the deny-rule resource carries its own `denyRuleActorSchema`,
+`expandIllumioDenyRuleActors`, `expandIllumioDenyRuleIngressServices`,
+`extractDenyRuleActors` and `extractDenyRuleIngressServices`, and reuses the
+genuinely generic helpers already in `utils.go`: `getHrefObj`,
+`expandLabelOptionalKeyValue`, `hrefSchemaRequired`, `hrefSchemaComputed`,
+`extractDataSourceAttrs`, `isStringAPortNumber`, `getInt`, `contains` and
+`models.HasOneActor`.
+
+`resource_illumio_security_rule.go` is left untouched. This keeps the change
+purely additive, which was the stated goal, at the cost of some duplicated
+shape between the two resources. Extracting a genuinely shared abstraction is
+better done when the security rule has non-acceptance test coverage.
 
 ### 4.5 Lifecycle
 

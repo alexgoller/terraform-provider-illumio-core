@@ -1,5 +1,17 @@
 ## Unreleased
 
+FEATURES:
+
+* **New Resource:** `illumio-core_deny_rule` — manages deny rules nested under a rule set at `{rule_set_href}/deny_rules`. Ordinary deny rules and override-deny rules are the same object at the same endpoint, distinguished by the `override` flag; the policy evaluation order is override-deny > allow > deny. Consumers are the sources that initiate the connection and providers are the destinations.
+* **New Data Source:** `illumio-core_deny_rule`
+* **New Data Source:** `illumio-core_deny_rules` — requires `rule_set_href`; returns both ordinary and override-deny rules in one list.
+
+NOTES:
+
+* Deny rules permit a narrower actor set than security rules: `actors = "ams"`, `label`, `label_group`, `ip_list` and `workload`. `virtual_service` and `virtual_server` are **not** valid deny-rule actors and are rejected at plan time.
+* ICMP has no inline representation in a deny rule's `ingress_services` — `proto` accepts only `6` (TCP) and `17` (UDP). Reference an ICMP service by `href` instead.
+* Deny rules are provisioned as part of their containing rule set.
+
 BUG FIXES:
 
 * Fix `go build ./...` failing on a fresh clone. The `**/terraform.*` pattern in `.gitignore` matched `vendor/**/terraform.go`, so the vendored files defining `hc-install`'s `simpleVersionRe` and `terraform-exec`'s `Terraform` type were never committed.

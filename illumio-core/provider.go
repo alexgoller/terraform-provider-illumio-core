@@ -295,8 +295,10 @@ func (c Config) StoreHref(resourceType, href string) {
 // ProvisionAResource - Provision a single resource
 func (c Config) ProvisionAResource(resourceType, href string) error {
 	log.Printf("ProvisionAResource - %s", href)
-	cs := models.SecurityPolicyChangeSubset{}
-	cs.AppendHref(resourceType, href)
+	cs := models.NewSecurityPolicyChangeSubset()
+	if err := cs.AppendHref(resourceType, href); err != nil {
+		return err
+	}
 	secPolicy := &models.SecurityPolicy{
 		UpdateDesc:   "Provisioned by Terraform",
 		ChangeSubset: cs,

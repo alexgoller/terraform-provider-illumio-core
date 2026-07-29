@@ -77,6 +77,7 @@ resource "illumio-core_managed_workload" "example" {
 - `name` (String) Name of the Workload. The name should be up to 255 characters
 - `service_principal_name` (String) The Kerberos Service Principal Name (SPN). The SPN should be between 1 to 255 characters
 - `service_provider` (String) Service provider for Workload. The service_provider should be up to 255 characters
+- `unpair_on_destroy` (Boolean) Whether destroying this resource should unpair the VEN, which uninstalls the agent from the host and restores its default firewall. Defaults to false: Terraform did not create the workload - it exists because a VEN paired with the PCE - so destroying the resource only stops Terraform managing it. Set to true only if you intend `terraform destroy` to decommission the host's agent
 
 ### Read-Only
 
@@ -94,7 +95,7 @@ resource "illumio-core_managed_workload" "example" {
 - `firewall_coexistence` (List of Object) Firewall coexistence mode for Workload (see [below for nested schema](#nestedatt--firewall_coexistence))
 - `hostname` (String) The hostname of this workload. Set by the VEN.
 - `href` (String) URI of the Workload
-- `id` (String) The ID of this resource
+- `id` (String) The ID of this resource.
 - `ike_authentication_certificate` (Map of String) IKE authentication certificate for certificate-based Secure Connect and Machine Auth
 - `interfaces` (Set of Object) Workload network interfaces (see [below for nested schema](#nestedatt--interfaces))
 - `online` (Boolean) Determines if this workload is online. Set by the VEN.
@@ -122,8 +123,8 @@ Required:
 
 Read-Only:
 
-- `href` (String) URI of container cluster
-- `name` (String) Name of container cluster
+- `href` (String)
+- `name` (String)
 
 
 <a id="nestedatt--detected_vulnerabilities"></a>
@@ -131,23 +132,22 @@ Read-Only:
 
 Read-Only:
 
-- `ip_address` (String) The IP address of the host where the vulnerability is found
-- `port` (Number) The port that is associated with the vulnerability
-- `port_exposure` (Number) The exposure of the port based on the current policy
-- `port_wide_exposure` (List of Object) High end of an IP range(see [below for nested schema](#nestedobjatt--detected_vulnerabilities--port_wide_exposure))
-- `proto` (Number) The protocol that is associated with the vulnerability
-- `vulnerability` (Set of Object) Vulnerability for Workload (see [below for nested schema](#nestedobjatt--detected_vulnerabilities--vulnerability))
-- `vulnerability_report` (Set of Object) Vulnerability Report for Workload(see [below for nested schema](#nestedobjatt--detected_vulnerabilities--vulnerability_report))
-- `workload` (List of Object) URI of Workload (see [below for nested schema](#nestedobjatt--detected_vulnerabilities--workload))
-
+- `ip_address` (String)
+- `port` (Number)
+- `port_exposure` (Number)
+- `port_wide_exposure` (List of Object) (see [below for nested schema](#nestedobjatt--detected_vulnerabilities--port_wide_exposure))
+- `proto` (Number)
+- `vulnerability` (Set of Object) (see [below for nested schema](#nestedobjatt--detected_vulnerabilities--vulnerability))
+- `vulnerability_report` (Set of Object) (see [below for nested schema](#nestedobjatt--detected_vulnerabilities--vulnerability_report))
+- `workload` (List of Object) (see [below for nested schema](#nestedobjatt--detected_vulnerabilities--workload))
 
 <a id="nestedobjatt--detected_vulnerabilities--port_wide_exposure"></a>
 ### Nested Schema for `detected_vulnerabilities.port_wide_exposure`
 
 Read-Only:
 
-- `any` (Boolean) The boolean value representing if at least one port is exposed to internet (any rule) on the workload
-- `ip_list` (Boolean) The boolean value representing if at least one port is exposed to ip_list(s) on the workload
+- `any` (Boolean)
+- `ip_list` (Boolean)
 
 
 <a id="nestedobjatt--detected_vulnerabilities--vulnerability"></a>
@@ -155,9 +155,9 @@ Read-Only:
 
 Read-Only:
 
-- `href` (String) The URI of the workload to which this vulnerability belongs to
-- `name` (String) The title/name of the vulnerability
-- `score` (Number) The normalized score of the vulnerability within the range of 0 to 100
+- `href` (String)
+- `name` (String)
+- `score` (Number)
 
 
 <a id="nestedobjatt--detected_vulnerabilities--vulnerability_report"></a>
@@ -165,7 +165,7 @@ Read-Only:
 
 Read-Only:
 
-- `href` (String) The URI of the report to which this vulnerability belongs to
+- `href` (String)
 
 
 <a id="nestedobjatt--detected_vulnerabilities--workload"></a>
@@ -173,7 +173,8 @@ Read-Only:
 
 Read-Only:
 
-- `href` (String) The URI of the workload to which this vulnerability belongs to
+- `href` (String)
+
 
 
 <a id="nestedatt--firewall_coexistence"></a>
@@ -181,7 +182,7 @@ Read-Only:
 
 Read-Only:
 
-- `illumio_primary` (Boolean) Illumio is the primary firewall if set to true
+- `illumio_primary` (Boolean)
 
 
 <a id="nestedatt--interfaces"></a>
@@ -189,15 +190,15 @@ Read-Only:
 
 Read-Only:
 
-- `name` (String) Interface name. Can be up to 255 characters
-- `address` (String) Interface IP address. Must be in IPv4 or IPv6 format
-- `cidr_block` (Number) Interface CIDR block bits
-- `default_gateway_address` (String) Interface Default Gateway IP address. Must be in IPv4 or IPv6 format
-- `friendly_name` (String) User-friendly interface name. Can be up to 255 characters
-- `link_state` (String) Interface link state. Allowed values are "up", "down", and "unknown"
-- `loopback` (Boolean) Whether or not the interface represents a loopback address on the workload
-- `network` (Map of String) Interface Network object HREFs
-- `network_detection_mode` (String) Interface Network Detection Mode
+- `address` (String)
+- `cidr_block` (Number)
+- `default_gateway_address` (String)
+- `friendly_name` (String)
+- `link_state` (String)
+- `loopback` (Boolean)
+- `name` (String)
+- `network` (Map of String)
+- `network_detection_mode` (String)
 
 
 <a id="nestedatt--selectively_enforced_services"></a>
@@ -205,10 +206,10 @@ Read-Only:
 
 Read-Only:
 
-- `href` (String) URI of Selectively Enforced Services
-- `port` (Number) Port number, or the starting port of a range. If unspecified, this will apply to all ports for the given protocol. Minimum and maximum value for port is 0 and 65535 respectively.
-- `to_port` (Number) Upper end of port range; this field should not be included if specifying an individual port. Minimum and maximum value for to_port is 0 and 65535 respectively.
-- `proto` (Number) Transport protocol of Selectively Enforced Services
+- `href` (String)
+- `port` (Number)
+- `proto` (Number)
+- `to_port` (Number)
 
 
 <a id="nestedatt--services"></a>
@@ -216,23 +217,24 @@ Read-Only:
 
 Read-Only:
 
-- `created_at` (String) Timestamp when this service was first created
-- `open_service_ports` (List of Object) A list of open ports (see [below for nested schema] (#nestedobjatt--services--open_service_ports))
-- `uptime_seconds` (Number) How long since the last reboot of this box - used as a timestamp for this
-
+- `created_at` (String)
+- `open_service_ports` (List of Object) (see [below for nested schema](#nestedobjatt--services--open_service_ports))
+- `uptime_seconds` (Number)
 
 <a id="nestedobjatt--services--open_service_ports"></a>
 ### Nested Schema for `services.open_service_ports`
 
 Read-Only:
 
-- `address` (String) The local address this service is bound to
-- `package` (String) The RPM/DEB package that the program is part of
-- `port` (Number) The local port this service is bound to
-- `process_name` (String) The process name (including the full path)
-- `protocol` (Number) Transport protocol for open service ports
-- `user` (String) The user account that the process is running under
-- `win_service_name` (String) Name of the Windows service
+- `address` (String)
+- `package` (String)
+- `port` (Number)
+- `process_name` (String)
+- `protocol` (Number)
+- `user` (String)
+- `win_service_name` (String)
+
+
 
 <a id="nestedatt--vulnerabilities_summary"></a>
 ### Nested Schema for `vulnerabilities_summary`
@@ -246,25 +248,55 @@ Read-Only:
 - `vulnerable_port_exposure` (Number)
 - `vulnerable_port_wide_exposure` (List of Object) (see [below for nested schema](#nestedobjatt--vulnerabilities_summary--vulnerable_port_wide_exposure))
 
-
-
 <a id="nestedobjatt--vulnerabilities_summary--vulnerable_port_wide_exposure"></a>
 ### Nested Schema for `vulnerabilities_summary.vulnerable_port_wide_exposure`
 
 Read-Only:
 
-- `any` (Boolean) The boolean value representing if at least one port is exposed to internet (any rule) on the workload
-- `ip_list` (Boolean) The boolean value representing if at least one port is exposed to ip_list(s) on the workload
+- `any` (Boolean)
+- `ip_list` (Boolean)
 
 ## Import
 
 Import is supported using the following syntax:
 ```shell
-# Managed workload objects cannot be created through Terraform, and must
-# instead be imported from the Illumio PCE. The imported ID must
-# match the HREF of the remote object.
+# Managed workloads cannot be created by Terraform: they exist because a VEN
+# paired with the PCE. Terraform adopts them by import.
+#
+# Importing by HREF means looking up a PCE-generated UUID for every host, so
+# this provider also accepts the identifiers you already know.
 
-terraform import illumio-core_managed_workload.example "/orgs/1/workloads/aabbccdd-eeff-0011-2233-445566778899"
+# By hostname (tried first), then name, then external_data_reference:
+terraform import illumio-core_managed_workload.web "web-01.example.com"
+
+# Pin the attribute explicitly when a bare value would be ambiguous:
+terraform import illumio-core_managed_workload.web "hostname=web-01.example.com"
+terraform import illumio-core_managed_workload.web "name=WEB-01"
+terraform import illumio-core_managed_workload.web "ip_address=10.0.0.5"
+terraform import illumio-core_managed_workload.web "external_data_reference=cmdb-1234"
+
+# The HREF still works, and is the way to resolve an ambiguous match:
+terraform import illumio-core_managed_workload.web "/orgs/1/workloads/8a2b1c3d-0000-4000-8000-000000000000"
+
+# Adopting a fleet. Terraform 1.5+ import blocks take the same identifiers, so a
+# whole estate can be adopted from a list of hostnames without looking up a
+# single HREF:
+#
+#   variable "managed_hostnames" {
+#     type    = set(string)
+#     default = ["web-01.example.com", "web-02.example.com"]
+#   }
+#
+#   import {
+#     for_each = var.managed_hostnames
+#     to       = illumio-core_managed_workload.fleet[each.value]
+#     id       = "hostname=${each.value}"
+#   }
+#
+#   resource "illumio-core_managed_workload" "fleet" {
+#     for_each = var.managed_hostnames
+#     labels { href = var.env_label_href }
+#   }
 ```
 
 ## Limitations

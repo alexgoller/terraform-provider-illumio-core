@@ -378,6 +378,90 @@ policy in draft after a successful apply.
 This replaces `terraform apply && provision`. Set `write_href_file = false` on
 the provider so `hrefs.csv` is no longer written.
 
+## Workloads
+
+Two upstream behaviours are changed here, both around managed workloads.
+
+### Destroying a managed workload no longer uninstalls the agent
+
+Upstream, `terraform destroy` on an `illumio-core_managed_workload` called
+`PUT /orgs/{org}/vens/unpair` with `firewall_restore: "default"` — **uninstalling
+the VEN from the host**.
+
+That is a surprising amount of damage for removing a resource from a
+configuration, and it is asymmetric: managed workloads cannot be created by
+Terraform. They exist because a VEN paired with the PCE, and the provider's
+create function refuses outright. Terraform adopts them by import — so it was
+uninstalling an agent it never installed.
+
+In this fork, destroying a managed workload **relinquishes management**: the
+resource leaves Terraform state, the VEN stays paired, and a warning says so.
+
+To decommission the agent as part of a destroy, opt in explicitly:
+
+```hcl
+resource "illumio-core_managed_workload" "web" {
+  unpair_on_destroy = true
+}
+```
+
+A related bug is fixed at the same time: the unpair call's result was discarded,
+so a *failed* unpair reported success.
+
+### Importing workloads without HREFs
+
+A managed workload's HREF contains a PCE-generated UUID, so importing by HREF
+means looking up a UUID in the PCE UI for every host. This fork accepts the
+identifiers you already know:
+
+```bash
+terraform import illumio-core_managed_workload.web "web-01.example.com"
+terraform import illumio-core_managed_workload.web "hostname=web-01.example.com"
+terraform import illumio-core_managed_workload.web "name=WEB-01"
+terraform import illumio-core_managed_workload.web "ip_address=10.0.0.5"
+terraform import illumio-core_managed_workload.web "external_data_reference=cmdb-1234"
+```
+
+A bare value is matched against `hostname`, then `name`, then
+`external_data_reference`. HREFs still work unchanged.
+
+Matches must be **exact and unique**. The PCE matches these query parameters
+partially, so a substring hit is filtered out rather than importing the wrong
+host, and an ambiguous value fails with the candidate HREFs listed:
+
+```
+Error: 2 workloads have name="web", so the import is ambiguous.
+Import by HREF instead, one of: /orgs/1/workloads/..., /orgs/1/workloads/...
+```
+
+This applies to `illumio-core_unmanaged_workload` too.
+
+#### Adopting a fleet
+
+Terraform 1.5+ `import` blocks take the same identifiers, so an estate can be
+adopted from a list of hostnames with no HREF lookups at all:
+
+```hcl
+variable "managed_hostnames" {
+  type    = set(string)
+  default = ["web-01.example.com", "web-02.example.com"]
+}
+
+import {
+  for_each = var.managed_hostnames
+  to       = illumio-core_managed_workload.fleet[each.value]
+  id       = "hostname=${each.value}"
+}
+
+resource "illumio-core_managed_workload" "fleet" {
+  for_each = var.managed_hostnames
+
+  labels {
+    href = var.env_label_href
+  }
+}
+```
+
 ## Known limitations of the fork
 
 - **Deny rules depend on an undocumented PCE feature.** The

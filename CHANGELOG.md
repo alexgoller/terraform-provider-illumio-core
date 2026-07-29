@@ -22,8 +22,17 @@ NOTES:
 * `illumio-core_provisioning` requires a `lifecycle.replace_triggered_by` block referencing the policy resources to provision in the same apply. A policy object's HREF does not change when its contents change, so without it a contents-only edit is not provisioned until the following apply.
 * Destroying `illumio-core_provisioning` makes no API call and does not revert policy. `terraform destroy` does not provision deletions.
 
+BREAKING CHANGES:
+
+* Destroying an `illumio-core_managed_workload` no longer unpairs the VEN. Previously `terraform destroy` called `PUT /orgs/{org}/vens/unpair` with `firewall_restore: "default"`, uninstalling the agent from the host — despite Terraform never having created the workload, since managed workloads exist because a VEN paired with the PCE and the create function refuses outright. Destroying now relinquishes management: the resource leaves state, the VEN stays paired, and a warning says so. Set `unpair_on_destroy = true` to opt back in to the old behaviour.
+
+ENHANCEMENTS:
+
+* Workloads can be imported without an HREF. `terraform import illumio-core_managed_workload.web "web-01.example.com"` matches on `hostname`, then `name`, then `external_data_reference`; `hostname=`, `name=`, `ip_address=` and `external_data_reference=` pin a specific attribute. Matches must be exact and unique — the PCE matches these parameters partially, so substring hits are filtered out and ambiguous values fail with the candidate HREFs listed. HREFs still work unchanged. Applies to `illumio-core_unmanaged_workload` too, and to Terraform 1.5+ `import` blocks, which makes adopting a fleet from a list of hostnames practical.
+
 BUG FIXES:
 
+* Fix a failed VEN unpair reporting success when destroying an `illumio-core_managed_workload` with `unpair_on_destroy = true`. The diagnostics returned by the unpair call were discarded.
 * Fix `terraform plan` hard-erroring with `not-found: <href>` when a managed object is deleted outside Terraform. Every resource returned the raw client error from its read, so the configuration became wedged — plan, apply and destroy all failed until the user ran `terraform state rm` by hand. Reads now remove the object from state so the next plan recreates it, as Terraform expects. Affects all resources that read from the PCE; previously only labels, label types and unmanaged workloads recovered, and only because Illumio soft-deletes those.
 * Fix `go build ./...` failing on a fresh clone. The `**/terraform.*` pattern in `.gitignore` matched `vendor/**/terraform.go`, so the vendored files defining `hc-install`'s `simpleVersionRe` and `terraform-exec`'s `Terraform` type were never committed.
 * `provision` no longer reports success when it fails to provision a policy object. Previously an unrecognised resource type was dropped by a `switch` with no `default` case, an href missing from the pending set was only logged as a warning, and the process exited 0 in both cases.

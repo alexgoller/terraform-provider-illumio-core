@@ -21,33 +21,8 @@ fork therefore means telling Terraform explicitly where to find it.
 | `provision` binary correctness fixes | Upstream could drop a policy change and still exit 0 |
 | Build fix | Upstream `main` does not compile from a fresh clone |
 
-### The build fix
-
-Upstream's `.gitignore` contains `**/terraform.*`, which matches
-`vendor/**/terraform.go`. Two vendored files were therefore never committed, and
-`go build ./...` fails on a clean checkout:
-
-```
-hc-install/product/consul.go:18:60: undefined: simpleVersionRe
-terraform-exec/tfexec/apply.go:109:11: undefined: Terraform
-```
-
-This fork narrows the pattern and restores the files. This affects anyone
-building from source, not users of a released binary.
-
-### The `provision` binary fixes
-
-Upstream's binary had four stacked silent-failure paths: a hardcoded list of six
-provisionable resource types, a warning-and-skip for unknown hrefs, a `switch`
-with no `default` case in the change-subset model, and no non-zero exit on any
-of them. A new provisionable object type would be recorded, warned about once,
-dropped, and reported as success while the policy stayed in draft.
-
-This fork derives the resource type from the href instead of a hardcoded list,
-fails loudly, and returns a non-zero exit status. It also no longer panics on a
-malformed `hrefs.csv` line, and no longer treats a missing `hrefs.csv` as fatal
-— so `terraform apply && provision` stops failing on applies that changed no
-policy objects.
+Each of these is described in detail in
+[Differences from the upstream provider](differences-from-upstream.html).
 
 ## Installing the fork
 
@@ -308,196 +283,19 @@ Then reinstate the upstream provider and re-run `terraform init -upgrade`.
 
 ## Using the new features
 
-### Deny rules
+Each has its own guide:
 
-Deny rules block traffic. Consumers are the sources that initiate the
-connection; providers are the destinations.
+- **[Deny rules](deny-rules.html)** — `illumio-core_deny_rule`, override-deny
+  rules, the narrower actor set, and why ICMP needs a service reference.
+- **[Policy provisioning](policy-provisioning.html)** —
+  `illumio-core_provisioning` in place of `terraform apply && provision`, and
+  why `replace_triggered_by` is required.
+- **[Managed workloads](managed-workloads.html)** — adopting VEN-paired
+  workloads by hostname or import, and what destroying one does.
 
-```hcl
-resource "illumio-core_deny_rule" "block_ssh" {
-  rule_set_href = illumio-core_rule_set.app.href
-  enabled       = true
-  override      = false
-
-  providers {
-    label {
-      href = illumio-core_label.internal.href
-    }
-  }
-
-  consumers {
-    ip_list {
-      href = illumio-core_ip_list.external.href
-    }
-  }
-
-  ingress_services {
-    proto = "6"
-    port  = "22"
-  }
-}
-```
-
-Set `override = true` for an override-deny rule. It is the same object at the
-same endpoint — the evaluation order is `override-deny > allow > deny`, and an
-override-deny rule still *blocks* traffic; it does not permit traffic that would
-otherwise be denied.
-
-Two constraints differ from security rules:
-
-- Valid actors are `actors = "ams"`, `label`, `label_group`, `ip_list` and
-  `workload`. `virtual_service` and `virtual_server` are **not** valid and are
-  rejected at plan time.
-- ICMP has no inline form. `proto` accepts only `6` (TCP) and `17` (UDP);
-  reference an ICMP service by `href` instead.
-
-### Provisioning without the binary
-
-```hcl
-resource "illumio-core_provisioning" "policy" {
-  hrefs = [
-    illumio-core_rule_set.app.href,
-    illumio-core_ip_list.external.href,
-  ]
-
-  # Provision in the same apply that changes the policy.
-  lifecycle {
-    replace_triggered_by = [
-      illumio-core_rule_set.app,
-      illumio-core_ip_list.external,
-    ]
-  }
-}
-```
-
-The `replace_triggered_by` block is **not optional in practice**. A policy
-object's HREF does not change when its contents change, so without it a
-contents-only edit is not provisioned until the *following* apply — leaving
-policy in draft after a successful apply.
-
-This replaces `terraform apply && provision`. Set `write_href_file = false` on
-the provider so `hrefs.csv` is no longer written.
-
-## Workloads
-
-Two upstream behaviours are changed here, both around managed workloads.
-
-### Destroying a managed workload no longer uninstalls the agent
-
-Upstream, `terraform destroy` on an `illumio-core_managed_workload` called
-`PUT /orgs/{org}/vens/unpair` with `firewall_restore: "default"` — **uninstalling
-the VEN from the host**.
-
-That is a surprising amount of damage for removing a resource from a
-configuration, and it is asymmetric: managed workloads cannot be created by
-Terraform. They exist because a VEN paired with the PCE, and the provider's
-create function refuses outright. Terraform adopts them by import — so it was
-uninstalling an agent it never installed.
-
-In this fork, destroying a managed workload **relinquishes management**: the
-resource leaves Terraform state, the VEN stays paired, and a warning says so.
-
-To decommission the agent as part of a destroy, opt in explicitly:
-
-```hcl
-resource "illumio-core_managed_workload" "web" {
-  unpair_on_destroy = true
-}
-```
-
-A related bug is fixed at the same time: the unpair call's result was discarded,
-so a *failed* unpair reported success.
-
-### Importing workloads without HREFs
-
-A managed workload's HREF contains a PCE-generated UUID, so importing by HREF
-means looking up a UUID in the PCE UI for every host. This fork accepts the
-identifiers you already know:
-
-```bash
-terraform import illumio-core_managed_workload.web "web-01.example.com"
-terraform import illumio-core_managed_workload.web "hostname=web-01.example.com"
-terraform import illumio-core_managed_workload.web "name=WEB-01"
-terraform import illumio-core_managed_workload.web "ip_address=10.0.0.5"
-terraform import illumio-core_managed_workload.web "external_data_reference=cmdb-1234"
-```
-
-A bare value is matched against `hostname`, then `name`, then
-`external_data_reference`. HREFs still work unchanged.
-
-Matches must be **exact and unique**. The PCE matches these query parameters
-partially, so a substring hit is filtered out rather than importing the wrong
-host, and an ambiguous value fails with the candidate HREFs listed:
-
-```
-Error: 2 workloads have name="web", so the import is ambiguous.
-Import by HREF instead, one of: /orgs/1/workloads/..., /orgs/1/workloads/...
-```
-
-This applies to `illumio-core_unmanaged_workload` too.
-
-#### Adopting without importing
-
-Setting `hostname` on a managed workload adopts the existing workload with that
-hostname on `terraform apply` — no import step at all. `illumio-core_firewall_settings`
-already behaves this way, resolving the remote object on create rather than
-creating one.
-
-```hcl
-resource "illumio-core_managed_workload" "fleet" {
-  for_each = toset(var.managed_hostnames)
-
-  hostname = each.value
-
-  labels {
-    href = var.env_label_href
-  }
-}
-```
-
-`terraform apply` finds each workload and starts managing it. `terraform destroy`
-relinquishes them again, leaving the VENs paired.
-
-`hostname` is `ForceNew`: changing it means adopting a *different* workload, not
-renaming one. If the hostname has no workload — usually because the VEN has not
-paired yet — the apply fails with:
-
-```
-Error: No managed workload found to adopt
-No workload has hostname "web-01.example.com". A managed workload only appears
-once its VEN has paired with the PCE, so pair the host first, or correct the
-hostname.
-```
-
-Both routes remain available. Use adoption for fleets you can name, and import
-for one-offs, for workloads you would rather match on `name` or
-`external_data_reference`, or when you already have the HREF.
-
-#### Adopting a fleet
-
-Terraform 1.5+ `import` blocks take the same identifiers, so an estate can be
-adopted from a list of hostnames with no HREF lookups at all:
-
-```hcl
-variable "managed_hostnames" {
-  type    = set(string)
-  default = ["web-01.example.com", "web-02.example.com"]
-}
-
-import {
-  for_each = var.managed_hostnames
-  to       = illumio-core_managed_workload.fleet[each.value]
-  id       = "hostname=${each.value}"
-}
-
-resource "illumio-core_managed_workload" "fleet" {
-  for_each = var.managed_hostnames
-
-  labels {
-    href = var.env_label_href
-  }
-}
-```
+For a complete list of how this fork differs from upstream, including the
+correctness fixes, see
+**[Differences from the upstream provider](differences-from-upstream.html)**.
 
 ## Known limitations of the fork
 

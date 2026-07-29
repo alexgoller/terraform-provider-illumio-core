@@ -135,6 +135,18 @@ terraform {
 a mirror with a team over HTTPS and migrating to and from upstream, are in the
 [Using this fork](guides/using-this-fork.html) guide.
 
+## Documentation
+
+| Guide | Covers |
+|---|---|
+| [Using this fork](guides/using-this-fork.html) | Installing it instead of the upstream provider, distributing it without a registry, migrating both ways |
+| [Deny rules](guides/deny-rules.html) | `illumio-core_deny_rule`, override-deny, the narrower actor set, ICMP |
+| [Policy provisioning](guides/policy-provisioning.html) | `illumio-core_provisioning` in place of the `provision` binary |
+| [Managed workloads](guides/managed-workloads.html) | Adopting VEN-paired workloads, import by hostname, destroy semantics |
+| [Differences from upstream](guides/differences-from-upstream.html) | Every behavioural difference, and why |
+
+Per-resource reference documentation is in the sidebar.
+
 ## Known limitations
 
 - **Deny rules depend on an undocumented PCE feature.** The

@@ -49,7 +49,6 @@ mirror/
 # documentation site: content synced from docs/ at build time
 website/resources/
 website/data-sources/
-website/guides/provider-configuration.md
-website/guides/using-this-fork.md
+website/guides/
 _site/
 .jekyll-cache/

@@ -28,6 +28,7 @@ BREAKING CHANGES:
 
 ENHANCEMENTS:
 
+* `illumio-core_managed_workload` can adopt an existing workload on create. Setting `hostname` makes `terraform apply` find the workload with that hostname and start managing it, with no import step — so a fleet can be managed with `for_each` over a list of hostnames. `hostname` is `ForceNew`, since changing it adopts a different workload. Import remains available and unchanged; `illumio-core_firewall_settings` already used this adopt-on-create pattern.
 * Workloads can be imported without an HREF. `terraform import illumio-core_managed_workload.web "web-01.example.com"` matches on `hostname`, then `name`, then `external_data_reference`; `hostname=`, `name=`, `ip_address=` and `external_data_reference=` pin a specific attribute. Matches must be exact and unique — the PCE matches these parameters partially, so substring hits are filtered out and ambiguous values fail with the candidate HREFs listed. HREFs still work unchanged. Applies to `illumio-core_unmanaged_workload` too, and to Terraform 1.5+ `import` blocks, which makes adopting a fleet from a list of hostnames practical.
 
 BUG FIXES:

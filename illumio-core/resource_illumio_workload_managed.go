@@ -5,6 +5,7 @@ package illumiocore
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -45,9 +46,14 @@ func resourceIllumioManagedWorkload() *schema.Resource {
 					"the host's agent",
 			},
 			"hostname": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "The hostname of this workload. Set by the VEN.",
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+				ForceNew: true,
+				Description: "The hostname of this workload, set by the VEN. Managed workloads cannot be created, " +
+					"so setting this adopts the existing workload with that hostname instead: Terraform finds it and " +
+					"begins managing it, with no import step. Changing it adopts a different workload. Leave unset " +
+					"and import the resource instead if you prefer",
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -572,15 +578,44 @@ func resourceIllumioManagedWorkload() *schema.Resource {
 }
 
 func resourceIllumioManagedWorkloadCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
+	pConfig, _ := m.(Config)
 
-	diags = append(diags, diag.Diagnostic{
-		Severity: diag.Error,
-		Detail:   "[illumio-core_managed_workload] Managed workloads cannot be created through Terraform.",
-		Summary:  "Please import managed workload objects after the VEN is paired.",
-	})
+	// A managed workload cannot be created: it exists because a VEN paired with
+	// the PCE. What Terraform can do is adopt one that already exists and start
+	// managing its labels and metadata, which is the same thing `terraform
+	// import` achieves without needing a separate step for every host.
+	//
+	// illumio-core_firewall_settings already works this way, resolving the
+	// remote object on create rather than POSTing.
+	hostname := strings.TrimSpace(d.Get("hostname").(string))
+	if hostname == "" {
+		return diag.Diagnostics{{
+			Severity: diag.Error,
+			Summary:  "Managed workloads cannot be created by Terraform",
+			Detail: "A managed workload exists because a VEN paired with the PCE. Set hostname to adopt the " +
+				"existing workload with that hostname, or import the resource by HREF, hostname, name or " +
+				"external_data_reference.",
+		}}
+	}
 
-	return diags
+	href, err := findWorkloadHref(pConfig, "hostname", hostname)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	if href == "" {
+		return diag.Diagnostics{{
+			Severity: diag.Error,
+			Summary:  "No managed workload found to adopt",
+			Detail: fmt.Sprintf(
+				"No workload has hostname %q. A managed workload only appears once its VEN has paired with the "+
+					"PCE, so pair the host first, or correct the hostname.", hostname),
+		}}
+	}
+
+	d.SetId(href)
+
+	// Apply the managed attributes to the workload that was just adopted.
+	return resourceIllumioManagedWorkloadUpdate(ctx, d, m)
 }
 
 func resourceIllumioManagedWorkloadUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

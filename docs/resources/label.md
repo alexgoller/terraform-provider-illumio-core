@@ -34,17 +34,20 @@ resource "illumio-core_label" "example" {
 
 ### Read-Only
 
+- `adopted` (Boolean) Whether Terraform adopted a pre-existing label rather than creating it. Adopted objects are left in place when the resource is destroyed, since Terraform did not create them
 - `created_at` (String) Timestamp when this label was first created
 - `created_by` (Map of String) User who created this label
 - `deleted` (Boolean) Flag to indicate whether deleted or not
 - `href` (String) URI of this label
-- `id` (String) The ID of this resource
+- `id` (String) The ID of this resource.
 - `updated_at` (String) Timestamp when this label was last updated
 - `updated_by` (Map of String) User who last updated this label
 
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Label objects can be imported from the Illumio PCE.

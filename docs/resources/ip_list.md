@@ -52,12 +52,13 @@ resource "illumio-core_ip_list" "example" {
 
 ### Read-Only
 
+- `adopted` (Boolean) Whether Terraform adopted a pre-existing IP list rather than creating it. Adopted objects are left in place when the resource is destroyed, since Terraform did not create them
 - `created_at` (String) Timestamp when this IP List was first created
 - `created_by` (Map of String) User who created this IP List
 - `deleted_at` (String) Timestamp when this IP List was last deleted
 - `deleted_by` (Map of String) User who last deleted this IP List
 - `href` (String) URI of this IP List
-- `id` (String) The ID of this resource
+- `id` (String) The ID of this resource.
 - `updated_at` (String) Timestamp when this IP List was last updated
 - `updated_by` (Map of String) User who last updated this IP List
 
@@ -89,6 +90,8 @@ Optional:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # IP List objects can be imported from the Illumio PCE.

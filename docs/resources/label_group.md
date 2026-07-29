@@ -65,12 +65,13 @@ resource "illumio-core_label_group" "example" {
 
 ### Read-Only
 
+- `adopted` (Boolean) Whether Terraform adopted a pre-existing label group rather than creating it. Adopted objects are left in place when the resource is destroyed, since Terraform did not create them
 - `created_at` (String) Timestamp when this label group was first created
 - `created_by` (Map of String) User who created this label group
 - `deleted_at` (String) Timestamp when this label group was last deleted
 - `deleted_by` (Map of String) User who deleted this label group
 - `href` (String) URI of this label group
-- `id` (String) The ID of this resource
+- `id` (String) The ID of this resource.
 - `update_type` (String) Type of update
 - `updated_at` (String) Timestamp when this label group was last updated
 - `updated_by` (Map of String) User who last updated this label group
@@ -102,6 +103,8 @@ Read-Only:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Label Group objects can be imported from the Illumio PCE.

@@ -4,12 +4,14 @@ package illumiocore
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"github.com/illumio/terraform-provider-illumio-core/client"
 	"github.com/illumio/terraform-provider-illumio-core/models"
 )
 
@@ -27,6 +29,7 @@ func resourceIllumioRuleSet() *schema.Resource {
 				Computed:    true,
 				Description: "URI of Ruleset",
 			},
+			"adopted": adoptedSchema("rule set"),
 			"update_type": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -285,8 +288,18 @@ func resourceIllumioRuleSetCreate(ctx context.Context, d *schema.ResourceData, m
 
 	_, data, err := illumioClient.Create(fmt.Sprintf("/orgs/%d/sec_policy/draft/rule_sets", orgID), ruleSet)
 	if err != nil {
+		// The PCE rejects a duplicate with a 406 instead of returning the
+		// existing object, so adopt it rather than failing the apply.
+		if errors.Is(err, client.ErrConflict) {
+			if adoptDiags := adoptOnConflict(pConfig, d, fmt.Sprintf("/orgs/%d/sec_policy/draft/rule_sets", orgID), map[string]string{"name": d.Get("name").(string)}, "rule set"); adoptDiags.HasError() {
+				return adoptDiags
+			}
+			pConfig.StoreHref("rule_sets", d.Id())
+			return resourceIllumioRuleSetUpdate(ctx, d, m)
+		}
 		return diag.Errorf(err.Error())
 	}
+	d.Set(adoptedKey, false)
 
 	pConfig.StoreHref("rule_sets", data.S("href").Data().(string))
 
@@ -559,6 +572,10 @@ func resourceIllumioRuleSetUpdate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceIllumioRuleSetDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	if diags, adopted := deleteUnlessAdopted(d, "rule set"); adopted {
+		return diags
+	}
+
 	var diagnostics diag.Diagnostics
 	pConfig, _ := m.(Config)
 	illumioClient := pConfig.IllumioClient

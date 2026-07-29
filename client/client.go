@@ -177,7 +177,14 @@ func (c *V2) Do(req *http.Request) (*http.Response, error) {
 
 			// If 406 but the body *doesn't* contain "database lock",
 			// treat it as a standard, unretryable 406 error.
-			return nil, fmt.Errorf("406 Not Acceptable: Client configuration error. Message: %s", bodyString)
+			// Typed, so a caller can adopt an existing object with
+			// errors.Is(err, ErrConflict). This 406 path bypasses
+			// checkForErrors, so it has to construct the error itself. The
+			// message is unchanged.
+			return nil, &NotAcceptableError{
+				Detail:  bodyString,
+				Message: fmt.Sprintf("406 Not Acceptable: Client configuration error. Message: %s", bodyString),
+			}
 
 			// --- END 406 CONDITIONAL RETRY LOGIC ---
 		} else {
@@ -259,7 +266,9 @@ func checkForErrors(resp *http.Response) error {
 			return fmt.Errorf("not-acceptable: %v", err)
 		}
 
-		return fmt.Errorf("not-acceptable: %v", formatNotAcceptableErrors(container))
+		// Typed so callers can adopt an existing object with
+		// errors.Is(err, ErrConflict). The message is unchanged.
+		return &NotAcceptableError{Detail: formatNotAcceptableErrors(container)}
 
 	// server side errors
 	case http.StatusInternalServerError, http.StatusServiceUnavailable, http.StatusBadGateway:

@@ -24,6 +24,7 @@ called out below.
 | Object deleted outside Terraform | `terraform plan` hard-errors | Removed from state, recreated |
 | Destroying a managed workload | Unpairs the VEN, uninstalling the agent | Relinquishes management; opt in with `unpair_on_destroy` |
 | Adopting a managed workload | `terraform import` by HREF | Also by hostname/name, or `hostname` on the resource |
+| Declaring an object that already exists | Apply fails with a 406 | Adopted; destroy leaves it in place |
 | `provision` binary | Could drop a change and exit 0 | Fails loudly, non-zero exit |
 | `go build ./...` | Fails on a fresh clone | Builds |
 | Distribution | Terraform Registry | Provider mirror (`scripts/build-mirror.sh`) |
@@ -98,6 +99,28 @@ enforcement boundaries — hit the error.
 
 Any error other than a 404 is still surfaced, so a transient outage cannot
 silently drop real infrastructure from state.
+
+### Declaring an object that already exists
+
+Upstream, declaring a label, IP list, label group or rule set that already
+exists on the PCE failed the apply — the PCE rejects the duplicate with a 406
+rather than returning the existing object:
+
+```
+[{"token":"label_key_and_value_must_be_unique","message":"Label key and value must be unique"}]
+```
+
+Adopting it meant `terraform import` with a numeric HREF, per object.
+
+This fork adopts it instead: Terraform looks the object up by the fields that
+make it unique, manages it, and records `adopted = true`. Destroying an adopted
+object removes it from state but **leaves it in the PCE**, because Terraform did
+not create it. Objects Terraform did create are still deleted normally.
+
+`illumio-core_service` is deliberately excluded: the PCE permits duplicate
+service names, so there is no unique key to adopt by.
+
+See [Adopting existing objects](adopting-existing-objects.html).
 
 ### Adopting managed workloads
 

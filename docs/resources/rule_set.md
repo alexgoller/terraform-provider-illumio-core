@@ -44,7 +44,7 @@ resource "illumio-core_rule_set" "example" {
 ### Required
 
 - `name` (String) Name of Ruleset. Valid name should be between 1 to 255 characters
-- `scopes` (Block List, Min: 1) Ruleset scopes (see [below for nested schema](#nestedblock--scopes))
+- `scopes` (Block List, Min: 1) Ruleset label scopes (see [below for nested schema](#nestedblock--scopes))
 
 ### Optional
 
@@ -56,12 +56,13 @@ resource "illumio-core_rule_set" "example" {
 
 ### Read-Only
 
+- `adopted` (Boolean) Whether Terraform adopted a pre-existing rule set rather than creating it. Adopted objects are left in place when the resource is destroyed, since Terraform did not create them
 - `created_at` (String) Timestamp when this ruleset was first created
 - `created_by` (Map of String) User who created this ruleset
 - `deleted_at` (String) Timestamp when this ruleset was deleted
 - `deleted_by` (Map of String) User who deleted this ruleset
 - `href` (String) URI of Ruleset
-- `id` (String) The ID of this resource
+- `id` (String) The ID of this resource.
 - `update_type` (String) Type of update
 - `updated_at` (String) Timestamp when this ruleset was last updated
 - `updated_by` (Map of String) User who last updated this ruleset
@@ -179,6 +180,8 @@ Required:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Rule Set objects can be imported from the Illumio PCE.

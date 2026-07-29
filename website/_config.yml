@@ -1,0 +1,25 @@
+title: Illumio Core Terraform Provider
+description: >-
+  A fork of terraform-provider-illumio-core adding deny rules, Terraform-native
+  policy provisioning, and reconcile fixes.
+url: ""
+baseurl: ""
+
+# Content under docs/ is synced in by scripts/build-site.sh at build time, so
+# docs/ stays the single source of truth for both this site and the Terraform
+# Registry.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge

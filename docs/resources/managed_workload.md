@@ -72,6 +72,7 @@ resource "illumio-core_managed_workload" "example" {
 - `enforcement_mode` (String) Enforcement mode of workload(s) to return. Allowed values for enforcement modes are "idle","visibility_only","full", and "selective". Default value: "visibility_only"
 - `external_data_reference` (String) A unique identifier within the external data source
 - `external_data_set` (String) The data source from which a resource originates
+- `hostname` (String) The hostname of this workload, set by the VEN. Managed workloads cannot be created, so setting this adopts the existing workload with that hostname instead: Terraform finds it and begins managing it, with no import step. Changing it adopts a different workload. Leave unset and import the resource instead if you prefer
 - `ignored_interface_names` (List of String) Workload interface names to ignore (e.g. `eth0`). Ignored interfaces will not be included in policy configuration provided by the PCE.
 - `labels` (Block Set) Assigned labels for workload (see [below for nested schema](#nestedblock--labels))
 - `name` (String) Name of the Workload. The name should be up to 255 characters
@@ -93,7 +94,6 @@ resource "illumio-core_managed_workload" "example" {
 - `detected_vulnerabilities` (List of Object) Detected Vulnerabilities for Workload (see [below for nested schema](#nestedatt--detected_vulnerabilities))
 - `distinguished_name` (String) X.509 Subject distinguished name. The name should be up to 255 characters
 - `firewall_coexistence` (List of Object) Firewall coexistence mode for Workload (see [below for nested schema](#nestedatt--firewall_coexistence))
-- `hostname` (String) The hostname of this workload. Set by the VEN.
 - `href` (String) URI of the Workload
 - `id` (String) The ID of this resource.
 - `ike_authentication_certificate` (Map of String) IKE authentication certificate for certificate-based Secure Connect and Machine Auth

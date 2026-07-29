@@ -104,3 +104,47 @@ func TestManagedWorkloadUnpairOnDestroyDefaultsFalse(t *testing.T) {
 		t.Error("unpair_on_destroy must be optional")
 	}
 }
+
+// Adopt-on-create must not weaken the import path: both remain available.
+func TestManagedWorkloadHostnameIsAdoptionSelector(t *testing.T) {
+	s := resourceIllumioManagedWorkload().Schema["hostname"]
+	if s == nil {
+		t.Fatal("hostname is not defined")
+	}
+	if !s.Optional {
+		t.Error("hostname must be Optional so it can be used as an adoption selector")
+	}
+	if !s.Computed {
+		t.Error("hostname must stay Computed so the PCE value is read back when unset")
+	}
+	// Pointing at a different hostname means adopting a different workload, so
+	// it cannot be an in-place update.
+	if !s.ForceNew {
+		t.Error("hostname must be ForceNew: changing it adopts a different workload")
+	}
+}
+
+func TestManagedWorkloadStillImportable(t *testing.T) {
+	r := resourceIllumioManagedWorkload()
+	if r.Importer == nil || r.Importer.StateContext == nil {
+		t.Fatal("managed workload lost its importer")
+	}
+}
+
+// Creating without a hostname must explain both routes rather than just failing.
+func TestManagedWorkloadCreateWithoutHostnameExplainsBothRoutes(t *testing.T) {
+	r := resourceIllumioManagedWorkload()
+	d := r.TestResourceData()
+
+	diags := r.CreateContext(context.Background(), d, Config{})
+
+	if !diags.HasError() {
+		t.Fatal("expected an error when hostname is unset")
+	}
+	detail := diags[0].Detail
+	for _, want := range []string{"hostname", "import"} {
+		if !strings.Contains(detail, want) {
+			t.Errorf("error detail does not mention %q: %s", want, detail)
+		}
+	}
+}

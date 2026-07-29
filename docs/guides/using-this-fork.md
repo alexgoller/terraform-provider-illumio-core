@@ -436,6 +436,43 @@ Import by HREF instead, one of: /orgs/1/workloads/..., /orgs/1/workloads/...
 
 This applies to `illumio-core_unmanaged_workload` too.
 
+#### Adopting without importing
+
+Setting `hostname` on a managed workload adopts the existing workload with that
+hostname on `terraform apply` — no import step at all. `illumio-core_firewall_settings`
+already behaves this way, resolving the remote object on create rather than
+creating one.
+
+```hcl
+resource "illumio-core_managed_workload" "fleet" {
+  for_each = toset(var.managed_hostnames)
+
+  hostname = each.value
+
+  labels {
+    href = var.env_label_href
+  }
+}
+```
+
+`terraform apply` finds each workload and starts managing it. `terraform destroy`
+relinquishes them again, leaving the VENs paired.
+
+`hostname` is `ForceNew`: changing it means adopting a *different* workload, not
+renaming one. If the hostname has no workload — usually because the VEN has not
+paired yet — the apply fails with:
+
+```
+Error: No managed workload found to adopt
+No workload has hostname "web-01.example.com". A managed workload only appears
+once its VEN has paired with the PCE, so pair the host first, or correct the
+hostname.
+```
+
+Both routes remain available. Use adoption for fleets you can name, and import
+for one-offs, for workloads you would rather match on `name` or
+`external_data_reference`, or when you already have the HREF.
+
 #### Adopting a fleet
 
 Terraform 1.5+ `import` blocks take the same identifiers, so an estate can be

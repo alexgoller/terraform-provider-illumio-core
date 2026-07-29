@@ -408,7 +408,7 @@ func extractResourceScopes(data *gabs.Container) []map[string]interface{} {
 }
 
 func isExactMatch(key string, d *schema.ResourceData, o *gabs.Container) bool {
-	return o.S(key).Data().(string) == d.Get(key).(string)
+	return gabsString(o, key) == d.Get(key).(string)
 }
 
 func paramsString(p map[string]string) string {
@@ -468,7 +468,7 @@ func extractRuleActors(data *gabs.Container) []map[string]interface{} {
 		actor := map[string]interface{}{}
 		for k, v := range actorArray.ChildrenMap() {
 			if k == "actors" {
-				actor[k] = v.Data().(string)
+				actor[k] = gabsString(v)
 			} else if k == "exclusion" {
 				actor[k] = PtrTo(v.Data().(bool))
 			} else if contains(validRuleActors, k) {

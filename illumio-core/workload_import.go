@@ -129,8 +129,8 @@ func findWorkloadHref(pConfig Config, key, value string) (string, error) {
 
 	var matches []string
 	for _, workload := range data.Children() {
-		if actual, ok := workload.S(key).Data().(string); ok && actual == value {
-			if href, ok := workload.S("href").Data().(string); ok {
+		if actual := gabsString(workload, key); actual == value {
+			if href := gabsString(workload, "href"); href != "" {
 				matches = append(matches, href)
 			}
 		}

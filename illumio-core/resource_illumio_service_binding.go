@@ -198,7 +198,13 @@ func resourceIllumioServiceBindingCreate(ctx context.Context, d *schema.Resource
 	}
 	status := data.Children()[0].S("status").Data()
 	if data.Children()[0].Exists("href") {
-		d.SetId(data.Children()[0].S("href").Data().(string))
+		// Children()[0] indexed without a length check, panicking when the
+		// PCE returned an empty array.
+		created := data.Children()
+		if len(created) == 0 {
+			return diag.Errorf("[illumio-core_service_binding] the PCE accepted the request but returned no service binding")
+		}
+		d.SetId(gabsString(created[0], "href"))
 	} else {
 		var diags diag.Diagnostics
 
@@ -226,7 +232,7 @@ func resourceIllumioServiceBindingRead(ctx context.Context, d *schema.ResourceDa
 		return handleReadError(err, d, "illumio-core_service_binding")
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	for _, key := range []string{
 		"href",
 		"bound_service",

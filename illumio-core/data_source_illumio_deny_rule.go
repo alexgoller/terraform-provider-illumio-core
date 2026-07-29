@@ -177,7 +177,7 @@ func datasourceIllumioDenyRuleRead(ctx context.Context, d *schema.ResourceData, 
 		return diag.FromErr(err)
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	for key, value := range denyRuleToMap(data) {
 		d.Set(key, value)
 	}
@@ -214,7 +214,7 @@ func denyRuleToMap(data *gabs.Container) map[string]interface{} {
 		}
 	}
 
-	if href, ok := data.S("href").Data().(string); ok {
+	if href := gabsString(data, "href"); href != "" {
 		denyRule["rule_set_href"] = denyRuleSetHrefFromHref(href)
 	}
 

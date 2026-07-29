@@ -128,7 +128,7 @@ func resourceIllumioTrafficCollectorSettingsCreate(ctx context.Context, d *schem
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 
 	return resourceIllumioTrafficCollectorSettingsRead(ctx, d, m)
 }
@@ -184,7 +184,7 @@ func setIllumioTrafficCollectorSettingState(d *schema.ResourceData, data *gabs.C
 
 	key := "transmission"
 	if data.Exists(key) {
-		switch data.S(key).Data().(string) {
+		switch gabsString(data, key) {
 		case "B":
 			d.Set(key, "broadcast")
 		case "M":

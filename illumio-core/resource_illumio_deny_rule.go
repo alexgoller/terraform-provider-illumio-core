@@ -272,7 +272,7 @@ func resourceIllumioDenyRuleCreate(ctx context.Context, d *schema.ResourceData, 
 
 	// Deny rules are provisioned as part of their containing rule set.
 	pConfig.StoreHref("rule_sets", ruleSetHref)
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 
 	return resourceIllumioDenyRuleRead(ctx, d, m)
 }
@@ -499,7 +499,7 @@ func extractDenyRuleActors(data *gabs.Container) []map[string]interface{} {
 		for key, value := range entry.ChildrenMap() {
 			switch {
 			case key == "actors":
-				if v, ok := value.Data().(string); ok {
+				if v := gabsString(value); v != "" {
 					actor[key] = v
 				}
 			case key == "exclusion":
@@ -536,7 +536,7 @@ func extractDenyRuleIngressServices(data *gabs.Container) []map[string]interface
 
 		for key, value := range entry.ChildrenMap() {
 			if key == "href" {
-				if v, ok := value.Data().(string); ok {
+				if v := gabsString(value); v != "" {
 					service[key] = v
 				}
 				continue

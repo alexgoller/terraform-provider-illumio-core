@@ -144,7 +144,7 @@ func resourceIllumioLabelCreate(ctx context.Context, d *schema.ResourceData, m i
 		return diag.FromErr(err)
 	}
 	d.Set(adoptedKey, false)
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 
 	return resourceIllumioLabelRead(ctx, d, m)
 }

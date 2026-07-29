@@ -301,9 +301,9 @@ func resourceIllumioRuleSetCreate(ctx context.Context, d *schema.ResourceData, m
 	}
 	d.Set(adoptedKey, false)
 
-	pConfig.StoreHref("rule_sets", data.S("href").Data().(string))
+	pConfig.StoreHref("rule_sets", gabsString(data, "href"))
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 
 	return resourceIllumioRuleSetRead(ctx, d, m)
 }

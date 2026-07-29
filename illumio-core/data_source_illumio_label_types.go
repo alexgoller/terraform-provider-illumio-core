@@ -219,7 +219,7 @@ func dataSourceIllumioLabelTypesRead(ctx context.Context, d *schema.ResourceData
 
 	params := resourceDataToMap(d, paramKeys)
 
-	_, data, err := illumioClient.Get(fmt.Sprintf("/orgs/%d/label_dimensions", orgID), &params)
+	_, data, err := illumioClient.AsyncGet(fmt.Sprintf("/orgs/%d/label_dimensions", orgID), &params)
 	if err != nil {
 		return diag.FromErr(err)
 	}

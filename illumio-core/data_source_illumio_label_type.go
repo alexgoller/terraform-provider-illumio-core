@@ -157,7 +157,7 @@ func dataSourceIllumioLabelTypeRead(ctx context.Context, d *schema.ResourceData,
 		return diag.FromErr(err)
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	for _, key := range []string{
 		"href",
 		"key",

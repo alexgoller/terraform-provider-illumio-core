@@ -25,6 +25,8 @@ called out below.
 | Destroying a managed workload | Unpairs the VEN, uninstalling the agent | Relinquishes management; opt in with `unpair_on_destroy` |
 | Adopting a managed workload | `terraform import` by HREF | Also by hostname/name, or `hostname` on the resource |
 | Declaring an object that already exists | Apply fails with a 406 | Adopted; destroy leaves it in place |
+| Collection data sources | Silently returned a capped subset | Use the async API; complete results |
+| A field missing from an API response | Panics the provider | Reads as empty |
 | `provision` binary | Could drop a change and exit 0 | Fails loudly, non-zero exit |
 | `go build ./...` | Fails on a fresh clone | Builds |
 | Distribution | Terraform Registry | Provider mirror (`scripts/build-mirror.sh`) |
@@ -172,6 +174,43 @@ applies that touched no policy objects.
 The binary and the provider now share one implementation of
 `ResourceTypeFromHref` and pending-policy collection, so they cannot disagree
 about what is provisionable.
+
+### Collection data sources silently returned a subset
+
+Plural data sources called the plain `Get`, which is capped by the PCE when
+`max_results` is not set. The PCE reports the real total in `X-Total-Count`, but
+the provider never read that header — there were no references to it anywhere —
+so a data source could hand Terraform a partial list with no warning, and the
+configuration would then act on incomplete data.
+
+The provider already contained `AsyncGet`, which switches to the PCE's
+`Prefer: respond-async` job API above 500 results, but **no data source used
+it**. All 22 collection data sources now do.
+
+The PCE has no `offset` or `page` parameter, so the async job API is the only
+way to retrieve a large collection.
+
+### A missing field crashed the provider
+
+67 places read API values as `container.S("field").Data().(string)`, which
+panics when the field is absent:
+
+```
+interface conversion: interface {} is nil, not string
+```
+
+A PCE version that omits an optional field, or a permission that hides one,
+therefore crashed Terraform mid-apply — which risks leaving state diverged from
+reality. All of them now read through a helper that returns an empty string
+instead. One site also indexed `Children()[0]` without a length check, panicking
+when the PCE returned an empty array.
+
+### Recording an href for provisioning leaked a file handle and could panic
+
+`Config.StoreHref` opened `hrefs.csv` and never closed it, leaking a descriptor
+on every policy mutation, and called `panic()` when the file could not be opened
+or written. A full disk or a read-only working directory therefore crashed the
+provider. It now closes the handle and logs an error.
 
 ### A failed VEN unpair reported success
 

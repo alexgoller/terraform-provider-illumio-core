@@ -4,7 +4,6 @@ package illumiocore
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -307,13 +306,21 @@ func (c Config) StoreHref(resourceType, href string) {
 	defer fileMutex.Unlock()
 
 	fp, err := os.OpenFile(c.HrefFilename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
-	if err == nil {
-		_, err = fp.WriteString(fmt.Sprintf("%s,%s\n", resourceType, href))
-		if err != nil {
-			panic(errors.New("couldn't write to file"))
-		}
-	} else {
-		panic(errors.New("couldn't create file"))
+	if err != nil {
+		// Previously a panic, which crashed the provider mid-apply on a
+		// full disk or a read-only directory. The href file only feeds the
+		// deprecated provision binary, so losing an entry must not take the
+		// whole run down - but it must be loud, because a missing entry means
+		// an object silently never gets provisioned.
+		log.Printf("[ERROR] could not open %s to record %s for provisioning: %v", c.HrefFilename, href, err)
+		return
+	}
+	// The handle was never closed, leaking a descriptor on every policy
+	// mutation.
+	defer fp.Close()
+
+	if _, err := fp.WriteString(fmt.Sprintf("%s,%s\n", resourceType, href)); err != nil {
+		log.Printf("[ERROR] could not record %s in %s for provisioning: %v", href, c.HrefFilename, err)
 	}
 }
 

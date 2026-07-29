@@ -296,7 +296,7 @@ func resourceIllumioContainerClusterWorkloadProfileCreate(ctx context.Context, d
 		return diag.FromErr(err)
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	return resourceIllumioContainerClusterWorkloadProfileRead(ctx, d, m)
 }
 
@@ -351,7 +351,7 @@ func resourceIllumioContainerClusterWorkloadProfileRead(ctx context.Context, d *
 	}
 
 	// extract the parent HREF and set it
-	href = data.S("href").Data().(string)
+	href = gabsString(data, "href")
 	d.Set("container_cluster_href", getParentHref(href))
 
 	d.SetId(href)

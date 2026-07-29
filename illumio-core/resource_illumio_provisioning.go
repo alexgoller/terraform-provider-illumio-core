@@ -286,7 +286,7 @@ func setProvisionedVersion(d *schema.ResourceData, illumioClient *client.V2, dat
 }
 
 func applyVersionAttrs(d *schema.ResourceData, data *gabs.Container) {
-	if href, ok := data.S("href").Data().(string); ok {
+	if href := gabsString(data, "href"); href != "" {
 		d.Set("version_href", href)
 	}
 	if version, ok := data.S("version").Data().(float64); ok {

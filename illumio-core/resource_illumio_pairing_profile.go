@@ -266,7 +266,7 @@ func resourceIllumioPairingProfileCreate(ctx context.Context, d *schema.Resource
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	return resourceIllumioPairingProfileRead(ctx, d, m)
 }
 
@@ -282,7 +282,7 @@ func resourceIllumioPairingProfileRead(ctx context.Context, d *schema.ResourceDa
 		return handleReadError(err, d, "illumio-core_pairing_profile")
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	for _, key := range []string{
 		"href",
 		"name",

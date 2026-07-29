@@ -46,7 +46,7 @@ func datasourceIllumioDenyRulesRead(ctx context.Context, d *schema.ResourceData,
 	// collection to query.
 	endpoint := fmt.Sprintf("%s/deny_rules", ruleSetHref)
 
-	_, data, err := illumioClient.Get(endpoint, nil)
+	_, data, err := illumioClient.AsyncGet(endpoint, nil)
 	if err != nil {
 		return diag.FromErr(err)
 	}

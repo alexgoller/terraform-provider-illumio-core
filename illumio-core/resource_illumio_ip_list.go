@@ -309,8 +309,8 @@ func resourceIllumioIPListCreate(ctx context.Context, d *schema.ResourceData, m 
 		return diag.FromErr(err)
 	}
 	d.Set(adoptedKey, false)
-	pConfig.StoreHref("ip_lists", data.S("href").Data().(string))
-	d.SetId(data.S("href").Data().(string))
+	pConfig.StoreHref("ip_lists", gabsString(data, "href"))
+	d.SetId(gabsString(data, "href"))
 
 	return append(diags, resourceIllumioIPListRead(ctx, d, m)...)
 }
@@ -327,7 +327,7 @@ func resourceIllumioIPListRead(ctx context.Context, d *schema.ResourceData, m in
 		return handleReadError(err, d, "illumio-core_ip_list")
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	for _, key := range []string{
 		"href",
 		"name",

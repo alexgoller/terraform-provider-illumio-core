@@ -417,7 +417,7 @@ func resourceIllumioSecurityRuleCreate(ctx context.Context, d *schema.ResourceDa
 
 	pConfig.StoreHref("rule_sets", hrefRuleSet)
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 
 	return resourceIllumioSecurityRuleRead(ctx, d, m)
 }
@@ -653,7 +653,7 @@ func resourceIllumioSecurityRuleRead(ctx context.Context, d *schema.ResourceData
 	}
 
 	// extract the parent HREF and set it
-	href := data.S("href").Data().(string)
+	href := gabsString(data, "href")
 	d.Set("rule_set_href", getParentHref(href))
 
 	srKeys := []string{
@@ -739,7 +739,7 @@ func extractSecurityRuleIngressService(data *gabs.Container) []map[string]interf
 
 		for k, v := range ingSerData.ChildrenMap() {
 			if k == "href" {
-				is[k] = v.Data().(string)
+				is[k] = gabsString(v)
 			} else if contains(isKeys, k) {
 				is[k] = strconv.Itoa(int(v.Data().(float64)))
 			}

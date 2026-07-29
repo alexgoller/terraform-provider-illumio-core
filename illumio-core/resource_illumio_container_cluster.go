@@ -184,7 +184,7 @@ func resourceIllumioContainerClusterRead(ctx context.Context, d *schema.Resource
 }
 
 func resourceIllumioContainerClusterReadResult(d *schema.ResourceData, data *gabs.Container) {
-	href := data.S("href").Data().(string)
+	href := gabsString(data, "href")
 
 	d.SetId(href)
 	d.Set("href", href)

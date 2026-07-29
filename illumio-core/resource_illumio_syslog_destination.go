@@ -188,7 +188,7 @@ func resourceIllumioSyslogDestinationCreate(ctx context.Context, d *schema.Resou
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 
 	return resourceIllumioSyslogDestinationRead(ctx, d, m)
 }

@@ -331,7 +331,7 @@ func dataSourceIllumioVirtualServicesRead(ctx context.Context, d *schema.Resourc
 		params["service_ports.proto"] = value.(string)
 	}
 
-	_, data, err := illumioClient.Get(fmt.Sprintf("/orgs/%v/sec_policy/%v/virtual_services", illumioClient.OrgID, pversion), &params)
+	_, data, err := illumioClient.AsyncGet(fmt.Sprintf("/orgs/%v/sec_policy/%v/virtual_services", illumioClient.OrgID, pversion), &params)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -372,7 +372,7 @@ func dataSourceIllumioVirtualServicesRead(ctx context.Context, d *schema.Resourc
 		key := "service"
 		if child.Exists(key) {
 			l := []map[string]string{}
-			l = append(l, map[string]string{"href": child.S(key, "href").Data().(string)})
+			l = append(l, map[string]string{"href": gabsString(child, key, "href")})
 			m[key] = l
 		} else {
 			m[key] = nil

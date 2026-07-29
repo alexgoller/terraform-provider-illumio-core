@@ -188,8 +188,8 @@ func resourceIllumioLabelGroupCreate(ctx context.Context, d *schema.ResourceData
 		return diag.FromErr(err)
 	}
 	d.Set(adoptedKey, false)
-	pConfig.StoreHref("label_groups", data.S("href").Data().(string))
-	d.SetId(data.S("href").Data().(string))
+	pConfig.StoreHref("label_groups", gabsString(data, "href"))
+	d.SetId(gabsString(data, "href"))
 	return resourceIllumioLabelGroupRead(ctx, d, m)
 }
 
@@ -324,7 +324,7 @@ func getParentGroupHrefs(client *client.V2, labelGroupHref string) ([]string, er
 
 	for _, child := range parentGroupContainers {
 		if child.Exists("href") {
-			parentHrefs = append(parentHrefs, child.S("href").Data().(string))
+			parentHrefs = append(parentHrefs, gabsString(child, "href"))
 		}
 	}
 

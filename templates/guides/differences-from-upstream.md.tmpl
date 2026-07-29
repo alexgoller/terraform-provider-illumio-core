@@ -190,6 +190,18 @@ it**. All 22 collection data sources now do.
 The PCE has no `offset` or `page` parameter, so the async job API is the only
 way to retrieve a large collection.
 
+Measured against a live PCE holding 550 workloads, with the same configuration
+and the same PCE:
+
+| | `illumio-core_workloads` returned |
+|---|---|
+| Upstream (plain `Get`) | **500** |
+| This fork (`AsyncGet`) | **550** |
+
+The PCE caps an uncapped `GET /workloads` at 500 while reporting
+`X-Total-Count: 550`. Upstream dropped 50 workloads with no warning, no error
+and a successful apply.
+
 ### A missing field crashed the provider
 
 67 places read API values as `container.S("field").Data().(string)`, which

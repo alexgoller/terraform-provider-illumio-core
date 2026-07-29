@@ -34,7 +34,7 @@ ENHANCEMENTS:
 
 BUG FIXES:
 
-* Fix collection data sources silently returning a subset of results. They used the plain `Get`, which the PCE caps when `max_results` is unset, and the provider never read the `X-Total-Count` header that reports the real total. All 22 collection data sources now use `AsyncGet`, which switches to the PCE's async job API above 500 results. The PCE has no `offset` or `page` parameter, so this is the only way to retrieve a large collection.
+* Fix collection data sources silently returning a subset of results. They used the plain `Get`, which the PCE caps when `max_results` is unset, and the provider never read the `X-Total-Count` header that reports the real total. All 22 collection data sources now use `AsyncGet`, which switches to the PCE's async job API above 500 results. The PCE has no `offset` or `page` parameter, so this is the only way to retrieve a large collection. Measured on a PCE holding 550 workloads: upstream returned 500, this fork returns 550.
 * Fix the provider panicking with `interface conversion: interface {} is nil, not string` when an API response omitted a field. 67 unchecked type assertions now read through a helper that returns an empty string, so an unexpected response shape no longer crashes Terraform mid-apply. One site also indexed `Children()[0]` without a length check.
 * Fix `Config.StoreHref` leaking a file handle on every policy mutation, and calling `panic()` when `hrefs.csv` could not be opened or written — a full disk or read-only directory crashed the provider.
 * Fix a failed VEN unpair reporting success when destroying an `illumio-core_managed_workload` with `unpair_on_destroy = true`. The diagnostics returned by the unpair call were discarded.

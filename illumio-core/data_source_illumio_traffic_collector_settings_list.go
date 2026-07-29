@@ -78,7 +78,7 @@ func datasourceIllumioTrafficCollectorSettingsListRead(ctx context.Context, d *s
 	href := fmt.Sprintf("/orgs/%v/settings/traffic_collector", illumioClient.OrgID)
 
 	// Does not support Async Call
-	_, data, err := illumioClient.Get(href, nil)
+	_, data, err := illumioClient.AsyncGet(href, nil)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -96,7 +96,7 @@ func datasourceIllumioTrafficCollectorSettingsListRead(ctx context.Context, d *s
 
 		key := "transmission"
 		if trafficCS.Exists(key) {
-			switch trafficCS.S(key).Data().(string) {
+			switch gabsString(trafficCS, key) {
 			case "B":
 				tcs[key] = "broadcast"
 			case "M":

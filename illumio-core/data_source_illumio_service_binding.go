@@ -143,7 +143,7 @@ func datasourceIllumioServiceBindingRead(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	for _, key := range []string{
 		"href",
 		"bound_service",

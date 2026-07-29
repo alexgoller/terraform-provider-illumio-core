@@ -478,7 +478,7 @@ func datasourceIllumioVENRead(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(err)
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 
 	setIllumioVENState(data, d)
 

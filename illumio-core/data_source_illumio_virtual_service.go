@@ -224,7 +224,7 @@ func dataSourceIllumioVirtualServiceRead(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	for _, key := range []string{
 		"href",
 		"created_at",
@@ -255,7 +255,7 @@ func dataSourceIllumioVirtualServiceRead(ctx context.Context, d *schema.Resource
 	key := "service"
 	if data.Exists(key) {
 		l := []map[string]string{}
-		l = append(l, map[string]string{"href": data.S(key, "href").Data().(string)})
+		l = append(l, map[string]string{"href": gabsString(data, key, "href")})
 		d.Set(key, l)
 	} else {
 		d.Set(key, nil)

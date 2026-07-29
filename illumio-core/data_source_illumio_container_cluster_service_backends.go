@@ -86,7 +86,7 @@ func datasourceIllumioContainerClusterServiceBackendsRead(ctx context.Context, d
 
 	href := d.Get("container_cluster_href").(string) + "/service_backends"
 
-	_, data, err := illumioClient.Get(href, nil)
+	_, data, err := illumioClient.AsyncGet(href, nil)
 	if err != nil {
 		return diag.FromErr(err)
 	}

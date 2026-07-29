@@ -220,9 +220,9 @@ func resourceIllumioEnforcementBoundaryCreate(ctx context.Context, d *schema.Res
 		return diag.FromErr(err)
 	}
 
-	pConfig.StoreHref("enforcement_boundaries", data.S("href").Data().(string))
+	pConfig.StoreHref("enforcement_boundaries", gabsString(data, "href"))
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 
 	return resourceIllumioEnforcementBoundaryRead(ctx, d, m)
 }
@@ -402,7 +402,7 @@ func extractEBActors(data *gabs.Container) []map[string]interface{} {
 		actor := map[string]interface{}{}
 		for k, v := range actorArray.ChildrenMap() {
 			if k == "actors" {
-				actor[k] = v.Data().(string)
+				actor[k] = gabsString(v)
 			} else if contains(validActors, k) {
 				vM := v.Data().(map[string]interface{})
 

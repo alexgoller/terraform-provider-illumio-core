@@ -187,7 +187,7 @@ func resourceIllumioFirewallSettingsRead(ctx context.Context, d *schema.Resource
 		"deleted_by",
 		"ike_authentication_type",
 	}
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	for _, key := range firewallSettingsKeys {
 		if data.Exists(key) && data.S(key).Data() != nil {
 			d.Set(key, data.S(key).Data())

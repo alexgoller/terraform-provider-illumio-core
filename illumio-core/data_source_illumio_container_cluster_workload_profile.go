@@ -172,7 +172,7 @@ func datasourceIllumioContainerClusterWorkloadProfileRead(ctx context.Context, d
 		return diag.FromErr(err)
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 
 	for _, key := range []string{
 		"href",

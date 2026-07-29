@@ -104,9 +104,9 @@ func datasourceIllumioWorkloadSettingsRead(ctx context.Context, d *schema.Resour
 		return diag.FromErr(err)
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 
-	d.Set("href", data.S("href").Data().(string))
+	d.Set("href", gabsString(data, "href"))
 
 	for _, k := range []string{
 		"workload_disconnected_timeout_seconds",

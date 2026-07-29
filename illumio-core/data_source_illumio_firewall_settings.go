@@ -247,7 +247,7 @@ func datasourceIllumioFirewallSettingsRead(ctx context.Context, d *schema.Resour
 		"deleted_by",
 		"ike_authentication_type",
 	}
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	for _, key := range firewallSettingsKeys {
 		if data.Exists(key) {
 			d.Set(key, data.S(key).Data())
@@ -279,7 +279,7 @@ func extractFirewallCoexistence(data *gabs.Container) []interface{} {
 			}
 			k = "workload_mode"
 			if child1.Exists(k) {
-				obj[k] = child1.S(k).Data().(string)
+				obj[k] = gabsString(child1, k)
 			} else {
 				obj[k] = ""
 			}
@@ -287,7 +287,7 @@ func extractFirewallCoexistence(data *gabs.Container) []interface{} {
 			if child1.Exists(k) {
 				l2 := []map[string]string{}
 				for _, child2 := range child1.S(k).Children() {
-					l2 = append(l2, map[string]string{"href": child2.S("href").Data().(string)})
+					l2 = append(l2, map[string]string{"href": gabsString(child2, "href")})
 				}
 				obj[k] = l2
 			} else {
@@ -309,7 +309,7 @@ func extractDatasourceScopes(data *gabs.Container, key string) []interface{} {
 				scopeObj := map[string]interface{}{}
 				for _, k := range []string{"label", "label_group"} {
 					if child2.Exists(k) {
-						scopeObj[k] = map[string]string{"href": child2.S(k, "href").Data().(string)}
+						scopeObj[k] = map[string]string{"href": gabsString(child2, k, "href")}
 					} else {
 						scopeObj[k] = nil
 					}

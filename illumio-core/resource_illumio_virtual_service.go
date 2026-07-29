@@ -530,7 +530,7 @@ func resourceIllumioVirtualServiceCreate(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 
-	href := data.S("href").Data().(string)
+	href := gabsString(data, "href")
 
 	pConfig.StoreHref("virtual_services", href)
 	d.SetId(href)
@@ -665,7 +665,7 @@ func resourceIllumioVirtualServiceRead(ctx context.Context, d *schema.ResourceDa
 	key := "service"
 	if data.Exists(key) {
 		l := []map[string]string{}
-		l = append(l, map[string]string{"href": data.S(key, "href").Data().(string)})
+		l = append(l, map[string]string{"href": gabsString(data, key, "href")})
 		d.Set(key, l)
 	} else {
 		d.Set(key, nil)
@@ -691,7 +691,7 @@ func resourceIllumioVirtualServiceRead(ctx context.Context, d *schema.ResourceDa
 			}
 			if v := child.S("network").Data(); v != nil {
 				n := []map[string]string{}
-				n = append(n, map[string]string{"href": child.S("network", "href").Data().(string)})
+				n = append(n, map[string]string{"href": gabsString(child, "network", "href")})
 				val["network"] = n
 			}
 			l = append(l, val)

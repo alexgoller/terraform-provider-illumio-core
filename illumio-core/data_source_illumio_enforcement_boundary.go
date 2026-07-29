@@ -188,7 +188,7 @@ func datasourceIllumioEnforcementBoundaryRead(ctx context.Context, d *schema.Res
 		return diag.FromErr(err)
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	for _, key := range []string{
 		"href",
 		"name",

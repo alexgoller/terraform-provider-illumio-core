@@ -132,7 +132,7 @@ func resourceIllumioPairingKeysCommon(activationTokens []interface{}, addCount i
 			}
 		} else {
 			key, _ := getAESGCMKeyFromEnv() // suppressing error as it should hit error in validation phase
-			activationCode := data.S("activation_code").Data().(string)
+			activationCode := gabsString(data, "activation_code")
 			encryptedToken, nonce, err := aesGcmEncrypt(key, activationCode)
 			if err != nil {
 				diags = append(diags, diag.Diagnostic{

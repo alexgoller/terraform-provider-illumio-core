@@ -240,8 +240,8 @@ func resourceIllumioServiceCreate(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	pConfig.StoreHref("services", data.S("href").Data().(string))
-	d.SetId(data.S("href").Data().(string))
+	pConfig.StoreHref("services", gabsString(data, "href"))
+	d.SetId(gabsString(data, "href"))
 	return resourceIllumioServiceRead(ctx, d, m)
 }
 

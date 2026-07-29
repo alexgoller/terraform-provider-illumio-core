@@ -52,7 +52,7 @@ func adoptExisting(pConfig Config, endpoint string, match map[string]string) (st
 	for _, candidate := range data.Children() {
 		exact := true
 		for key, value := range match {
-			if actual, ok := candidate.S(key).Data().(string); !ok || actual != value {
+			if actual := gabsString(candidate, key); actual != value {
 				exact = false
 				break
 			}
@@ -60,7 +60,7 @@ func adoptExisting(pConfig Config, endpoint string, match map[string]string) (st
 		if !exact {
 			continue
 		}
-		if href, ok := candidate.S("href").Data().(string); ok {
+		if href := gabsString(candidate, "href"); href != "" {
 			matches = append(matches, href)
 		}
 	}

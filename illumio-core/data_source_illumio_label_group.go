@@ -152,7 +152,7 @@ func datasourceIllumioLabelGroupRead(ctx context.Context, d *schema.ResourceData
 		return diag.FromErr(err)
 	}
 
-	d.SetId(data.S("href").Data().(string))
+	d.SetId(gabsString(data, "href"))
 	// set computed/optional values from api response
 	for _, key := range []string{
 		"href",

@@ -36,11 +36,33 @@ jobs:
         run: ./scripts/build-site.sh
 
       - uses: actions/configure-pages@v5
+        id: pages
+
+      # This repo is served as a project page under /<repo>/. Without the base
+      # path baked in, every relative_url link resolves to the domain root and
+      # 404s. Deriving it from configure-pages keeps it correct if the repo is
+      # renamed or moved to a user/org page (where base_path is empty).
+      - name: Set Jekyll baseurl
+        run: |
+          sed -i "s|^baseurl:.*|baseurl: \"${{ steps.pages.outputs.base_path }}\"|" website/_config.yml
+          grep '^baseurl:' website/_config.yml
 
       - uses: actions/jekyll-build-pages@v1
         with:
           source: ./website
           destination: ./_site
+
+      # A link that resolves to the domain root instead of the project path is
+      # the failure this guards against; it is invisible in a build that
+      # otherwise succeeds.
+      - name: Verify links are base-path prefixed
+        run: |
+          base='${{ steps.pages.outputs.base_path }}'
+          if [ -n "$base" ] && grep -qE 'href="/(resources|data-sources|guides)/' _site/index.html; then
+            echo "::error::nav links are missing the ${base} prefix and will 404"
+            exit 1
+          fi
+          echo "link prefixes OK"
 
       - uses: actions/upload-pages-artifact@v3
 

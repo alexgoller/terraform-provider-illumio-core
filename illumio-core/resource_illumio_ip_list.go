@@ -4,6 +4,7 @@ package illumiocore
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 	"strconv"
@@ -13,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"github.com/illumio/terraform-provider-illumio-core/client"
 	"github.com/illumio/terraform-provider-illumio-core/models"
 )
 
@@ -31,6 +33,7 @@ func resourceIllumioIPList() *schema.Resource {
 				Computed:    true,
 				Description: "URI of this IP List",
 			},
+			"adopted": adoptedSchema("IP list"),
 			"name": {
 				Type:             schema.TypeString,
 				Required:         true,
@@ -295,8 +298,17 @@ func resourceIllumioIPListCreate(ctx context.Context, d *schema.ResourceData, m 
 
 	_, data, err := illumioClient.Create(fmt.Sprintf("/orgs/%d/sec_policy/draft/ip_lists", orgID), ipList)
 	if err != nil {
+		// The PCE rejects a duplicate with a 406 instead of returning the
+		// existing object, so adopt it rather than failing the apply.
+		if errors.Is(err, client.ErrConflict) {
+			if diags := adoptOnConflict(pConfig, d, fmt.Sprintf("/orgs/%d/sec_policy/draft/ip_lists", orgID), map[string]string{"name": d.Get("name").(string)}, "IP list"); diags.HasError() {
+				return diags
+			}
+			return resourceIllumioIPListUpdate(ctx, d, m)
+		}
 		return diag.FromErr(err)
 	}
+	d.Set(adoptedKey, false)
 	pConfig.StoreHref("ip_lists", data.S("href").Data().(string))
 	d.SetId(data.S("href").Data().(string))
 
@@ -398,6 +410,10 @@ func resourceIllumioIPListUpdate(ctx context.Context, d *schema.ResourceData, m 
 }
 
 func resourceIllumioIPListDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	if diags, adopted := deleteUnlessAdopted(d, "IP list"); adopted {
+		return diags
+	}
+
 	var diagnostics diag.Diagnostics
 	pConfig, _ := m.(Config)
 	illumioClient := pConfig.IllumioClient

@@ -290,6 +290,9 @@ Each has its own guide:
 - **[Policy provisioning](policy-provisioning.html)** —
   `illumio-core_provisioning` in place of `terraform apply && provision`, and
   why `replace_triggered_by` is required.
+- **[Adopting existing objects](adopting-existing-objects.html)** — declaring
+  labels, IP lists, label groups and rule sets that already exist on the PCE,
+  without importing them.
 - **[Managed workloads](managed-workloads.html)** — adopting VEN-paired
   workloads by hostname or import, and what destroying one does.
 

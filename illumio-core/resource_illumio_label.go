@@ -4,12 +4,14 @@ package illumiocore
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"github.com/illumio/terraform-provider-illumio-core/client"
 	"github.com/illumio/terraform-provider-illumio-core/models"
 )
 
@@ -33,6 +35,7 @@ func resourceIllumioLabel() *schema.Resource {
 				Computed:    true,
 				Description: "URI of this label",
 			},
+			"adopted": adoptedSchema("label"),
 			"deleted": {
 				Type:        schema.TypeBool,
 				Computed:    true,
@@ -130,8 +133,17 @@ func resourceIllumioLabelCreate(ctx context.Context, d *schema.ResourceData, m i
 	}
 	_, data, err := illumioClient.Create(fmt.Sprintf("/orgs/%d/labels", orgID), label)
 	if err != nil {
+		// The PCE rejects a duplicate with a 406 instead of returning the
+		// existing object, so adopt it rather than failing the apply.
+		if errors.Is(err, client.ErrConflict) {
+			if diags := adoptOnConflict(pConfig, d, fmt.Sprintf("/orgs/%d/labels", orgID), map[string]string{"key": d.Get("key").(string), "value": d.Get("value").(string)}, "label"); diags.HasError() {
+				return diags
+			}
+			return resourceIllumioLabelUpdate(ctx, d, m)
+		}
 		return diag.FromErr(err)
 	}
+	d.Set(adoptedKey, false)
 	d.SetId(data.S("href").Data().(string))
 
 	return resourceIllumioLabelRead(ctx, d, m)
@@ -191,6 +203,10 @@ func resourceIllumioLabelUpdate(ctx context.Context, d *schema.ResourceData, m i
 }
 
 func resourceIllumioLabelDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	if diags, adopted := deleteUnlessAdopted(d, "label"); adopted {
+		return diags
+	}
+
 	var diagnostics diag.Diagnostics
 	pConfig, _ := m.(Config)
 	illumioClient := pConfig.IllumioClient

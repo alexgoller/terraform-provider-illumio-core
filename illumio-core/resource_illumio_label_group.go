@@ -4,6 +4,7 @@ package illumiocore
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -28,6 +29,7 @@ func resourceIllumioLabelGroup() *schema.Resource {
 				Computed:    true,
 				Description: "URI of this label group",
 			},
+			"adopted": adoptedSchema("label group"),
 			"name": {
 				Type:             schema.TypeString,
 				Required:         true,
@@ -175,8 +177,17 @@ func resourceIllumioLabelGroupCreate(ctx context.Context, d *schema.ResourceData
 
 	_, data, err := illumioClient.Create(fmt.Sprintf("/orgs/%d/sec_policy/draft/label_groups", orgID), labelGroup)
 	if err != nil {
+		// The PCE rejects a duplicate with a 406 instead of returning the
+		// existing object, so adopt it rather than failing the apply.
+		if errors.Is(err, client.ErrConflict) {
+			if diags := adoptOnConflict(pConfig, d, fmt.Sprintf("/orgs/%d/sec_policy/draft/label_groups", orgID), map[string]string{"name": d.Get("name").(string)}, "label group"); diags.HasError() {
+				return diags
+			}
+			return resourceIllumioLabelGroupUpdate(ctx, d, m)
+		}
 		return diag.FromErr(err)
 	}
+	d.Set(adoptedKey, false)
 	pConfig.StoreHref("label_groups", data.S("href").Data().(string))
 	d.SetId(data.S("href").Data().(string))
 	return resourceIllumioLabelGroupRead(ctx, d, m)
@@ -272,6 +283,10 @@ func resourceIllumioLabelGroupUpdate(ctx context.Context, d *schema.ResourceData
 }
 
 func resourceIllumioLabelGroupDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	if diags, adopted := deleteUnlessAdopted(d, "label group"); adopted {
+		return diags
+	}
+
 	var diagnostics diag.Diagnostics
 	pConfig, _ := m.(Config)
 	illumioClient := pConfig.IllumioClient

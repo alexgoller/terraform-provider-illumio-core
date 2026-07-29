@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if page.title %}{{ page.title }} &middot; {% endif %}{{ site.title }}</title>
+{% if page.description %}<meta name="description" content="{{ page.description | strip_newlines | truncate: 200 }}">{% endif %}
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #1b1f24;
+  --muted: #5b6772;
+  --rule: #d8dee4;
+  --accent: #0b6bcb;
+  --code-bg: #f5f7f9;
+  --sidebar-bg: #fafbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117;
+    --fg: #e6edf3;
+    --muted: #9aa7b2;
+    --rule: #2b3440;
+    --accent: #6cb6ff;
+    --code-bg: #161b22;
+    --sidebar-bg: #10151c;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { display: flex; min-height: 100vh; align-items: stretch; }
+nav {
+  width: 270px;
+  flex: 0 0 270px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rule);
+  padding: 1.5rem 1.25rem 3rem;
+  overflow-y: auto;
+}
+nav .brand { font-weight: 650; font-size: 1rem; display: block; margin-bottom: 1.25rem; color: var(--fg); }
+nav h3 {
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+  margin: 1.4rem 0 .4rem;
+}
+nav ul { list-style: none; margin: 0; padding: 0; }
+nav li { margin: .12rem 0; }
+nav a { display: block; padding: .2rem .4rem; border-radius: 4px; font-size: .9rem; }
+nav a.current { background: var(--accent); color: #fff; }
+nav a.current:hover { text-decoration: none; }
+main { flex: 1 1 auto; min-width: 0; padding: 2.5rem 2rem 5rem; }
+.content { max-width: 46rem; }
+h1 { font-size: 1.9rem; margin: 0 0 1rem; line-height: 1.25; }
+h2 { font-size: 1.35rem; margin: 2.2rem 0 .7rem; padding-bottom: .3rem; border-bottom: 1px solid var(--rule); }
+h3 { font-size: 1.08rem; margin: 1.6rem 0 .5rem; }
+code {
+  background: var(--code-bg);
+  padding: .15em .38em;
+  border-radius: 4px;
+  font-size: .875em;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: .9rem 1rem;
+  overflow-x: auto;
+}
+pre code { background: none; padding: 0; font-size: .85rem; }
+table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; margin: 1rem 0; }
+th, td { border: 1px solid var(--rule); padding: .5rem .7rem; text-align: left; font-size: .92rem; }
+th { background: var(--code-bg); }
+blockquote {
+  margin: 1rem 0;
+  padding: .1rem 1rem;
+  border-left: 3px solid var(--accent);
+  color: var(--muted);
+}
+.menu-toggle { display: none; }
+@media (max-width: 800px) {
+  .wrap { display: block; }
+  nav { width: auto; flex: none; border-right: none; border-bottom: 1px solid var(--rule); }
+  main { padding: 1.5rem 1.1rem 4rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+
+    {% assign guides = site.pages | where_exp: "p", "p.url contains '/guides/'" | sort: "title" %}
+    {% if guides.size > 0 %}
+      <h3>Guides</h3>
+      <ul>
+      {% for p in guides %}
+        <li><a href="{{ p.url | relative_url }}" {% if p.url == page.url %}class="current"{% endif %}>{{ p.title | default: p.name }}</a></li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% assign resources = site.pages | where_exp: "p", "p.url contains '/resources/'" | sort: "title" %}
+    {% if resources.size > 0 %}
+      <h3>Resources</h3>
+      <ul>
+      {% for p in resources %}
+        <li><a href="{{ p.url | relative_url }}" {% if p.url == page.url %}class="current"{% endif %}>{{ p.title | default: p.name }}</a></li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% assign datasources = site.pages | where_exp: "p", "p.url contains '/data-sources/'" | sort: "title" %}
+    {% if datasources.size > 0 %}
+      <h3>Data Sources</h3>
+      <ul>
+      {% for p in datasources %}
+        <li><a href="{{ p.url | relative_url }}" {% if p.url == page.url %}class="current"{% endif %}>{{ p.title | default: p.name }}</a></li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  </nav>
+
+  <main>
+    <div class="content">
+      {{ content }}
+    </div>
+  </main>
+</div>
+</body>
+</html>

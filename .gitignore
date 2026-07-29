@@ -45,3 +45,11 @@ TODO
 
 # provider mirror build output
 mirror/
+
+# documentation site: content synced from docs/ at build time
+website/resources/
+website/data-sources/
+website/guides/provider-configuration.md
+website/guides/using-this-fork.md
+_site/
+.jekyll-cache/

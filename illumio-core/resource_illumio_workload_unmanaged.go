@@ -29,7 +29,7 @@ func resourceIllumioUnmanagedWorkload() *schema.Resource {
 		SchemaVersion: 1,
 		Schema:        unmanagedWorkloadSchema(),
 		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
+			StateContext: importWorkloadState,
 		},
 		CustomizeDiff: customdiff.Sequence(
 			recreateDeleted(),

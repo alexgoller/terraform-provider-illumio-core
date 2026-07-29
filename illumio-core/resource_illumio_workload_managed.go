@@ -34,6 +34,16 @@ func resourceIllumioManagedWorkload() *schema.Resource {
 				Description:      "Name of the Workload. The name should be up to 255 characters",
 				ValidateDiagFunc: checkStringZerotoTwoHundredAndFiftyFive,
 			},
+			"unpair_on_destroy": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+				Description: "Whether destroying this resource should unpair the VEN, which uninstalls the agent " +
+					"from the host and restores its default firewall. Defaults to false: Terraform did not create " +
+					"the workload - it exists because a VEN paired with the PCE - so destroying the resource only " +
+					"stops Terraform managing it. Set to true only if you intend `terraform destroy` to decommission " +
+					"the host's agent",
+			},
 			"hostname": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -556,7 +566,7 @@ func resourceIllumioManagedWorkload() *schema.Resource {
 			},
 		},
 		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
+			StateContext: importWorkloadState,
 		},
 	}
 }
@@ -612,6 +622,27 @@ func resourceIllumioManagedWorkloadDelete(ctx context.Context, d *schema.Resourc
 	pConfig, _ := m.(Config)
 	illumioClient := pConfig.IllumioClient
 
+	// Terraform never created this workload: a managed workload exists because
+	// a VEN paired with the PCE, and Create explicitly refuses. Unpairing on
+	// destroy would therefore uninstall an agent Terraform did not install,
+	// which is not something removing a resource from a configuration should
+	// ever do. By default, destroying the resource just stops Terraform
+	// managing it.
+	if !d.Get("unpair_on_destroy").(bool) {
+		diagnostics = append(diagnostics, diag.Diagnostic{
+			Severity: diag.Warning,
+			Summary:  "Managed workload removed from Terraform state; the VEN is still paired",
+			Detail: fmt.Sprintf(
+				"%s was removed from Terraform state, but its VEN remains paired and the agent is still "+
+					"installed on the host. Terraform did not create this workload, so it does not uninstall it. "+
+					"To decommission the agent, set unpair_on_destroy = true before destroying, or unpair the VEN "+
+					"through the PCE.", d.Id()),
+		})
+
+		d.SetId("")
+		return diagnostics
+	}
+
 	hrefs := []models.Href{}
 	hrefs = append(hrefs, *getHrefObj(d.Get("ven")))
 
@@ -623,7 +654,12 @@ func resourceIllumioManagedWorkloadDelete(ctx context.Context, d *schema.Resourc
 	}
 
 	response, err := illumioClient.Update(unpairUri, venUnpair)
-	handleUnpairAndUpgradeOperationErrors(err, response, "workload", "managed")
+
+	// The result used to be discarded, so a failed unpair looked like success.
+	diagnostics = append(diagnostics, handleUnpairAndUpgradeOperationErrors(err, response, "workload", "managed")...)
+	if diagnostics.HasError() {
+		return diagnostics
+	}
 
 	d.SetId("")
 	return diagnostics

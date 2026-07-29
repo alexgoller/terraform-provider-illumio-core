@@ -3,6 +3,11 @@ description: >-
   A fork of terraform-provider-illumio-core adding deny rules, Terraform-native
   policy provisioning, and reconcile fixes.
 url: ""
+
+# Empty is correct for `jekyll serve` locally. GitHub Pages serves this repo as
+# a PROJECT page under /<repo>/, so the workflow rewrites this line with the
+# real base path before building. Leaving it empty in CI makes every
+# relative_url link resolve to the domain root and 404.
 baseurl: ""
 
 # Content under docs/ is synced in by scripts/build-site.sh at build time, so

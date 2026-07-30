@@ -1,4 +1,14 @@
-## Unreleased
+## 2.0.0 (July 30, 2026)
+
+First release of this fork. It is a superset of upstream 1.1.6 — no resource or
+data source was removed and no schema changed incompatibly — with one
+deliberate breaking change to runtime behaviour, noted below.
+
+**Version note:** this fork is distributed via a provider mirror under the
+`illumio/illumio-core` source address and is not published to the Terraform
+Registry. Because `2.0.0` sorts above upstream's 1.x line, always pin it exactly
+and scope the mirror with `include`/`exclude` so an unrelated configuration
+cannot resolve to it. See the "Using this fork" guide.
 
 FEATURES:
 

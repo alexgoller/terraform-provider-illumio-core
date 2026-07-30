@@ -125,7 +125,7 @@ terraform {
   required_providers {
     illumio-core = {
       source  = "illumio/illumio-core"
-      version = "0.0.1"
+      version = "2.0.0"
     }
   }
 }

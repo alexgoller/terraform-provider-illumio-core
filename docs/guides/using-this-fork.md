@@ -24,6 +24,19 @@ fork therefore means telling Terraform explicitly where to find it.
 Each of these is described in detail in
 [Differences from the upstream provider](differences-from-upstream.html).
 
+~> **Version numbering.** This fork releases as `2.0.0`, which sorts **above**
+upstream's 1.x line, and it is served under the same `illumio/illumio-core`
+source address. Two consequences:
+>
+> - **Always pin the version exactly** (`version = "2.0.0"`, not `>= 2.0` or
+>   `~> 2.0`).
+> - **Always scope the mirror** with the `include`/`exclude` pair shown below, so
+>   only this provider comes from the mirror and every other provider still
+>   comes from the registry.
+>
+> Without both, a configuration that asks for `>= 1.0` could resolve to this fork
+> from a mirror without saying so.
+
 ## Installing the fork
 
 ### Option 1 — build from source with a filesystem mirror (recommended)
@@ -39,13 +52,13 @@ go build -o terraform-provider-illumio-core
 
 Install it into the local plugin directory. Pick a version number for the fork
 — it does not have to match upstream, and using a distinctive one such as
-`0.0.1-fork` makes it obvious which provider is in use:
+`2.0.0` makes it obvious which provider is in use:
 
 ```bash
 # Linux / macOS. Adjust OS_ARCH to match your machine, e.g. darwin_arm64,
 # darwin_amd64, linux_amd64.
 OS_ARCH="$(go env GOOS)_$(go env GOARCH)"
-DEST=~/.terraform.d/plugins/registry.terraform.io/illumio/illumio-core/0.0.1-fork/${OS_ARCH}
+DEST=~/.terraform.d/plugins/registry.terraform.io/illumio/illumio-core/2.0.0/${OS_ARCH}
 
 mkdir -p "$DEST"
 cp terraform-provider-illumio-core "$DEST/"
@@ -58,7 +71,7 @@ terraform {
   required_providers {
     illumio-core = {
       source  = "illumio/illumio-core"
-      version = "0.0.1-fork"
+      version = "2.0.0"
     }
   }
 }
@@ -104,7 +117,7 @@ terraform {
   required_providers {
     illumio-core = {
       source  = "your-org/illumio-core"
-      version = ">= 0.0.1"
+      version = ">= 2.0.0"
     }
   }
 }
@@ -174,7 +187,7 @@ terraform {
   required_providers {
     illumio-core = {
       source  = "illumio/illumio-core"
-      version = "0.0.1"
+      version = "2.0.0"
     }
   }
 }
@@ -183,8 +196,8 @@ terraform {
 `terraform init` then installs the fork:
 
 ```
-- Installing illumio/illumio-core v0.0.1...
-- Installed illumio/illumio-core v0.0.1 (unauthenticated)
+- Installing illumio/illumio-core v2.0.0...
+- Installed illumio/illumio-core v2.0.0 (unauthenticated)
 ```
 
 Unlike `dev_overrides`, this is a real install: `init` works normally and a
@@ -219,12 +232,12 @@ mirror, leaving every other provider coming from the registry as normal.
   `Invalid URL for provider installation source`, so a plain local HTTP server
   cannot be used for testing.
 - **`terraform providers lock` does not work against a scoped mirror.** It
-  fails with `the previously-selected version 0.0.1 is no longer available`,
+  fails with `the previously-selected version 2.0.0 is no longer available`,
   because the provider is excluded from `direct` installation. `terraform init`
   still records a hash for the platform it ran on. For a mixed-platform team,
   run `init` once per platform and combine the resulting lock entries, or accept
   the "incomplete lock file information" warning during testing.
-- **Pick a version that upstream will never publish** (`0.0.1` here). Terraform
+- **Pick a version that upstream will never publish** (`2.0.0` here). Terraform
   resolves by version, so a distinctive one makes it impossible to silently get
   the upstream provider instead.
 - **Bump the version whenever you rebuild**, or clear `.terraform/` in

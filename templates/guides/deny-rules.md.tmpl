@@ -169,8 +169,14 @@ written identically.
 ### How multiple actors combine
 
 Illumio's label model is multidimensional — `role`, `app`, `env`, `loc`, plus
-any custom label types. Listing labels of **different types** in `providers` or
-`consumers` selects the **intersection**: the assets carrying all of them.
+any custom label types. Two rules govern how a `providers` or `consumers` set
+resolves:
+
+- **Same label type — OR.** `env:prod` and `env:dev` match assets in either.
+- **Different label types — AND.** `role:web` and `env:prod` match only assets
+  that are both.
+
+Together that is a union within each dimension, intersected across dimensions:
 
 ```hcl
 providers {
@@ -181,24 +187,32 @@ providers {
 
 providers {
   label {
-    href = illumio-core_label.app_sap.href
+    href = illumio-core_label.env_prod.href
   }
 }
 
 providers {
   label {
-    href = illumio-core_label.env_prod.href
+    href = illumio-core_label.env_staging.href
   }
 }
 ```
 
-That rule applies to assets that are `role:web` **and** `app:sap` **and**
-`env:prod` — not to everything that is any one of them.
+selects:
 
-⚠️ **This matters most on a deny rule.** Adding another label of a different
-type makes the rule *narrower*, so a rule you expect to block more will block
-less. If a deny rule is not catching the traffic you expect, an over-specified
-provider or consumer set is the first thing to check.
+```
+role:web  AND  (env:prod  OR  env:staging)
+```
+
+So adding `env:staging` alongside `env:prod` **widens** the rule, while adding
+`app:sap` would **narrow** it.
+
+⚠️ **This matters most on a deny rule**, because the narrowing direction is
+counterintuitive: adding a label of a *new* type makes the rule match less, so a
+rule written to block more can end up blocking less. A deny rule that does not
+fire looks the same as one that is working. If a deny rule is not catching the
+traffic you expect, an over-specified set of actor types is the first thing to
+check.
 
 The same applies to `illumio-core_security_rule`; it is a property of the PCE's
 policy model rather than of any one resource.

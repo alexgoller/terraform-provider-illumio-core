@@ -166,6 +166,80 @@ That produces:
 `illumio-core_security_rule` behaves the same way, so the two resources are
 written identically.
 
+#### Several actors without repeating yourself
+
+Repeating the block by hand gets old quickly. `dynamic` blocks work here, and
+`providers` does **not** collide with Terraform's provider meta-argument:
+
+```hcl
+variable "provider_label_hrefs" {
+  type = list(string)
+}
+
+resource "illumio-core_deny_rule" "block_ssh" {
+  rule_set_href = illumio-core_rule_set.app.href
+  enabled       = true
+
+  dynamic "providers" {
+    for_each = var.provider_label_hrefs
+    content {
+      label {
+        href = providers.value
+      }
+    }
+  }
+
+  consumers {
+    ip_list {
+      href = illumio-core_ip_list.external.href
+    }
+  }
+
+  ingress_services {
+    proto = "6"
+    port  = "22"
+  }
+}
+```
+
+Three hrefs in, three actor entries out:
+
+```json
+"providers": [
+  {"label": {"href": "/orgs/1/labels/1"}},
+  {"label": {"href": "/orgs/1/labels/2"}},
+  {"label": {"href": "/orgs/1/labels/3"}}
+]
+```
+
+Mixed actor types work the same way — one `dynamic` block per type, since each
+block still contributes single-actor entries:
+
+```hcl
+dynamic "providers" {
+  for_each = var.provider_label_hrefs
+  content {
+    label {
+      href = providers.value
+    }
+  }
+}
+
+dynamic "providers" {
+  for_each = var.provider_ip_list_hrefs
+  content {
+    ip_list {
+      href = providers.value
+    }
+  }
+}
+```
+
+`providers` and `consumers` are sets, so the order Terraform sends them in is
+not significant and does not cause diffs.
+
+This applies to `illumio-core_security_rule` too.
+
 ## Services
 
 ### Ingress services

@@ -2,7 +2,7 @@
 
 BUG FIXES:
 
-* Fix `illumio-core_deny_rule` failing against a PCE older than 26.2. `all_ips_except_for_in_consumers`, `all_ips_except_for_in_providers` and `unscoped_consumers` were sent on every update even when unset — they are `Optional + Computed`, so a read puts a value in state and `GetOkExists` then reports them as configured. Those fields do not exist before PCE 26.2, so the update was rejected. Along with `network_type`, they are now sent only when the configuration actually sets them, which is determined from the raw configuration rather than from state.
+* Fix `illumio-core_deny_rule` failing against a PCE older than 26.2. `all_ips_except_for_in_consumers` and `all_ips_except_for_in_providers` were sent on every update even when unset — they are `Optional + Computed`, so a read puts a value in state and `GetOkExists` then reports them as configured. Comparing the `deny_rules_get` schema between the 25.2.20 and 26.3 bundles confirms those two fields are the only ones 26.x added, so the update was rejected. They are now sent only when the configuration actually sets them, determined from the raw configuration rather than from state. `unscoped_consumers` and `network_type` are gated the same way for consistency, though both exist in 25.2.
 
 NOTES:
 

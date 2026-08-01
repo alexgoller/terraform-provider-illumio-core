@@ -268,23 +268,48 @@ rule set, and there is no policy-version-wide collection to query.
 
 ## PCE version compatibility
 
-`illumio-core_deny_rule` only sends the fields your configuration sets, so a
-deny rule that uses no 26.2-specific feature works against an older PCE.
+Deny rules themselves exist well before 26.2 — `deny_rules_get.schema.json` is
+present in the 25.2.20 API schema bundle. Only two fields are newer.
 
-These attributes do not exist before PCE 26.2 and are omitted unless configured:
+Comparing the authoritative `deny_rules_get` schema between releases:
 
-- `all_ips_except_for_in_consumers`
-- `all_ips_except_for_in_providers`
-- `unscoped_consumers`
-- `network_type`
+| Field | 25.2.20 | 26.3 |
+|---|---|---|
+| `all_ips_except_for_in_consumers` | ✗ | ✓ |
+| `all_ips_except_for_in_providers` | ✗ | ✓ |
+| `enabled`, `override`, `description` | ✓ | ✓ |
+| `network_type`, `unscoped_consumers` | ✓ | ✓ |
+| `providers`, `consumers`, `ingress_services`, `egress_services` | ✓ | ✓ |
 
-Setting any of them against a PCE older than 26.2 produces an error from the
-PCE, because the field genuinely is not there. Leave them unset and the deny
-rule is compatible.
+So a deny rule works against 25.2 as long as the two `all_ips_except_*`
+attributes are not set. The provider only sends what your configuration sets,
+so leaving them out is enough — setting either against an older PCE produces an
+error from the PCE, because the field genuinely is not there.
 
-⚠️ Provider versions **before 2.0.1** sent `all_ips_except_for_in_consumers`,
-`all_ips_except_for_in_providers` and `unscoped_consumers` on every *update*
-even when unset, so updating a deny rule failed on a 25.2 PCE.
+⚠️ Provider versions **before 2.0.1** sent `all_ips_except_for_in_consumers` and
+`all_ips_except_for_in_providers` on every *update* even when unset, so updating
+a deny rule failed on a 25.2 PCE.
+
+### Checking this yourself
+
+Illumio publishes the OpenAPI spec and the API schema bundle per release. The
+schema bundle is the useful one — it holds the per-object JSON Schema files that
+say which fields exist:
+
+```bash
+# 25.2.20 schema bundle (contains v2/ and common/*.schema.json)
+curl -O https://product-docs-repo.illumio.com/Tech-Docs/Core/25.2/REST-APIs/REST_API_25.2.20/Illumio_Open_API_25_2_20.zip
+
+# 25.2.20 OpenAPI spec
+curl -O https://product-docs-repo.illumio.com/Tech-Docs/Core/25.2/REST-APIs/REST_API_25.2.20/Illumio_25.2.20.json
+```
+
+Both are served without authentication from `product-docs-repo.illumio.com`,
+which is where `docs.illumio.com` redirects. Note that `docs.illumio.com/core/25.2/…`
+itself returns 401 — recent versions are login-gated, but the underlying content
+host is not.
+
+Index pages per release: `https://product-docs-repo.illumio.com/Tech-Docs/Core/<version>/REST-APIs/out/en/index-en.html`
 
 ## Fields that do not exist
 

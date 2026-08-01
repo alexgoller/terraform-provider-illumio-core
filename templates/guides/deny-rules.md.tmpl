@@ -391,6 +391,107 @@ output "override_deny_rules" {
 The plural data source requires `rule_set_href`: deny rules exist only below a
 rule set, and there is no policy-version-wide collection to query.
 
+## Ring-fencing an application
+
+A ring-fence lets an application's workloads talk to each other while the rest
+of the estate is unaffected. It is two objects: a rule set whose **scope**
+selects the application, and an **all workloads to all workloads** rule inside
+it.
+
+```hcl
+resource "illumio-core_rule_set" "sap_prod" {
+  name    = "RS-SAP-PROD-ringfence"
+  enabled = true
+
+  # One scope, both labels: app:sap AND env:prod
+  scopes {
+    label {
+      href = illumio-core_label.app_sap.href
+    }
+    label {
+      href = illumio-core_label.env_prod.href
+    }
+  }
+}
+
+resource "illumio-core_security_rule" "intra_scope" {
+  rule_set_href = illumio-core_rule_set.sap_prod.href
+  enabled       = true
+
+  providers {
+    actors = "ams"
+  }
+
+  consumers {
+    actors = "ams"
+  }
+
+  resolve_labels_as {
+    providers = ["workloads"]
+    consumers = ["workloads"]
+  }
+
+  ingress_services {
+    href = data.illumio-core_service.all_services.href
+  }
+}
+```
+
+`actors = "ams"` means *all workloads*, but the rule is bounded by the rule
+set's scope — so it resolves to every SAP production workload, not every
+workload in the organization. That is what makes this a ring-fence rather than
+an allow-everything rule.
+
+Narrow the fence by adding a label of another type to the scope; widen it by
+adding another label of the same type. See
+[Deny rules → How multiple actors combine](deny-rules.html) — scopes follow the
+same OR-within-a-type, AND-across-types model.
+
+### Scopes take several labels in one block
+
+This is the one place the syntax differs from `providers` and `consumers`:
+
+```hcl
+# Correct - ONE scope of app:sap AND env:prod
+scopes {
+  label {
+    href = illumio-core_label.app_sap.href
+  }
+  label {
+    href = illumio-core_label.env_prod.href
+  }
+}
+```
+
+```hcl
+# Different meaning - TWO independent scopes
+scopes {
+  label {
+    href = illumio-core_label.app_sap.href
+  }
+}
+
+scopes {
+  label {
+    href = illumio-core_label.env_prod.href
+  }
+}
+```
+
+`providers` and `consumers` hold exactly one actor per block, because the PCE
+stores them as an array of single-actor entries. A rule set scope is an array of
+label entries, so the labels go inside one block. Repeating the block creates an
+additional scope, which broadens the rule set rather than narrowing it.
+
+### Exclusions apply to the whole block
+
+`exclusion` sits on the `scopes` block, not on each label, so every label in a
+block shares it. A scope mixing included and excluded labels — app:sap included,
+env:dev excluded — cannot be expressed, because splitting them into two blocks
+makes two scopes rather than one scope with a mixed entry. The PCE's schema
+allows per-entry exclusion; this provider inherits the upstream block-level
+shape.
+
 ## PCE version compatibility
 
 Deny rules themselves exist well before 26.2 — `deny_rules_get.schema.json` is

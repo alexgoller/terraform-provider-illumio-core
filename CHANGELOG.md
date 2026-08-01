@@ -1,3 +1,21 @@
+## 2.0.2 (August 1, 2026)
+
+**No provider code changes.** The binary is functionally identical to 2.0.1;
+this release ships documentation and tooling only.
+
+DOCUMENTATION:
+
+* Correct which deny-rule fields are 26.x-only. Only `all_ips_except_for_in_consumers` and `all_ips_except_for_in_providers` are — `network_type` and `unscoped_consumers` exist in 25.2, and deny rules themselves are not new in 26.2. The 2.0.1 notes generalised from the reported symptom without the 25.2 schema bundle to hand.
+* Document how multiple actor labels combine: **OR within a label type, AND across types**, so `role:web` + `env:prod` + `env:staging` selects `role:web AND (env:prod OR env:staging)`. Adding a label of a new type *narrows* a rule, which on a deny rule means it can block less than intended.
+* Document `dynamic` blocks for building several provider or consumer actors without repeating the block by hand. `dynamic "providers"` does not collide with Terraform's provider meta-argument.
+* Record the 25.2.20 vs 26.3.0 schema audit. All 28 differing schemas were checked against what the provider sends; deny rules were the only defect, already fixed in 2.0.1.
+
+TOOLING:
+
+* `api-schemas/<version>/` archives Illumio's published API schemas so PCE compatibility is answerable offline. Includes 25.2.10, 25.2.20 and 26.3.0.
+* `scripts/fetch-api-schema.sh <version>` downloads and unpacks a release bundle.
+* `scripts/diff-api-schema.py <old> <new> [schema]` compares fields between archived releases.
+
 ## 2.0.1 (August 1, 2026)
 
 BUG FIXES:

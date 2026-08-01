@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "max_trusted_proxy_ips_per_region",
+    "trusted_proxy_ips"
+  ],
+  "properties": {
+    "max_trusted_proxy_ips_per_region": {
+      "description": "Maximum number of Trusted Proxy IPs allowed for each PCE",
+      "type": "integer"
+    },
+    "trusted_proxy_ips": {
+      "description": "IPs or CIDRs trusted (per-region) for handling clients' X-Forwarded-For header",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "pce_fqdn",
+          "ip"
+        ],
+        "properties": {
+          "pce_fqdn": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "FQDN of PCE region, or null if not in supercluster"
+          },
+          "ip": {
+            "type": "string",
+            "description": "IP address or CIDR trusted for handling clients' X-Forwarded-For header"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "name",
+    "labels"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of resource",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of resource",
+      "type": "string"
+    },
+    "labels": {
+      "description": "Assigned labels for this bound_service",
+      "type": "array",
+      "items": {
+        "$ref": "label_canonical_representation.schema.json"
+      },
+      "uniqueItems": true
+    }
+  }
+}

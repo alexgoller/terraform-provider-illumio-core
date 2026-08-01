@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "href": {
+      "description": "URI of container cluster",
+      "type": "string"
+    },
+    "name": {
+      "description": "User assigned name of the cluster",
+      "type": "string"
+    },
+    "description": {
+      "description": "User assigned description of the cluster",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pod_subnet": {
+            "description": "Pod Subnet",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "machine_id": {
+            "description": "The node uuid",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "description": "The name of the node",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "container_runtime": {
+      "description": "The Container Runtime used in this cluster",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "manager_type": {
+      "description": "Manager for this cluster (and version)",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_connected": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "online": {
+      "type": "boolean"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "error_type"
+        ],
+        "properties": {
+          "audit_event": {
+            "type": "object",
+            "properties": {
+              "href": {
+                "type": "string"
+              }
+            }
+          },
+          "duplicate_ids": {
+            "type": "array"
+          },
+          "error_type": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "kubelink_version": {
+      "description": "Kubelink software version string",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pce_fqdn": {
+      "description": "PCE FQDN for this container cluster. Used in Supercluster only",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cluster_mode": {
+      "description": "Cluster mode of Container Cluster",
+      "type": "string",
+      "default": "legacy"
+    },
+    "datacenter_nat_1to1": {
+      "description": "Datacenter NAT 1to1 mode ON. Used for enforcing creation of pseudo public interfaces on nodes",
+      "type": "boolean"
+    }
+  }
+}

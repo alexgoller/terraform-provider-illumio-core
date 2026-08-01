@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Array of objects",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "$ref": "../common/href_object.schema.json"
+  }
+}

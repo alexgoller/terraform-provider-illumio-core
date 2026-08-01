@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "anyOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "property",
+        "operator",
+        "values"
+      ],
+      "properties": {
+        "property": {
+          "description": "The workload property to compare. (hostname, ip_address etc.)",
+          "type": "string",
+          "enum": [
+            "hostname",
+            "ip_address",
+            "os",
+            "process",
+            "port"
+          ]
+        },
+        "operator": {
+          "description": "operator for the condition (starts_with, contains, equals, ends_with, is_in)",
+          "type": "string",
+          "enum": [
+            "starts_with",
+            "ends_with",
+            "contains",
+            "equals",
+            "is_in"
+          ]
+        },
+        "values": {
+          "description": "Value to use in comparison",
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "port": {
+                    "description": "Port Number (integer 0-65535). Also the starting port when specifying a range.",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 65535
+                  },
+                  "to_port": {
+                    "description": "High end of port range inclusive if specifying a range. If not specifying a range then don't include this.",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 65535
+                  },
+                  "proto": {
+                    "description": "protocol number",
+                    "type": "integer"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "logical_operator",
+        "child_expressions"
+      ],
+      "properties": {
+        "logical_operator": {
+          "description": "logical operator for the child expressions",
+          "type": "string",
+          "enum": [
+            "and",
+            "or",
+            "not"
+          ]
+        },
+        "child_expressions": {
+          "type": "array",
+          "items": {
+            "$ref": "#"
+          }
+        }
+      }
+    }
+  ]
+}

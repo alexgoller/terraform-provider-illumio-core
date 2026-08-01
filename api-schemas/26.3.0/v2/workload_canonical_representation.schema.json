@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "name",
+    "hostname",
+    "labels"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of this workload",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of workload",
+      "type": "string"
+    },
+    "hostname": {
+      "description": "The hostname of this workload",
+      "type": "string"
+    },
+    "labels": {
+      "description": "Assigned labels for this workload",
+      "type": "array",
+      "items": {
+        "$ref": "label_canonical_representation.schema.json"
+      },
+      "uniqueItems": true
+    }
+  }
+}

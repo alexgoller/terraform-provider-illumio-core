@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the ip list",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name (must be unique)",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description",
+      "type": "string"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ip_ranges": {
+      "$ref": "../common/ip_ranges.schema.json"
+    },
+    "fqdns": {
+      "type": "array",
+      "description": "Collection of FQDN",
+      "items": {
+        "type": "object",
+        "required": [
+          "fqdn"
+        ],
+        "properties": {
+          "fqdn": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ip_list_attribute": {
+      "$ref": "ip_list_attributes_get.schema.json"
+    },
+    "created_at": {
+      "description": "Time stamp when this IP List was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Time stamp when this IP List was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "Time stamp when this IP List was deleted",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who originally created this IP List",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who last updated this IP List",
+          "type": "string"
+        }
+      }
+    },
+    "deleted_by": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who deleted this IP List",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

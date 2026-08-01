@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "Hash of pending hrefs, organized by model",
+  "properties": {
+    "label_groups": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "services": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "rule_sets": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "ip_lists": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "virtual_services": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "firewall_settings": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "secure_connect_gateways": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "virtual_servers": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "enforcement_boundaries": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    }
+  }
+}

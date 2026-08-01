@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "key_id",
+    "auth_username",
+    "created_at",
+    "name",
+    "href"
+  ],
+  "properties": {
+    "key_id": {
+      "description": "The key ID",
+      "type": "string"
+    },
+    "auth_username": {
+      "description": "Username required for authentication",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "Timestamp when this key was first created (RFC 3339)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "name": {
+      "description": "The key name - just a label to be used",
+      "type": "string"
+    },
+    "description": {
+      "description": "The description of the key",
+      "type": "string"
+    },
+    "href": {
+      "description": "URI of the key",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "description": "The list of the auth_security_principals in this org",
+  "items": {
+    "$ref": "orgs_permission_get.schema.json"
+  }
+}

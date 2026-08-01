@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "The short friendly name of the server load balancer",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the server load balancer",
+      "type": "string"
+    },
+    "nfc": {
+      "description": "DEPRECATED AND REPLACED (USE 'network_enforcement_node' INSTEAD) Network function controller managing this SLB",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "NFC URI",
+          "type": "string"
+        }
+      }
+    },
+    "network_enforcement_node": {
+      "description": "Network enforcement node managing this SLB",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Network enforcement node URI",
+          "type": "string"
+        }
+      }
+    },
+    "device_type": {
+      "$ref": "slb_device_type.schema.json"
+    },
+    "devices": {
+      "description": "Management configuration of the devices associated with this SLB Network VF.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "href"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "href": {
+            "description": "SLB device URI.",
+            "type": "string"
+          },
+          "config": {
+            "$ref": "slb_device_config.schema.json"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "workloads": {
+      "description": "HREFs of the workloads to which the rules need to be applied",
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "rules": {
+      "description": "HREFs of the label_mapping_rules which need to be applied",
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "assign_labels": {
+      "description": "Determines whether the labels should be assigned automatically as a part of the run",
+      "type": "boolean"
+    }
+  }
+}

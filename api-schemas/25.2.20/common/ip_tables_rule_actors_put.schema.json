@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "actors": {
+        "description": "Rule Actors are all workloads ('ams')",
+        "type": "string"
+      },
+      "label": { "$ref": "href_object.schema.json" },
+      "label_group": { "$ref": "href_object.schema.json" },
+      "workload": { "$ref": "href_object.schema.json" }
+    }
+  }
+}

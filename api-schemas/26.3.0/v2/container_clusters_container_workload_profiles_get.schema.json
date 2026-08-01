@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "href": {
+      "description": "URI of the container workload profile",
+      "type": "string"
+    },
+    "name": {
+      "description": "A friendly name given to a profile if the namespace is not user friendly",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "namespace": {
+      "description": "Namespace name",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "description": "Description of the profile",
+      "type": "string"
+    },
+    "assign_labels": {
+      "description": "DEPRECATED: Labels to assign to the workload that matches the namespace",
+      "$ref": "../common/labels.schema.json"
+    },
+    "labels": {
+      "description": "Labels to assign to the workload that matches the namespace",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "key",
+              "assignment"
+            ],
+            "properties": {
+              "key": {
+                "description": "The label key",
+                "type": "string"
+              },
+              "assignment": {
+                "description": "The label href to set",
+                "type": "object",
+                "required": [
+                  "href"
+                ],
+                "properties": {
+                  "href": {
+                    "description": "Label URI",
+                    "type": "string"
+                  },
+                  "value": {
+                    "description": "Label Name",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "key",
+              "restriction"
+            ],
+            "properties": {
+              "key": {
+                "description": "The label key",
+                "type": "string"
+              },
+              "restriction": {
+                "description": "The list of allowed label hrefs",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "href"
+                  ],
+                  "properties": {
+                    "href": {
+                      "description": "Label URI",
+                      "type": "string"
+                    },
+                    "value": {
+                      "description": "Label Name",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "enforcement_mode": {
+      "$ref": "../common/workload_enforcement_mode.schema.json"
+    },
+    "managed": {
+      "description": "If the namespace is managed or not",
+      "type": "boolean"
+    },
+    "linked": {
+      "type": "boolean",
+      "description": "True if the namespace exists in the cluster and is reported by kubelink"
+    },
+    "created_at": {
+      "description": "Time stamp when this profile was created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who originally created this profile",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who last updated this profile",
+          "type": "string"
+        }
+      }
+    },
+    "updated_at": {
+      "description": "Time stamp when this profile was updated",
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

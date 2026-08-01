@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trusted_proxy_ips"
+  ],
+  "properties": {
+    "trusted_proxy_ips": {
+      "description": "IPs or CIDRs trusted (per-region) for handling clients' X-Forwarded-For header",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pce_fqdn",
+          "ip"
+        ],
+        "properties": {
+          "pce_fqdn": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "FQDN of PCE region, or null if not in supercluster"
+          },
+          "ip": {
+            "description": "IP address or CIDR trusted for handling clients' X-Forwarded-For header",
+            "$ref": "../common/ipv4_ipv6_subnet.schema.json"
+          }
+        }
+      }
+    }
+  }
+}

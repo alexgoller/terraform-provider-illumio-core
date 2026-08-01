@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "href": {
+      "description": "Workload URI (bulk_update only)",
+      "type": "string"
+    },
+    "name": {
+      "description": "The short friendly name of the workload",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the workload",
+      "type": "string"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hostname": {
+      "description": "The hostname reported from the host itself",
+      "type": "string"
+    },
+    "service_principal_name": {
+      "description": "The Kerberos Service Principal Name (SPN)",
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "agent_to_pce_certificate_authentication_id": {
+      "description": "PKI Certificate identifier to be used by the PCE for authenticating the VEN",
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "distinguished_name": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "X.509 Subject distinguished name",
+      "type": "string"
+    },
+    "public_ip": {
+      "description": "The public IP address of the server",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "interfaces": {
+      "$ref": "../common/workloads_interfaces.schema.json"
+    },
+    "service_provider": {
+      "description": "Service provider",
+      "type": "string"
+    },
+    "data_center": {
+      "description": "Data center",
+      "type": "string"
+    },
+    "data_center_zone": {
+      "description": "Data center zone",
+      "type": "string"
+    },
+    "os_id": {
+      "description": "Our OS identifier",
+      "type": "string"
+    },
+    "os_detail": {
+      "description": "Additional OS details - just displayed to end user",
+      "type": "string"
+    },
+    "online": {
+      "description": "If this workload is online",
+      "type": "boolean"
+    },
+    "labels": {
+      "$ref": "labels.schema.json"
+    },
+    "agent": {
+      "description": "Agent info",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "href": {
+          "description": "URI of agent; will be ignored by the server",
+          "type": "string"
+        },
+        "config": {
+          "$ref": "agent_config.schema.json"
+        }
+      }
+    },
+    "enforcement_mode": {
+      "$ref": "../common/workload_enforcement_mode.schema.json"
+    }
+  }
+}

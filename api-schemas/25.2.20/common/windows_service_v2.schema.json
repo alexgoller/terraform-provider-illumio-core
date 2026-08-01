@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "service_name": {
+      "description": "Name of Windows Service",
+      "type": ["string", "null"]
+    },
+    "process_name": {
+      "description": "Name of running process",
+      "type": ["string", "null"]
+    },
+    "port": {
+      "description": "Port Number (integer 1-65535). If not provided and proto needs ports it defaults to any.Also the starting port when specifying a range.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "to_port": {
+      "description": "High end of port range inclusive if specifying a range.  If not specifying a range then don't send this.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "proto": {
+      "description": "Transport protocol",
+      "type": ["integer", "null"]
+    },
+    "icmp_type": {
+      "description": "ICMP Type (integer 0-255 for icmp protocol)",
+      "type": "integer"
+    },
+    "icmp_code": {
+      "description": "ICMP Code (integer 0-15 for icmp protocol)",
+      "type": "integer"
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Organization flow database usage metrics",
+  "type": "object",
+  "required": [
+    "flows_days",
+    "flows_days_limit",
+    "flows_size_gb",
+    "flows_size_gb_limit",
+    "updated_at"
+  ],
+  "properties": {
+    "flows_days": {
+      "description": "Organization's total number of days of flow data.",
+      "type": "integer"
+    },
+    "flows_days_limit": {
+      "description": "Organization's limit on total number of days of flow data.",
+      "type": "integer"
+    },
+    "flows_oldest_day": {
+      "description": "Organization's oldest day of flow data (yyyy-mm-dd).",
+      "type": "string",
+      "format": "date"
+    },
+    "flows_size_gb": {
+      "description": "Organization's total number of gigabytes of flow data.",
+      "type": "number"
+    },
+    "flows_size_gb_limit": {
+      "description": "Organization's limit on total number of gigabytes of flow data.",
+      "type": "number"
+    },
+    "server": {
+      "properties": {
+        "num_flows_days": {
+          "description": "Organization's total number of days of server flow data.",
+          "type": "integer"
+        },
+        "num_flows_days_limit": {
+          "description": "Organization's limit on total number of days of server flow data.",
+          "type": "integer"
+        },
+        "flows_oldest_day": {
+          "description": "Organization's oldest day of server flow data (yyyy-mm-dd).",
+          "type": "string",
+          "format": "date"
+        },
+        "flows_size_gb": {
+          "description": "Organization's total number of gigabytes of server flow data.",
+          "type": "number"
+        },
+        "flows_size_gb_limit": {
+          "description": "Organization's limit on total number of gigabytes of server flow data.",
+          "type": "number"
+        },
+        "num_daily_tables": {
+          "description": "The number of server daily tables, including FlowLink and CloudSecure, counted once for each unique day.",
+          "type": "number"
+        },
+        "num_weekly_tables": {
+          "description": "The number of server weekly tables, including FlowLink and CloudSecure, counted once for each unique week.",
+          "type": "number"
+        }
+      }
+    },
+    "endpoint": {
+      "properties": {
+        "num_flows_days": {
+          "description": "Organization's total number of days of endpoint flow data.",
+          "type": "integer"
+        },
+        "num_flows_days_limit": {
+          "description": "Organization's limit on total number of days of endpoint flow data.",
+          "type": "integer"
+        },
+        "flows_oldest_day": {
+          "description": "Organization's oldest day of endpoint flow data (yyyy-mm-dd).",
+          "type": "string",
+          "format": "date"
+        },
+        "flows_size_gb": {
+          "description": "Organization's total number of gigabytes of endpoint flow data.",
+          "type": "number"
+        },
+        "flows_size_gb_limit": {
+          "description": "Organization's limit on total number of gigabytes of endpoint flow data.",
+          "type": "number"
+        },
+        "num_daily_tables": {
+          "description": "The number of endpoint daily tables, counted once for each unique day.",
+          "type": "number"
+        },
+        "num_weekly_tables": {
+          "description": "The number of endpoint weekly tables, counted once for each unique week.",
+          "type": "number"
+        }
+      }
+    },
+    "backlog": {
+      "properties": {
+        "total_disk_used_gb": {
+          "description": "total gigabytes used to store flow data input files.",
+          "type": "number"
+        },
+        "total_file_count": {
+          "description": "total number of flow data input files",
+          "type": "integer"
+        }
+      }
+    },
+    "updated_at": {
+      "description": "Timestamp in UTC when these flow metrics were generated",
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Data-center parameter for a traffic query",
+  "type": "object",
+  "additional_properties": "false",
+  "required": [
+    "data_center"
+  ],
+  "properties": {
+    "data_center": {
+      "type": "object",
+      "additional_properties": "false",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "description": "Type of the datacenter, such as core/cloud/aws/azure/gcp",
+          "type": "string",
+          "enum": [
+            "core",
+            "cloud",
+            "aws",
+            "azure",
+            "gcp"
+          ],
+          "default": "core"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Network types that this rule should apply to.",
+  "type": "string",
+  "enum": ["brn", "non_brn", "all"],
+  "default": "brn"
+}

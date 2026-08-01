@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    },
+    "description": {
+      "description": "Description",
+      "type": "string"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ingress_services": {
+      "$ref": "../common/sec_rule_ingress_services.schema.json"
+    },
+    "resolve_labels_as": {
+      "$ref": "../common/sec_rule_resolve_labels_as.schema.json"
+    },
+    "sec_connect": {
+      "description": "Whether a secure connection is established",
+      "type": "boolean"
+    },
+    "stateless": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "Whether packet filtering is stateless for the rule",
+      "type": "boolean"
+    },
+    "machine_auth": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "Whether machine authentication is enabled",
+      "type": "boolean"
+    },
+    "providers": {
+      "$ref": "sec_policy_rule_sets_sec_rules_providers_put.schema.json"
+    },
+    "consumers": {
+      "$ref": "sec_policy_rule_sets_sec_rules_consumers_put.schema.json"
+    },
+    "consuming_security_principals": {
+      "$ref": "../common/consuming_security_principals_put.schema.json"
+    },
+    "update_type": {
+      "description": "Type of update",
+      "type": "string",
+      "enum": [
+        "create",
+        "update",
+        "delete"
+      ]
+    },
+    "unscoped_consumers": {
+      "description": "Set the scope for rule consumers to All",
+      "type": "boolean"
+    },
+    "all_ips_except_for_in_consumers": {
+      "description": "Treat the consumer side as Everything except what the consumers resolve to",
+      "type": "boolean"
+    },
+    "all_ips_except_for_in_providers": {
+      "description": "Treat the provider side as Everything except what the providers resolve to",
+      "type": "boolean"
+    },
+    "network_type": {
+      "$ref": "../common/rule_network_type.schema.json",
+      "expose_to": [
+        "end_user_experimental"
+      ]
+    },
+    "use_workload_subnets": {
+      "$ref": "../common/sec_rule_use_workload_subnets.schema.json"
+    }
+  }
+}

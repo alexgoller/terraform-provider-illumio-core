@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "sid": {
+      "description": "Active Directory SID",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of the security principal user",
+      "type": "string"
+    },
+    "upn": {
+      "description": "User Principal Name, typically an email address",
+      "type": "string"
+    }
+  }
+}

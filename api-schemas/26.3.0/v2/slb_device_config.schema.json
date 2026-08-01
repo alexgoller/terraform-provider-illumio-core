@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Management configuration info for the SLB device.",
+  "additionalProperties": false,
+  "properties": {
+    "host": {
+      "type": "string",
+      "description": "The IP or fqdn of the device"
+    },
+    "port": {
+      "description": "Host port",
+      "type": "integer"
+    },
+    "credential_type": {
+      "description": "Type of the credentials",
+      "type": "string",
+      "enum": [
+        "password"
+      ]
+    },
+    "username": {
+      "description": "username for credential",
+      "type": "string"
+    },
+    "credential": {
+      "description": "credential",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "check_certificate": {
+      "description": "Whether enforce peer certificate verify",
+      "type": "boolean"
+    }
+  }
+}

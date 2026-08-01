@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Traffic flow endpoint details",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "ip": {
+      "description": "IP v4 or v6 address",
+      "type": "string"
+    },
+    "workload": {
+      "$ref": "traffic_flows_workload.schema.json"
+    },
+    "cloud_resource": {
+      "$ref": "traffic_flows_cloud_resource.schema.json"
+    },
+    "data_center": {
+      "$ref": "traffic_flows_data_center_type_param.schema.json"
+    },
+    "ip_lists": {
+      "type": "array",
+      "items": {
+        "$ref": "traffic_flows_ip_list.schema.json"
+      }
+    },
+    "virtual_server": {
+      "$ref": "traffic_flows_virtual_server.schema.json"
+    },
+    "virtual_service": {
+      "$ref": "traffic_flows_virtual_service.schema.json"
+    },
+    "fqdn_name": {
+      "description": "fqdn name of the provider",
+      "type": "string"
+    }
+  }
+}

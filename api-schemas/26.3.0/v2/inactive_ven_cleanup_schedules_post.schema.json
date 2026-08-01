@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Schema for creating a new inactive VEN cleanup schedule. Define a schedule that will automatically remove VEN workloads that have been inactive for a specified duration. The schedule targets workloads based on the provided label criteria and can be enabled or disabled as needed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "labels",
+    "inactivity_threshold_in_hours"
+  ],
+  "properties": {
+    "name": {
+      "description": "Name of the inactive VEN cleanup schedule",
+      "type": "string",
+      "minLength": 1
+    },
+    "labels": {
+      "$ref": "labels.schema.json"
+    },
+    "inactivity_threshold_in_hours": {
+      "description": "Number of hours of inactivity before VEN is considered for cleanup",
+      "type": "integer",
+      "minimum": 24,
+      "maximum": 4320
+    },
+    "enabled": {
+      "description": "Whether this cleanup schedule is enabled",
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

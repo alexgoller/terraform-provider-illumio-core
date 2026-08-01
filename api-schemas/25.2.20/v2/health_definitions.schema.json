@@ -1,0 +1,204 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Generic health metric schema definition.",
+  "definitions": {
+    "health": {
+      "description": "Health status of an entry or section.",
+      "type": "string",
+      "enum": [
+        "normal",
+        "warning",
+        "critical"
+      ]
+    },
+    "unit": {
+      "description": "Available unit types.",
+      "type": "string",
+      "enum": [
+        "millisecond",
+        "second",
+        "minute",
+        "hour",
+        "day",
+        "percent",
+        "byte",
+        "kilobyte",
+        "megabyte",
+        "gigabyte",
+        "terabyte",
+        "request"
+      ]
+    },
+    "frequency": {
+      "description": "Unit frequency.",
+      "type": "string",
+      "enum": [
+        "second",
+        "minute",
+        "hour",
+        "day"
+      ]
+    },
+    "value": {
+      "description": "A single data value.",
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/health"
+        },
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "unit": {
+          "$ref": "#/definitions/unit"
+        },
+        "frequency": {
+          "$ref": "#/definitions/frequency"
+        },
+        "display": {
+          "type": "string",
+          "enum": [
+            "enclosed"
+          ]
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "description": "One or more values defining an entry.",
+      "required": [
+        "values"
+      ],
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/value"
+          }
+        }
+      }
+    },
+    "metric": {
+      "description": "One or more entries encompassing the metric.",
+      "type": "object",
+      "properties": {
+        "metric": {
+          "type": "string"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/entry"
+          }
+        },
+        "last_updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "display": {
+          "description": "An optional hint for the UI to display the metric's data in a specific table form.",
+          "type": "string",
+          "enum": [
+            "table",
+            "join"
+          ]
+        }
+      }
+    },
+    "cluster": {
+      "description": "A cluster of nodes within a section",
+      "type": "object",
+      "properties": {
+        "cluster": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/node"
+          }
+        }
+      }
+    },
+    "node": {
+      "description": "A node containing a set of metrics",
+      "type": "object",
+      "properties": {
+        "node": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/value"
+              }
+            }
+          ]
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metric"
+          }
+        }
+      }
+    },
+    "section": {
+      "description": "The section to which a metric belongs.",
+      "type": "object",
+      "required": [
+        "section",
+        "contents"
+      ],
+      "properties": {
+        "section": {
+          "type": "string"
+        },
+        "contents": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/metric"
+              },
+              {
+                "$ref": "#definitions/cluster"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "group": {
+      "description": "A group containing separate sections.",
+      "type": "object",
+      "required": [
+        "group",
+        "components"
+      ],
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/health"
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/section"
+          }
+        }
+      }
+    }
+  }
+}

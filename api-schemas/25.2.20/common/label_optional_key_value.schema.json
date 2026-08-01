@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "href"
+  ],
+  "properties": {
+    "href": {
+      "description": "Label URI",
+      "type": "string"
+    },
+    "key": {
+      "description": "Key in key-value pair",
+      "type": "string"
+    },
+    "value": {
+      "description": "Value in key-value pair",
+      "type": "string"
+    }
+  }
+}

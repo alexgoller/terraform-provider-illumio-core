@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "resource",
+    "change_type"
+  ],
+  "properties": {
+    "href": {
+      "description": "Unique href for this resource log event, which can be used for event lookup via the events API",
+      "type": "string"
+    },
+    "version": {
+      "description": "The event version of this event for the category it falls under",
+      "type": "string"
+    },
+    "org_id": {
+      "description": "org_id for this event.",
+      "type": "integer"
+    },
+    "uuid": {
+      "description": "Unique identifier for this event.",
+      "type": "string"
+    },
+    "event": {
+      "description": "Correlation href identifying the API request / context from which events originated",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "RFC 3339 timestamp at which this event was originally created",
+      "format": "date-time",
+      "type": "string"
+    },
+    "pce_fqdn": {
+      "description": "Fully qualified domain name of the PCE, where this event originated",
+      "type": "string"
+    },
+    "created_by": {
+      "description": "The entity responsible for the creation of this event",
+      "type": "object",
+      "oneOf": [
+        {
+          "user": {
+            "description": "The user responsible for the creation of this event",
+            "type": "object",
+            "required": [
+              "href",
+              "username"
+            ],
+            "properties": {
+              "href": {
+                "description": "This user's href",
+                "type": "string"
+              },
+              "username": {
+                "description": "This user's username",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "agent": {
+            "description": "The agent responsible for the creation of this event",
+            "type": "object",
+            "properties": {
+              "href": {
+                "description": "This agent's href",
+                "type": "string"
+              },
+              "hostname": {
+                "description": "Hostname of this agent",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "system": {
+            "description": "The system generated this event",
+            "type": "object",
+            "properties": {
+            }
+          }
+        }
+      ]
+    },
+    "resource": {
+      "$ref": "resource_canonical_representations.schema.json"
+    },
+    "changes": {
+      "description": "Properties of the resource that were changed as a result of the event, with their updated values",
+      "type": "object"
+    },
+    "change_type": {
+      "description": "Type of change, which occurred for this resource(s)",
+      "type": "string"
+    }
+  }
+}

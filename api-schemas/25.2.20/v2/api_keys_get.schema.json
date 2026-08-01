@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "key_id",
+    "auth_username",
+    "created_at",
+    "name",
+    "href"
+  ],
+  "properties": {
+    "key_id": {
+      "description": "The key ID",
+      "type": "string"
+    },
+    "auth_username": {
+      "description": "Username required for authentication",
+      "type": "string"
+    },
+    "name": {
+      "description": "The key name - just a label to be used",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "description": "The description of the key",
+      "type": "string"
+    },
+    "state": {
+      "description": "State of the api_key",
+      "type": "string"
+    },
+    "expires_in_seconds": {
+      "description": "Validity of the api_key in seconds",
+      "type": "integer"
+    },
+    "created_at": {
+      "description": "Timestamp when this key was first created (RFC 3339)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who originally created this api key",
+          "type": "string"
+        }
+      }
+    },
+    "last_login_on": {
+      "description": "Timestamp when this key was last used",
+      "type": "string",
+      "format": "date-time"
+    },
+    "account": {
+      "type": "object",
+      "required": [
+        "href",
+        "type",
+        "name"
+      ],
+      "properties": {
+        "href": {
+          "description": "Associated identity",
+          "type": "string"
+        },
+        "type": {
+          "description": "Type of account",
+          "type": "string"
+        },
+        "name": {
+          "description": "Name of the account",
+          "type": "string"
+        },
+        "access_restriction": {
+          "description": "Access restriction assigned to the api_keys under this service_account",
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "href"
+          ],
+          "properties": {
+            "href": {
+              "description": "Access restriction URI",
+              "type": "string"
+            }
+          }
+        },
+        "permissions": {
+          "type": "array",
+          "description": "List of permissions",
+          "items": {
+            "description": "Permission granted",
+            "type": "object",
+            "required": [
+              "role",
+              "scope"
+            ],
+            "properties": {
+              "href": {
+                "description": "URI of the permission entity",
+                "type": "string"
+              },
+              "role": {
+                "$ref": "../common/orgs_roles.schema.json"
+              },
+              "scope": {
+                "$ref": "org_scope.schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    "href": {
+      "description": "URI of the key",
+      "type": "string"
+    }
+  }
+}

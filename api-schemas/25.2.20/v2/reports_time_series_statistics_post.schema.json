@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "property"
+    ],
+    "properties": {
+      "property": {
+        "description": "The property for which time series data is requested.",
+        "type": "string",
+        "enum": [
+          "num_managed_workloads",
+          "ransomware_protection_coverage_percent",
+          "num_workloads_by_exposure"
+        ]
+      },
+      "resolution": {
+        "type": "string",
+        "description": "The granularity for the time series data. E.g. day, week, month, quarter",
+        "enum": [
+          "day",
+          "week",
+          "month",
+          "quarter"
+        ],
+        "default": "day"
+      },
+      "max_results": {
+        "type": "integer",
+        "default": 5
+      }
+    }
+  }
+}

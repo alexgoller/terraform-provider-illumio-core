@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Workload network interfaces",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["name", "address"],
+    "properties": {
+      "name": {
+        "description": "Interface name",
+        "type": "string"
+      },
+      "link_state": {
+        "description": "Link State",
+        "type": "string",
+        "enum": ["up", "down", "unknown"]
+      },
+      "address": {
+        "description": "The IP Address to assign to this interface",
+        "type": "string",
+        "$ref": "../common/ip_address_format_validation.schema.json"
+      },
+      "cidr_block": {
+        "description": "The number of bits in the subnet /24 is 255.255.255.0",
+        "type": "integer"
+      },
+      "default_gateway_address": {
+        "description": "The IP Address of the default gateway",
+        "type": "string",
+        "$ref": "../common/ip_address_format_validation.schema.json"
+      },
+      "friendly_name": {
+        "description": "User-friendly name for interface",
+        "type": "string"
+      },
+      "network": {
+        "expose_to": ["end_user_private_perm"],
+        "$ref":  "../common/href_object.schema.json"
+      }
+    }
+  },
+  "uniqueItems": true
+}

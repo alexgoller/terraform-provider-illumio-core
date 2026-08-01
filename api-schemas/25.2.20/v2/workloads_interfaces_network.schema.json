@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Network object used in workloads and workload interfaces",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "href"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the network",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of the network.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$ref": "network_device_config.schema.json"
+}

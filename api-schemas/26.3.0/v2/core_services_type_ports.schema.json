@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Core Service Ports",
+  "type": "array",
+  "items": {
+    "$ref": "core_services_type_ports_def.schema.json"
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "name",
+    "description",
+    "mode",
+    "enabled",
+    "total_use_count",
+    "allowed_uses_per_key",
+    "key_lifespan",
+    "last_pairing_at",
+    "is_default",
+    "log_traffic",
+    "visibility_level",
+    "created_at",
+    "updated_at",
+    "labels",
+    "env_label_lock",
+    "loc_label_lock",
+    "role_label_lock",
+    "app_label_lock",
+    "mode_lock",
+    "log_traffic_lock",
+    "visibility_level_lock",
+    "last_pairing_key_generated_at",
+    "last_pairing_key_generated_by"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the Pairing Profile",
+      "type": "string"
+    },
+    "name": {
+      "description": "The short friendly name of the Pairing Profile",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the Pairing Profile",
+      "type": "string"
+    },
+    "mode": {
+      "$ref": "../common/workload_modes.schema.json"
+    },
+    "enforcement_mode": {
+      "$ref": "../common/workload_enforcement_mode.schema.json"
+    },
+    "status": {
+      "description": "VEN should be in idle state when it activates",
+      "type": "string"
+    },
+    "enabled": {
+      "description": "The enabled flag of the Pairing Profile",
+      "type": "boolean"
+    },
+    "total_use_count": {
+      "description": "The number of times the Pairing Profile has been used",
+      "type": "integer"
+    },
+    "allowed_uses_per_key": {
+      "description": "The number of times the Pairing Profile can be used",
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "key_lifespan": {
+      "description": "Number of seconds Pairing Profile Keys will be valid for",
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "last_pairing_at": {
+      "description": "Timestamp when this Pairing Profile was last used for pairing a Workload",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "description": "Timestamp when this Pairing Profile was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when this Pairing Profile was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "description": "User who originally created this Pairing Profile",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "updated_by": {
+      "description": "User who last updated this Pairing Profile",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "last_pairing_key_generated_at": {
+      "description": "Timestamp of when the last pairing key was generated",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "last_pairing_key_generated_by": {
+      "description": "User who generated the last pairing key",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "../common/href_object.schema.json"
+        }
+      ]
+    },
+    "is_default": {
+      "description": "Flag indicating this is default auto-created Pairing Profile",
+      "type": "boolean"
+    },
+    "labels": {
+      "$ref": "labels.schema.json"
+    },
+    "env_label_lock": {
+      "description": "Flag that controls whether env Label can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "loc_label_lock": {
+      "description": "Flag that controls whether loc Label can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "role_label_lock": {
+      "description": "Flag that controls whether role Label can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "app_label_lock": {
+      "description": "Flag that controls whether app Label can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "mode_lock": {
+      "description": "DEPRECATED AND REPLACED (USE /enforcement_mode_lock INSTEAD) Flag that controls whether mode can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "enforcement_mode_lock": {
+      "description": "Flag that controls whether enforcement mode can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "log_traffic": {
+      "description": "DEPRECATED AND REMOVED. Alerting status",
+      "type": "boolean"
+    },
+    "log_traffic_lock": {
+      "description": "DEPRECATED AND REMOVED. Flag that controls whether log_traffic can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "visibility_level": {
+      "description": "Visibility level of the Workload (DEPRECATED VALUE: 'flow_full_detail')",
+      "oneOf": [
+        {
+          "$ref": "../common/workload_visibility_level.schema.json"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "visibility_level_lock": {
+      "description": "Flag that controls whether visibility_level can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "status_lock": {
+      "description": "Flag that controls whether status can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "agent_software_release": {
+      "description": "Agent Software Release associated with this Pairing Profile",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ven_type": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "$ref": "../common/pairing_profile_ven_type.schema.json"
+    }
+  }
+}

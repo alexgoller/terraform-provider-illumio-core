@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "required": [
+    "port"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "port": {
+      "description": "Port number, or the starting port of a range.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "to_port": {
+      "description": "Upper end of port range; this field should not be included if specifying an individual port.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "Vulnerability",
+  "required": [
+    "score",
+    "name"
+  ],
+  "properties": {
+    "score": {
+      "description": "The normalized score of the vulnerability within the range of 0 to 100. CVSS Score can be used here with a 10x multiplier.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "cve_ids": {
+      "description": "The cve_ids for the vulnerability",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "description": {
+      "description": "An arbitrary field to store some details of the vulnerability class",
+      "type": "string"
+    },
+    "name": {
+      "description": "The title/name of the vulnerability",
+      "type": "string"
+    }
+  }
+}

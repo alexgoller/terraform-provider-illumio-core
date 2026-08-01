@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Permission granted",
+  "type": "object",
+  "required": [
+    "role",
+    "scope",
+    "auth_security_principal"
+  ],
+  "properties": {
+    "role": {
+      "$ref": "../common/orgs_roles.schema.json"
+    },
+    "scope": {
+      "$ref": "org_scope.schema.json"
+    },
+    "auth_security_principal": {
+      "$ref": "auth_security_principal_uri.schema.json"
+    }
+  }
+}

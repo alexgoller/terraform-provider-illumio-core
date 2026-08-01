@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "name"
+  ],
+  "properties": {
+    "type": {
+      "description": "type of the auth_security_principal",
+      "type": "string",
+      "enum": [
+        "user",
+        "group"
+      ]
+    },
+    "name": {
+      "description": "name of auth_security_principal",
+      "type": "string"
+    },
+    "display_name": {
+      "description": "name of auth_security_principal",
+      "type": "string"
+    },
+    "access_restriction": {
+      "description": "Access restriction assigned to this user",
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Access restriction URI",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

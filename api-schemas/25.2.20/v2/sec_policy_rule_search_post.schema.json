@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Filters for Rule Search",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enabled": {
+      "description": "Enabled flag of the Rule",
+      "type": "boolean"
+    },
+    "description": {
+      "description": "Description of the Rule",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65535
+    },
+    "ingress_services": {
+      "$ref": "sec_policy_rule_search_service.schema.json"
+    },
+    "sec_connect": {
+      "description": "Whether a secure connection is established in the Rule",
+      "type": "boolean"
+    },
+    "machine_auth": {
+      "description": "Whether machine authentication is enabled in the Rule",
+      "type": "boolean"
+    },
+    "stateless": {
+      "description": "Whether stateless is enabled in the Rule",
+      "type": "boolean"
+    },
+    "providers": {
+      "$ref": "sec_policy_rule_search_providers.schema.json"
+    },
+    "consumers": {
+      "$ref": "sec_policy_rule_search_consumers.schema.json"
+    },
+    "consuming_security_principals": {
+      "$ref": "../common/consuming_security_principals_put.schema.json"
+    },
+    "unscoped_consumers": {
+      "description": "UB scope set to All in the Rule",
+      "type": "boolean"
+    },
+    "update_type": {
+      "description": "Type of update for the Rule",
+      "type": "string",
+      "enum": [
+        "create",
+        "update",
+        "delete"
+      ]
+    },
+    "resolve_actors": {
+      "description": "Resolve actors to do a deep Rule search",
+      "type": "boolean"
+    },
+    "rule_types": {
+      "description": "List of rule types",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "sec_rules",
+          "deny_rules",
+          "override_deny_rules",
+          "ip_tables_rules"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "update_type",
+    "object_type",
+    "href",
+    "updated_at",
+    "updated_by"
+  ],
+  "properties": {
+    "update_type": {
+      "description": "Type of update",
+      "update_type": "string"
+    },
+    "object_type": {
+      "description": "Object Type",
+      "update_type": "string"
+    },
+    "href": {
+      "description": "Href of modified object",
+      "update_type": "string"
+    },
+    "name": {
+      "description": "Name",
+      "type": "string"
+    },
+    "updated_at": {
+      "description": "The time (rfc3339 timestamp) at which this resource was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the user who last updated this resource",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

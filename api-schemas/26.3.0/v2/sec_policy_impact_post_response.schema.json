@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "num_sets",
+    "num_managed_workloads",
+    "num_container_workloads",
+    "num_unmanaged_workloads"
+  ],
+  "properties": {
+    "num_sets": {
+      "description": "number of affected sets",
+      "type": "integer"
+    },
+    "num_virtual_servers": {
+      "description": "number of affected virtual servers",
+      "type": "integer"
+    },
+    "num_managed_workloads": {
+      "description": "number of affected workloads of type Workload",
+      "type": "integer"
+    },
+    "num_container_workloads": {
+      "description": "number of affected workloads of type ContainerWorkload",
+      "type": "integer"
+    },
+    "num_unmanaged_workloads": {
+      "description": "number of affected unmanaged workloads",
+      "type": "integer"
+    },
+    "all_workloads_optimization": {
+      "description": "flag to indicate if all-workloads-optimization has been used",
+      "type": "boolean"
+    }
+  }
+}

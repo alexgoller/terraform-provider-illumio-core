@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Report parameters for traffic flow query report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_time_range",
+    "app_groups"
+  ],
+  "properties": {
+    "report_time_range": {
+      "description": "Time range the report is built across",
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "report_time_range_definitions.schema.json#/definitions/custom_date_range"
+        },
+        {
+          "$ref": "report_time_range_definitions.schema.json#/definitions/last_num_days"
+        }
+      ]
+    },
+    "app_groups": {
+      "$ref": "report_app_groups.schema.json"
+    }
+  }
+}

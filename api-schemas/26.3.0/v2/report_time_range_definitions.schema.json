@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Report time range parameters",
+  "definitions": {
+    "custom_date_range": {
+      "required": [
+        "start_date",
+        "end_date"
+      ],
+      "properties": {
+        "start_date": {
+          "description": "Start date for the range",
+          "type": "string",
+          "format": "date-time"
+        },
+        "end_date": {
+          "description": "End date for the range",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "last_num_days": {
+      "required": [
+        "last_num_days"
+      ],
+      "properties": {
+        "last_num_days": {
+          "description": "Last x number of days the report is built across",
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

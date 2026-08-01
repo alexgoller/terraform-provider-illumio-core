@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "DEPRECATED AND REPLACED (Use enforcement_mode instead)",
+  "type": "string",
+  "enum": ["idle", "illuminated", "enforced"]
+}

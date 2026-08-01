@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["from_key", "to_key", "allow_create"],
+    "properties": {
+      "from_key": {
+        "type": "string",
+        "description": "Path to desired destination value, can be any prop, e.g. Labels.app"
+      },
+      "to_key": {
+        "type": "string",
+        "description": "Illumio label key"
+      },
+      "allow_create": {
+        "type": "boolean"
+      },
+      "values_map": {
+        "type": "array",
+        "description": "when present then label mapping will be performed only on matched values by 'from' attribute",
+        "items": {
+          "type": "object",
+          "required": ["from", "to"],
+          "properties": {
+            "from": {
+              "type": "string",
+              "description": "value to match, must be exact string match"
+            },
+            "to": {
+              "type": "string",
+              "description": "result value"
+            }
+          }
+        }
+      }
+    }
+  }
+}

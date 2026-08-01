@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Hrefs of consuming security principals",
+  "expose_to": [
+    "end_user_private_transitional"
+  ],
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "href"
+    ],
+    "properties": {
+      "href": {
+        "description": "URI of security principal",
+        "type": "string"
+      },
+      "sid": {
+        "description": "Active Directory SID",
+        "type": "string"
+      },
+      "name": {
+        "description": "Name of the security principal",
+        "type": "string"
+      },
+      "description": {
+        "description": "A longer description of the security principal",
+        "type": "string"
+      },
+      "deleted": {
+        "description": "Flag to indicate if security principal has been deleted",
+        "type": "boolean"
+      },
+      "used_by_ruleset": {
+        "description": "Flag to indicate if this security principal is being used by a ruleset",
+        "type": "boolean"
+      }
+    }
+  }
+}

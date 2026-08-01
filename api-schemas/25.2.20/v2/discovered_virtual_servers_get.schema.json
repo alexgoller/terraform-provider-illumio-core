@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "dvs_identifier",
+    "name",
+    "vip_port",
+    "local_ips",
+    "mode",
+    "slb",
+    "service_checks",
+    "nfc",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by",
+    "network_enforcement_node"
+  ],
+  "properties": {
+    "href": {
+      "description": "href of discovered virtual server",
+      "type": "string"
+    },
+    "dvs_identifier": {
+      "description": "NFC-generated unique identifier for discovered virtual server",
+      "type": "string"
+    },
+    "name": {
+      "description": "Configured name of virtual server",
+      "type": "string"
+    },
+    "vip_port": {
+      "description": "VIP including protocol and port for discovered virtual server",
+      "$ref": "../common/dvs_vip_port.schema.json"
+    },
+    "local_ips": {
+      "description": "Local IPs of virtual server",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "ipv4"
+      }
+    },
+    "mode": {
+      "description": "Virtual server mode of operation",
+      "type": "string"
+    },
+    "slb": {
+      "description": "URI of slb hosting virtual server",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "snat_type": {
+      "description": "SNAT source ip type",
+      "type": "string"
+    },
+    "snat_pool_ips": {
+      "description": "NAT source IPs of virtual server",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "ipv4"
+      }
+    },
+    "service_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "protocol"
+        ],
+        "properties": {
+          "protocol": {
+            "type": "integer"
+          },
+          "port": {
+            "type": "integer",
+            "description": "Service check port. Only present when protocol is 6 (tcp) or 17 (udp)."
+          }
+        }
+      }
+    },
+    "nfc": {
+      "description": "DEPRECATED AND REPLACED (USE 'network_enforcement_node' INSTEAD) URI of the NFC for this discovered virtual server",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "network_enforcement_node": {
+      "description": "URI of the Network Enforcement Node for this discovered virtual server",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "virtual_server": {
+      "description": "The virtual server policy object corresponding to this discovered virtual server",
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href",
+        "update_type",
+        "mode",
+        "labels"
+      ],
+      "properties": {
+        "href": {
+          "description": "href of virtual server",
+          "type": "string"
+        },
+        "update_type": {
+          "$ref": "../common/sec_policy_update_type.schema.json"
+        },
+        "mode": {
+          "description": "enforcement mode of virtual server",
+          "type": "string"
+        },
+        "labels": {
+          "description": "labels for virtual server",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "href",
+              "key",
+              "value"
+            ],
+            "properties": {
+              "href": {
+                "description": "href of label",
+                "type": "string"
+              },
+              "key": {
+                "description": "key in key-value pair",
+                "type": "string"
+              },
+              "value": {
+                "description": "value in key-value pair",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "created_at": {
+      "description": "The time (rfc3339 timestamp) at which this server load balancer was created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "The time (rfc3339 timestamp) at which this server load balancer was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "$ref": "../common/href_object.schema.json"
+    },
+    "updated_by": {
+      "$ref": "../common/href_object.schema.json"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "The current status of the SLB device.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "connection_state"
+  ],
+  "properties": {
+    "connection_state": {
+      "description": "Status of most recent connection to the SLB device",
+      "type": "string",
+      "enum": [
+        "pending",
+        "successful",
+        "cannot_resolve",
+        "cannot_connect",
+        "bad_credentials",
+        "bad_certificate",
+        "bad_request",
+        "dup_device"
+      ]
+    },
+    "software_version": {
+      "description": "Software version reported by the SLB device",
+      "type": "string"
+    },
+    "sync_state": {
+      "description": "Sync-state of the SLB device if it is part of an HA group.",
+      "type": "string",
+      "enum": [
+        "in_sync",
+        "not_sync"
+      ]
+    }
+  }
+}

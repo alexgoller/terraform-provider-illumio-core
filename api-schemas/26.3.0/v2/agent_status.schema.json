@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "description": "Updated agent status",
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended"
+      ]
+    }
+  }
+}

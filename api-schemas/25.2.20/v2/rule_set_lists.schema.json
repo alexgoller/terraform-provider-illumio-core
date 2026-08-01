@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Returns the rule hit count stats for all the rules in a ruleset during the specified time-range",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "href"
+    ],
+    "properties": {
+      "href": {
+        "description": "HREF of the ruleset",
+        "type": "string"
+      }
+    }
+  }
+}

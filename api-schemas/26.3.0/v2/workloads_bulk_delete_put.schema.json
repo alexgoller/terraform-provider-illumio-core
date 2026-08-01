@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "href"
+    ],
+    "properties": {
+      "href": {
+        "description": "URI of a specific workload or workload collection URI with query parameters external_data_set and external_data_reference",
+        "type": "string"
+      }
+    }
+  },
+  "maxItems": 1000
+}

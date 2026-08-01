@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Workload details of the traffic-flow endpoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "href",
+    "hostname",
+    "managed"
+  ],
+  "properties": {
+    "href": {
+      "description": "Workload URI",
+      "type": "string"
+    },
+    "hostname": {
+      "description": "The hostname of the workload",
+      "type": "string"
+    },
+    "name": {
+      "description": "The name of the workload",
+      "type": "string"
+    },
+    "os_type": {
+      "description": "The operating system type of the workload",
+      "type": "string",
+      "enum": [
+        "windows",
+        "linux",
+        "unknown"
+      ]
+    },
+    "enforcement_mode": {
+      "$ref": "../common/workload_enforcement_mode.schema.json"
+    },
+    "labels": {
+      "$ref": "traffic_flows_endpoint_labels.schema.json"
+    },
+    "managed": {
+      "description": "True if the workload is managed, else false",
+      "type": "boolean"
+    },
+    "managed_by": {
+      "description": "Managing entity",
+      "type": "string"
+    },
+    "external_data_set": {
+      "description": "The data source from which a resource originates",
+      "type": "string"
+    },
+    "external_data_reference": {
+      "description": "A unique identifier within the external data source",
+      "type": "string"
+    }
+  }
+}

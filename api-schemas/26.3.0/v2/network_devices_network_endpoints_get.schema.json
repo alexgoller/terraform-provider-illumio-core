@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "oneOf": [
+    {
+      "$ref": "network_device_network_endpoint_get.schema.json"
+    },
+    {
+      "type": "null"
+    }
+  ]
+}

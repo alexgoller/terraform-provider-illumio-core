@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "rule_set_scope_put.schema.json",
+  "description": "Rule set scope",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "exclusion": {
+        "description": "Boolean to specify whether or not the scope is an exclusion",
+        "type": "boolean",
+        "expose_to": ["end_user_experimental"],
+        "default": false
+      },
+      "label": { "$ref": "href_object.schema.json" },
+      "label_group": { "$ref": "href_object.schema.json" }
+    }
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Enforcement boundary",
+  "type": "object",
+  "required": ["href", "providers", "consumers", "ingress_services"],
+  "expose_to": ["end_user_private_perm"],
+  "_comment": "Don't set additionalProperties:false here as it collides with usage in allOf, set that in the schema  that references this one instead.",
+  "properties": {
+    "created_at": {
+      "description": "Timestamp when record was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when record was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "Timestamp when record was deleted",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "description": "The username which created this record",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "description": "The username which last updated this record",
+          "type": "string"
+        }
+      }
+    },
+    "deleted_by": {
+      "type": ["object", "null" ],
+      "properties": {
+        "username": {
+          "description": "The username which deleted this record",
+          "type": "string"
+        }
+      }
+    },
+    "update_type": {
+      "description": "Type of update",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "enum": ["create", "update", "delete"]
+        }
+      ]
+    },
+    "update_label": {
+      "description": "Type of update",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "enum": ["create", "update", "delete"]
+        }
+      ]
+    },
+    "href": {
+      "description": "URI of object",
+      "type": "string"
+    },
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    },
+    "description": {
+      "description": "Description",
+      "type": ["string", "null"]
+    },
+    "ingress_services": { "$ref": "sec_rule_ingress_services.schema.json" },
+    "egress_services": { "$ref": "sec_rule_egress_services.schema.json" },
+    "resolve_labels_as": { "$ref": "sec_rule_resolve_labels_as.schema.json" },
+    "sec_connect": {
+      "description": "Whether a secure connection is established",
+      "type": "boolean"
+    },
+    "stateless": {
+      "expose_to": ["end_user_experimental"],
+      "description": "Whether packet filtering is stateless for the rule",
+      "type": "boolean"
+    },
+    "machine_auth": {
+      "expose_to": ["end_user_experimental"],
+      "description": "Whether machine authentication is enabled",
+      "type": "boolean"
+    },
+    "providers": { "$ref": "sec_policy_rule_sets_sec_rules_providers_get.schema.json" },
+    "consumers": { "$ref": "sec_policy_rule_sets_sec_rules_consumers_get.schema.json" },
+    "consuming_security_principals": { "$ref": "consuming_security_principals_get.schema.json" },
+    "unscoped_consumers": {
+      "description": "Set the scope for rule consumers to All",
+      "type": "boolean"
+    },
+    "use_workload_subnets": {
+      "$ref": "sec_rule_use_workload_subnets.schema.json"
+    },
+    "rule_set": { "$ref": "../common/rule_set.schema.json" },
+    "log_flow": {
+      "description": "If false, the VEN will not log any traffic that matches this flow.",
+      "type": "boolean",
+      "expose_to": ["end_user_private_transitional"]
+    },
+    "network_type": { "$ref": "../common/rule_network_type.schema.json" }
+  }
+}

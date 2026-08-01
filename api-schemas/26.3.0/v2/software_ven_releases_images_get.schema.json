@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "release",
+      "distribution",
+      "architecture",
+      "major_version",
+      "min_minor_version",
+      "filename",
+      "href"
+    ],
+    "properties": {
+      "release": {
+        "description": "The OS release",
+        "type": "string"
+      },
+      "distribution": {
+        "description": "The OS distribution",
+        "type": "string"
+      },
+      "architecture": {
+        "description": "The OS architecture",
+        "type": "string"
+      },
+      "major_version": {
+        "description": "The OS major version",
+        "type": "integer"
+      },
+      "min_minor_version": {
+        "description": "The OS minimum minor version",
+        "type": "integer"
+      },
+      "max_minor_version": {
+        "description": "The OS maximum minor version",
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "filename": {
+        "description": "The image filename for this OS distribution",
+        "type": "string"
+      },
+      "href": {
+        "description": "The URI to download the image file",
+        "type": "string"
+      },
+      "ven_types": {
+        "$ref": "../common/release_ven_types.schema.json"
+      }
+    }
+  }
+}

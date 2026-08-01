@@ -1,0 +1,5 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "The list of roles in this org",
+  "$ref": "../common/orgs_roles.schema.json"
+}

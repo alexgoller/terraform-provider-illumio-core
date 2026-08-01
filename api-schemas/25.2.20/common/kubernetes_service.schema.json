@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "service_ports",
+    "service_type"
+  ],
+  "properties": {
+    "service_ports": {
+      "description": "Array of (backend) ports for the service (target_port in k8s service configuration)",
+      "type": "array",
+      "additionalProperties": false,
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["protocol", "port"],
+        "properties": {
+          "port": {
+            "description": "Port Number (integer 0-65535 or -1 for any port).",
+            "type": "integer"
+          },
+          "protocol": {
+            "$ref": "../common/service_ports_protocol_numeric.schema.json",
+            "enum": [6, 17]
+          },
+          "node_port": {
+            "description": "Port Number (integer 0-65535) of the node port.",
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "external_traffic_policy": {
+      "description": "External traffic policy configured for this service. This determines whether traffic is forwarding between nodes to find a backing pod.",
+      "type": ["string", "null"],
+      "enum": ["cluster", "local"]
+    },
+    "service_type": {
+      "description": "Kubernetes ServiceType",
+      "type": ["string"],
+      "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+    },
+    "consumer_ports": {
+      "description": "Array of (client) ports (1-65535) for the service (port in k8s service configuration)",
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "ip_addresses": {
+      "description": "Array of IPs or CIDRs for the service",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "$ref": "../common/ip_address_format_validation.schema.json"
+      }
+    }
+  }
+}

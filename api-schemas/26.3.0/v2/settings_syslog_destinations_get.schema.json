@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "List of destinations",
+  "type": "object",
+  "$ref": "destination_get.schema.json"
+}

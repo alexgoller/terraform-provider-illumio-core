@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Workload bulk_update: Input must conform to one of: workloads_with_ven_put.schema.json, workloads_with_ven_interfaces_put.schema.json, workloads_without_ven_put.schema.json",
+  "type": "array",
+  "maxItems": 1000
+}

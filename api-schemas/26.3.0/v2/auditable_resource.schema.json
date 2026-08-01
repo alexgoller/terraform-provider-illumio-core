@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "name"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of resource",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of resource",
+      "type": "string"
+    }
+  }
+}

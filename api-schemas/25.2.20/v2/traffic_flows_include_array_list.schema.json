@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "List of included sources or targets",
+  "type": "array",
+  "items": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "traffic_flows_label_param.schema.json"
+        },
+        {
+          "$ref": "traffic_flows_label_group_param.schema.json"
+        },
+        {
+          "$ref": "traffic_flows_workload_param.schema.json"
+        },
+        {
+          "$ref": "traffic_flows_ip_address_param.schema.json"
+        },
+        {
+          "$ref": "traffic_flows_ip_list_param.schema.json"
+        },
+        {
+          "$ref": "traffic_flows_all_actors_param.schema.json"
+        },
+        {
+          "$ref": "traffic_flows_cloud_resource_param.schema.json"
+        },
+        {
+          "$ref": "traffic_flows_data_center_type_param.schema.json"
+        }
+      ]
+    }
+  }
+}

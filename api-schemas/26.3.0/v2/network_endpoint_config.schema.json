@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "endpoint_type": {
+      "description": "The type of endpoint",
+      "type": "string"
+    },
+    "name": {
+      "description": "The name of the endpoint e.g. interface name",
+      "type": "string"
+    },
+    "traffic_flow_id": {
+      "description": "A traffic flow identifier for this endpoint e.g. switch port IfIndex",
+      "type": "string"
+    },
+    "workload_discovery": {
+      "description": "Flag to indicate if workload discovery is enabled",
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["enabled", "statements", "actors", "ip_version"],
+  "properties": {
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    },
+    "description": {
+      "description": "Description",
+      "type": "string"
+    },
+    "statements": {
+      "description": "list of the iptables statements in this rule",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "../common/ip_tables_statement.schema.json" }
+    },
+    "actors": { "$ref": "ip_tables_rule_actors_put.schema.json" },
+    "ip_version": {
+      "description": "IP version for the rules to be applied to",
+      "type": "string",
+      "enum": ["4", "6"]
+    }
+  }
+}

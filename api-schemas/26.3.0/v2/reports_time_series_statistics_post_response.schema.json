@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "property",
+      "time_series"
+    ],
+    "properties": {
+      "property": {
+        "description": "The property for which data has been requested.",
+        "type": "string"
+      },
+      "time_series": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "start_date",
+            "end_date"
+          ],
+          "properties": {
+            "start_date": {
+              "description": "The start date of the time period.",
+              "type": "string",
+              "format": "date-time"
+            },
+            "end_date": {
+              "description": "The end date of the time period.",
+              "type": "string",
+              "format": "date-time"
+            },
+            "data": {
+              "oneOf": [
+                {
+                  "$ref": "../../../agent/schema/v2/num_workloads_by_exposure_time_series.schema.json"
+                },
+                {
+                  "count": {
+                    "description": "The integer count on the end date of this period.",
+                    "type": "integer"
+                  }
+                },
+                {
+                  "percentage": {
+                    "description": "The percentage on the end date of this period.",
+                    "type": "number",
+                    "minumum": 0,
+                    "maximum": 100
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

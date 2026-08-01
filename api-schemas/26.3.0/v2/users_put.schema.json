@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "full_name": {
+      "description": "User's full name",
+      "type": "string"
+    },
+    "time_zone": {
+      "description": "Time Zone IANA Region Name",
+      "type": "string"
+    },
+    "locked": {
+      "description": "Flag to indicate whether account is locked",
+      "type": "boolean"
+    }
+  }
+}

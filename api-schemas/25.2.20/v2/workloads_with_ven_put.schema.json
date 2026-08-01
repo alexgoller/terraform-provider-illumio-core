@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "href": {
+      "description": "Workload URI (bulk_update only)",
+      "type": "string"
+    },
+    "name": {
+      "description": "The short friendly name of the workload",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the workload",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "service_principal_name": {
+      "description": "The Kerberos Service Principal Name (SPN)",
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "agent_to_pce_certificate_authentication_id": {
+      "description": "PKI Certificate identifier to be used by the PCE for authenticating the VEN",
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "service_provider": {
+      "description": "Service provider",
+      "type": "string"
+    },
+    "data_center": {
+      "description": "Data center",
+      "type": "string"
+    },
+    "data_center_zone": {
+      "description": "Data center zone",
+      "type": "string"
+    },
+    "labels": {
+      "$ref": "labels.schema.json"
+    },
+    "agent": {
+      "description": "DEPRECATED AND REPLACED (USE VEN INSTEAD for status, USE enforcement_mode and visibility_level for config)",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "href": {
+          "description": "URI of agent; will be ignored by the server",
+          "type": "string"
+        },
+        "config": {
+          "$ref": "agent_config.schema.json"
+        },
+        "status": {
+          "$ref": "agent_status.schema.json"
+        }
+      }
+    },
+    "enforcement_mode": {
+      "$ref": "../common/workload_enforcement_mode.schema.json"
+    },
+    "datacenter_nat_1to1": {
+      "description": "Datacenter NAT 1to1 mode ON. Used for enforcing creation of pseudo public interface",
+      "type": "boolean"
+    }
+  }
+}

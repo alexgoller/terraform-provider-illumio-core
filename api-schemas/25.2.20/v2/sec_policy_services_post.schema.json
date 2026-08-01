@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "description": "Name (does not need to be unique)",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description",
+      "type": "string"
+    },
+    "risk_details": {
+      "type": "object",
+      "properties": {
+        "ransomware": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "description": "Categorization based on Admin or Legacy port used in the service",
+              "type": "string",
+              "enum": [
+                "admin",
+                "legacy"
+              ]
+            },
+            "severity": {
+              "description": "Severity of this service",
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "critical"
+              ]
+            },
+            "os_platforms": {
+              "description": "Operating system for this ransomware service",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "windows",
+                  "linux"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "process_name": {
+      "description": "The process name",
+      "type": "string"
+    },
+    "service_ports": {
+      "$ref": "../common/service_ports_v2.schema.json"
+    },
+    "windows_services": {
+      "$ref": "../common/windows_services_v2.schema.json"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "enabled",
+    "name",
+    "description",
+    "scopes",
+    "created_at",
+    "updated_at",
+    "deleted_at"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the rule set",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "Timestamp when this rule set was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when this rule set was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "Timestamp when this rule set was deleted",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who originally created this rule set",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who last updated this rule set",
+          "type": "string"
+        }
+      }
+    },
+    "deleted_by": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who deleted this rule set",
+          "type": "string"
+        }
+      }
+    },
+    "update_type": {
+      "$ref": "../common/sec_policy_update_type.schema.json"
+    },
+    "name": {
+      "description": "Name (must be unique)",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    },
+    "scopes": {
+      "$ref": "../common/rule_set_scopes_get.schema.json"
+    },
+    "rules": {
+      "description": "Array of rules in this rule set",
+      "type": "array",
+      "items": {
+        "$ref": "sec_policy_rule_sets_sec_rules_get.schema.json"
+      }
+    },
+    "ip_tables_rules": {
+      "description": "Array of iptables rules in this rule set",
+      "type": "array",
+      "items": {
+        "$ref": "../common/ip_tables_rules_get.schema.json"
+      }
+    }
+  }
+}

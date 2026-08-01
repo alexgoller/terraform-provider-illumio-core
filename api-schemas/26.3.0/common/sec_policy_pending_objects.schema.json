@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Array of modified resources for a given type in the current policy draft",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["name", "id", "updated_by", "updated_at", "update_type"],
+    "properties": {
+      "name": {
+        "description": "Resource name",
+        "type": "string"
+      },
+      "href": {
+        "description": "URI of the resource",
+        "type": "string"
+      },
+      "updated_by": {
+        "href": {
+          "description": "URI of user who updated the resource",
+          "type": "string"
+        }
+      },
+      "updated_at": {
+        "description": "Time stamp when this resource was last updated",
+        "type": "string",
+        "format": "date-time"
+      },
+      "update_type": {
+        "description": "Type of update",
+        "type": "string",
+        "enum": ["create", "update", "delete"]
+      },
+      "caps": {
+        "expose_to": ["end_user_private_perm"],
+        "$ref":"../common/entity_caps.schema.json"
+      }
+    }
+  }
+}

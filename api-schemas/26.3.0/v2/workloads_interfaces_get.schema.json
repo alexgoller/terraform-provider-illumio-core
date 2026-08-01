@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Workload network interfaces",
+  "type": "object",
+  "required": [
+    "name",
+    "address",
+    "cidr_block",
+    "default_gateway_address",
+    "link_state",
+    "network_detection_mode",
+    "friendly_name",
+    "network"
+  ],
+  "properties": {
+    "name": {
+      "description": "Interface name",
+      "type": "string"
+    },
+    "link_state": {
+      "description": "Link State",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "address": {
+      "description": "The IP Address to assign to this interface",
+      "type": "string"
+    },
+    "cidr_block": {
+      "description": "The number of bits in the subnet /24 is 255.255.255.0",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "default_gateway_address": {
+      "description": "The IP Address of the default gateway",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "network": {
+      "description": "Network that the interface belongs to",
+      "type": [
+        "object",
+        "null"
+      ],
+      "anyOf": [
+        {
+          "$ref": "workloads_interfaces_network.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "network_detection_mode": {
+      "description": "Network Detection Mode",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "friendly_name": {
+      "description": "User-friendly name for interface",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "href": {
+      "description": "DEPRECATED WITH NO REPLACEMENT",
+      "type": "string"
+    }
+  }
+}

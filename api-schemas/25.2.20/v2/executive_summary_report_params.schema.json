@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Report parameters for executive summary report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_time_range"
+  ],
+  "properties": {
+    "report_time_range": {
+      "description": "Time range the report is built across",
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "report_time_range_definitions.schema.json#/definitions/custom_date_range"
+        },
+        {
+          "$ref": "report_time_range_definitions.schema.json#/definitions/last_num_days"
+        }
+      ]
+    }
+  }
+}

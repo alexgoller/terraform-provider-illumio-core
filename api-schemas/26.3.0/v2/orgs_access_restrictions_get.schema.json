@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "ips"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of access restriction",
+      "type": "string"
+    },
+    "name": {
+      "description": "User assigned name of the access restriction",
+      "type": "string"
+    },
+    "description": {
+      "description": "User assigned description of the access restriction",
+      "type": "string"
+    },
+    "ips": {
+      "description": "Array of ip addresses or CIDR blocks",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "enforcement_exclusions": {
+      "description": "The types of API access methods that are excluded from access restriction enforcement",
+      "type": "array",
+      "minLength": 1,
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$ref": "resource_update_info.schema.json"
+}

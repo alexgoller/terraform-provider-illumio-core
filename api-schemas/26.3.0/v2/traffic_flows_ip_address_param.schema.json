@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "An IP address parameter for a traffic query",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ip_address"
+  ],
+  "properties": {
+    "ip_address": {
+      "description": "IP address value",
+      "type": "string"
+    }
+  }
+}

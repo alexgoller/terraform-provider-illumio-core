@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    },
+    "expression": {
+      "$ref": "label_mapping_rule_expression.schema.json"
+    },
+    "label_assignments": {
+      "$ref": "label_mapping_rule_label_assignments.schema.json"
+    }
+  }
+}

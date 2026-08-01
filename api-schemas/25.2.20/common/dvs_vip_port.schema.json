@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [ "vip", "protocol", "port" ],
+  "additionalProperties": false,
+  "properties": {
+    "vip": {
+      "description": "Virtual server IP",
+      "type": "string", "format": "ipv4"
+    },
+    "protocol": {"$ref": "../common/service_ports_protocol_numeric.schema.json"},
+    "port": {
+      "description": "Virtual server port(s)",
+      "type": "string"
+    }
+  }
+}

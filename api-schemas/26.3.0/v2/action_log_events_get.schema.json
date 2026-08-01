@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "href": {
+      "description": "Unique href for this action log event, which can be used for event lookup via the events API",
+      "type": "string"
+    },
+    "event": {
+      "description": "Correlation href identifying the API request / context from which events originated",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "RFC 3339 timestamp at which this event was originally created",
+      "format": "date-time",
+      "type": "string"
+    },
+    "pce_fqdn": {
+      "description": "Fully qualified domain name of the PCE, where this event originated",
+      "type": "string"
+    },
+    "created_by": {
+      "description": "The entity responsible for the creation of this event",
+      "type": "object",
+      "oneOf": [
+        {
+          "user": {
+            "description": "The user responsible for the creation of this event",
+            "type": "object",
+            "required": [
+              "href",
+              "username"
+            ],
+            "properties": {
+              "href": {
+                "description": "This user's href",
+                "type": "string"
+              },
+              "username": {
+                "description": "This user's username",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "agent": {
+            "description": "The agent responsible for the creation of this event",
+            "type": "object",
+            "properties": {
+              "href": {
+                "description": "This agent's href",
+                "type": "string"
+              },
+              "hostname": {
+                "description": "Hostname of this agent",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "container_cluster": {
+            "description": "The container_cluster responsible for the creation of this event",
+            "type": "object",
+            "properties": {
+              "href": {
+                "description": "This container_cluster's href",
+                "type": "string"
+              },
+              "name": {
+                "description": "Name of this container_cluster",
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "system": {
+            "description": "The system generated this event",
+            "type": "object",
+            "properties": {
+            }
+          }
+        }
+      ]
+    },
+    "event_type": {
+      "description": "Event name that clearly describes the action log event",
+      "type": "string"
+    },
+    "status": {
+      "description": "Status of the event; usually a mapping of api_status_code to a generic result string. For presentation purposes only.",
+      "type": "string"
+    },
+    "severity": {
+      "description": "This event's level of importance",
+      "type": "string"
+    },
+    "task_name": {
+      "description": "The name of the timed worker job from which this event originated",
+      "type": "string"
+    },
+    "api_endpoint": {
+      "description": "URI of the API invoked",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "api_method": {
+      "description": "Name of API method invoked on some target resource(s)",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "http_status_code": {
+      "description": "HTTP status code returned from the API call.",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "src_ip": {
+      "description": "Source IP of the request for which the event was generated. If the request is coming from the PCE itself, then we should log the IP of the PCE.",
+      "type": "string"
+    },
+    "errors": {
+      "description": "Extra information regarding the reason for failure. This property is only for failure events and will not appear in successful events",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "description": "Machine readable error message",
+            "type": "string"
+          },
+          "message": {
+            "description": "Human readable error message",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "info": {
+      "description": "Extra information about the action log event in json format",
+      "type": "object"
+    }
+  }
+}

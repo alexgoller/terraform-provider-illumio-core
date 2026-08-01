@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Container Cluster CLAS related properties",
+  "additionalProperties": false,
+  "required": ["label_ids_set", "distinct_rules"],
+  "properties": {
+    "k8s_workload_uuids": {
+      "type": "array",
+      "description": "List of Kubernetes Workload UUIDs",
+      "items": { "type": "string" }
+    },
+    "label_ids_set": {
+      "type": "string",
+      "description": "String set of sorted Label IDs joined with '_' char used for CLAS workload instruction calculation"
+    },
+    "distinct_rules": {
+      "type": "array",
+      "description": "Distinct rules for individual Kubernetes Workloads",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ver", "workload_uuid", "network_access"],
+        "properties": {
+          "ver": {
+            "description": "Workload instructions version",
+            "type": "string"
+          },
+          "workload_uuid": {
+            "type": "string",
+            "description": "Kubernetes Workload identifier"
+          },
+          "network_access": {
+            "type": "array",
+            "description": "Contains partial & distinct network access rules that needs to be appended into base network access rules"
+          }
+        }
+      }
+    }
+  }
+}

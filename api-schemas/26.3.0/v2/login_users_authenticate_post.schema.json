@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "one_time_password": {
+          "description": "The time-based one-time password for two-factor authentication.",
+          "type": "string"
+        }
+      }
+    },
+    {
+      "type": "null"
+    }
+  ]
+}

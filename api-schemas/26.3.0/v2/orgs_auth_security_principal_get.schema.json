@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "orgs_auth_security_principal.schema.json"
+    },
+    {
+      "$ref": "orgs_auth_security_principal_name_get.schema.json"
+    },
+    {
+      "$ref": "auth_security_principal_uri.schema.json"
+    }
+  ]
+}

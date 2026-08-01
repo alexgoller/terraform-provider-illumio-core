@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "change_subset": {
+      "$ref": "sec_policy_change_subset.schema.json"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "href": {
+        "description": "Virtual Service URI",
+        "type": "string"
+      },
+      "name": {
+        "description": "Name",
+        "type": "string"
+      },
+      "description": {
+        "description": "Description",
+        "type": "string"
+      },
+      "external_data_set": {
+        "description": "External data set identifier",
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "external_data_reference": {
+        "description": "External data reference identifier",
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "labels": {
+        "$ref": "../common/labels.schema.json"
+      },
+      "service": {
+        "description": "URI of associated service",
+        "type": "object"
+      },
+      "service_ports": {
+        "$ref": "virtual_service_service_ports.schema.json"
+      },
+      "apply_to": {
+        "description": "Firewall rule target for workloads bound to this bound service: host_only or internal_bridge_network",
+        "type": "string",
+        "enum": [
+          "host_only",
+          "internal_bridge_network"
+        ]
+      },
+      "ip_overrides": {
+        "description": "Array of IPs or CIDRs as IP overrides",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "service_addresses": {
+        "$ref": "virtual_service_service_addresses.schema.json"
+      }
+    }
+  },
+  "maxItems": 1000
+}

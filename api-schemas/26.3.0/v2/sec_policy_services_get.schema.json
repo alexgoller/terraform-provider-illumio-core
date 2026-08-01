@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "name",
+    "update_type"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the service",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name (does not need to be unique)",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description",
+      "type": "string"
+    },
+    "risk_details": {
+      "type": "object",
+      "required": [
+        "ransomware"
+      ],
+      "properties": {
+        "ransomware": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "category",
+            "severity",
+            "os_platforms"
+          ],
+          "properties": {
+            "category": {
+              "description": "Categorization based on Admin or Legacy port used in the service",
+              "type": "string"
+            },
+            "severity": {
+              "description": "Severity of this service",
+              "type": "string"
+            },
+            "average_protection_percent": {
+              "description": "This is the average of ransomware protection percentage for all the service ports in this service.",
+              "type": "number"
+            },
+            "os_platforms": {
+              "description": "Operating system for this ransomware service",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "description_url": {
+      "description": "Description URL Read-only to prevent XSS attacks",
+      "type": "string"
+    },
+    "process_name": {
+      "description": "The process name",
+      "type": "string"
+    },
+    "service_ports": {
+      "$ref": "../common/service_ports_v2.schema.json"
+    },
+    "windows_services": {
+      "$ref": "../common/windows_services_v2.schema.json"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "description": "Time stamp when this Service was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Time stamp when this Service was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "Time stamp when this Service was deleted",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who originally created this Service",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who last updated this Service",
+          "type": "string"
+        }
+      }
+    },
+    "deleted_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who deleted this Service",
+          "type": "string"
+        }
+      }
+    },
+    "update_type": {
+      "description": "Type of update",
+      "type": "string"
+    }
+  }
+}

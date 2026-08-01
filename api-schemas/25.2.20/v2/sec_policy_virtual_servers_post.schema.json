@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "labels",
+    "service",
+    "providers",
+    "mode",
+    "discovered_virtual_server"
+  ],
+  "properties": {
+    "name": {
+      "description": "The short friendly name of the virtual server",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the virtual server",
+      "type": "string"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "labels": {
+      "$ref": "labels.schema.json"
+    },
+    "service": {
+      "description": "URI of associated service",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Service URI",
+          "type": "string"
+        }
+      }
+    },
+    "providers": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "label"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "href"
+                ],
+                "properties": {
+                  "href": {
+                    "description": "Label URI",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "workload"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "workload": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "href"
+                ],
+                "properties": {
+                  "href": {
+                    "description": "Workload URI",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "discovered_virtual_server": {
+      "description": "Corresponding discovered virtual server",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Discovered virtual server URI",
+          "type": "string"
+        }
+      }
+    },
+    "mode": {
+      "description": "Management mode of the virtual server",
+      "type": "string",
+      "enum": [
+        "unmanaged",
+        "enforced"
+      ]
+    }
+  }
+}

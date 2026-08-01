@@ -1,0 +1,124 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "pce_scope",
+    "type",
+    "description",
+    "audit_event_logger",
+    "traffic_event_logger",
+    "node_status_logger"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the destination",
+      "type": "string"
+    },
+    "pce_scope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "type": {
+      "description": "Destination type",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description of the destination",
+      "type": "string"
+    },
+    "audit_event_logger": {
+      "type": "object",
+      "required": [
+        "configuration_event_included",
+        "system_event_included",
+        "min_severity"
+      ],
+      "properties": {
+        "configuration_event_included": {
+          "description": "Configuration (Northbound) auditable events",
+          "type": "boolean"
+        },
+        "system_event_included": {
+          "description": "System (PCE) auditable events",
+          "type": "boolean"
+        },
+        "min_severity": {
+          "$ref": "audit_event_min_severity.schema.json"
+        }
+      }
+    },
+    "traffic_event_logger": {
+      "type": "object",
+      "required": [
+        "traffic_flow_allowed_event_included",
+        "traffic_flow_potentially_blocked_event_included",
+        "traffic_flow_blocked_event_included"
+      ],
+      "properties": {
+        "traffic_flow_allowed_event_included": {
+          "description": "Set to enable traffic flow events",
+          "type": "boolean"
+        },
+        "traffic_flow_potentially_blocked_event_included": {
+          "description": "Set to enable traffic flow events",
+          "type": "boolean"
+        },
+        "traffic_flow_blocked_event_included": {
+          "description": "Set to enable traffic flow events",
+          "type": "boolean"
+        }
+      }
+    },
+    "node_status_logger": {
+      "type": "object",
+      "required": [
+        "node_status_included"
+      ],
+      "properties": {
+        "node_status_included": {
+          "description": "Syslog messages regarding status of the nodes",
+          "type": "boolean"
+        }
+      }
+    },
+    "remote_syslog": {
+      "type": "object",
+      "required": [
+        "address",
+        "port",
+        "protocol",
+        "tls_enabled",
+        "tls_verify_cert"
+      ],
+      "properties": {
+        "address": {
+          "description": "The remote syslog IP or DNS address",
+          "type": "string"
+        },
+        "port": {
+          "description": "The remote syslog port",
+          "type": "integer"
+        },
+        "protocol": {
+          "description": "The protocol for streaming syslog messages",
+          "type": "integer"
+        },
+        "tls_enabled": {
+          "description": "To enable TLS",
+          "type": "boolean"
+        },
+        "tls_ca_bundle": {
+          "description": "Trustee CA bundle",
+          "type": "string"
+        },
+        "tls_verify_cert": {
+          "description": "Perform TLS verification",
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "ip_address",
+    "core_service_type",
+    "method_name",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "ip_address": {
+      "description": "The ip address which is detected as core service",
+      "type": "string"
+    },
+    "workload": {
+      "$ref": "traffic_flows_workload.schema.json"
+    },
+    "href": {
+      "description": "The href of this detected core service",
+      "type": "string"
+    },
+    "core_service_type": {
+      "href": {
+        "description": "The unique identifier for the core service type. A core service type is defined by a name, port information and PCE recommended labels",
+        "type": "string"
+      }
+    },
+    "confidence": {
+      "description": "Confidence of the detected core service",
+      "type": "integer",
+      "minimum": 50,
+      "maximum": 100
+    },
+    "feedback": {
+      "description": "The feedback provided for this core service recommendation, if any",
+      "type": "string",
+      "maxLength": 500
+    },
+    "action": {
+      "description": "The user can accept, skip or reject the core service determination.",
+      "type": "string"
+    },
+    "method_name": {
+      "description": "The method by which this core service was detected",
+      "type": "string"
+    },
+    "labels_applied": {
+      "description": "Indicates if the end user applied labels for this workload",
+      "type": "boolean"
+    },
+    "created_at": {
+      "description": "Date at which core service was detected",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Date core service was updated with action information",
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_detected_at": {
+      "description": "Date core service was last recommended by core service detection algorithm",
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

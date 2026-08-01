@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "description": "Name (must be unique)",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description",
+      "type": "string"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ip_ranges": {
+      "$ref": "../common/ip_ranges.schema.json"
+    },
+    "fqdns": {
+      "type": "array",
+      "description": "Collection of FQDN",
+      "items": {
+        "type": "object",
+        "required": [
+          "fqdn"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "fqdn": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ip_list_attribute_id": {
+      "description": "IP list attribute identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

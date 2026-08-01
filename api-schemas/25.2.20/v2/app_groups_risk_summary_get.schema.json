@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "description": "Risk Summary for each app group",
+  "items": {
+    "type": "object",
+    "required": [
+      "app_group",
+      "labels",
+      "risk_summary"
+    ],
+    "properties": {
+      "app_group": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "description": "URI of the app group",
+            "type": "string"
+          }
+        }
+      },
+      "labels": {
+        "$ref": "labels.schema.json"
+      },
+      "risk_summary": {
+        "description": "Risk Summary for this app group",
+        "type": "object",
+        "required": [
+          "ransomware"
+        ],
+        "properties": {
+          "ransomware": {
+            "description": "Ransomware risk summary for this app group",
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "ransomware_protection_percent",
+              "workload_exposure_severity",
+              "last_updated_at"
+            ],
+            "properties": {
+              "workload_exposure_severity": {
+                "$ref": "../common/workload_exposure_severity.schema.json"
+              },
+              "ransomware_protection_percent": {
+                "description": "Ransomware protection percentage for this app-group",
+                "type": "number"
+              },
+              "last_updated_at": {
+                "description": "The time at which the ransomware stats are last computed at",
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

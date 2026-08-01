@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalPropertes": false,
+    "required": [
+      "scope",
+      "warning"
+    ],
+    "properties": {
+      "scope": {
+        "$ref": "labels.schema.json"
+      },
+      "warning": {
+        "description": "Workload disconnect warning timeout",
+        "type": "integer",
+        "minimum": -1,
+        "maximum": 2147483647
+      },
+      "ven_type": {
+        "description": "The ven type that this property is applicable to",
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "server",
+          "endpoint"
+        ]
+      }
+    }
+  },
+  "uniqueitems": true
+}

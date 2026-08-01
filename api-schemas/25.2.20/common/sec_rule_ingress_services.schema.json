@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Array of service URI and port/protocol combinations",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "oneOf": [
+      { "$ref": "../common/href_object.schema.json" },
+      {
+        "type": "object",
+        "required": ["proto"],
+        "additionalProperties": false,
+        "properties": {
+          "port": {
+            "description": "Port number, or the starting port of a range. If unspecified, this will apply to all ports for the given protocol.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535
+          },
+          "to_port": {
+            "description": "Upper end of port range; this field should not be included if specifying an individual port.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535
+          },
+          "proto": {
+            "description": "Transport protocol (numeric)",
+            "type": "integer",
+            "enum": [6, 17]
+          }
+        }
+      },
+      {
+        "type": "object",
+        "required": ["name", "external_data_set", "external_data_reference"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "expose_to": ["end_user_private_perm"],
+            "description": "Name (does not need to be unique)",
+            "type": "string"
+          },
+          "description": {
+            "expose_to": ["end_user_private_perm"],
+            "description": "Description",
+            "type": "string"
+          },
+          "service_ports": {
+            "expose_to": ["end_user_private_perm"],
+            "$ref": "service_ports_v2.schema.json"
+          },
+          "windows_services": {
+            "expose_to": ["end_user_private_perm"],
+            "$ref": "windows_services_v2.schema.json"
+          },
+          "external_data_set": {
+            "expose_to": ["end_user_private_perm"],
+            "description": "External data set identifier",
+            "type": "string"
+          },
+          "external_data_reference": {
+            "expose_to": ["end_user_private_perm"],
+            "description": "External data reference identifier",
+            "type": "string"
+          }
+        }
+      }
+    ]
+  }
+}

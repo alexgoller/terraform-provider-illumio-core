@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "ip_list details of the traffic-flow endpoint",
+  "additionalProperties": false,
+  "required": [
+    "href"
+  ],
+  "properties": {
+    "name": {
+      "description": "Name of the ip_list",
+      "type": "string"
+    },
+    "href": {
+      "description": "The resource(URI) representation of the ip list. This is always the draft version.",
+      "type": "string"
+    },
+    "size": {
+      "description": "The number of ip addresses that the ip list covers",
+      "type": "integer"
+    },
+    "rules": {
+      "description": "Explorer query parameters",
+      "$ref": "traffic_flows_rules.schema.json"
+    },
+    "enforcement_boundaries": {
+      "description": "Explorer query parameters",
+      "$ref": "traffic_flows_enforcement_boundary.schema.json"
+    },
+    "override_deny_rules": {
+      "description": "List of override deny rules for the traffic flow. This is always the draft version",
+      "$ref": "traffic_flows_enforcement_boundary.schema.json"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "name",
+    "type"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of resource",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of resource",
+      "type": "string"
+    },
+    "type": {
+      "description": "type of the auth_security_principal",
+      "type": "string",
+      "enum": [
+        "user",
+        "group"
+      ]
+    }
+  }
+}

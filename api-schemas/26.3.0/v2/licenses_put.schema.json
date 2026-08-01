@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "License",
+  "required": [
+    "version",
+    "key",
+    "description"
+  ],
+  "properties": {
+    "version": {
+      "description": "The version of the licensing key",
+      "type": "integer"
+    },
+    "key": {
+      "description": "The key with embedded data and the secret",
+      "type": "string"
+    },
+    "description": {
+      "description": "The description of the license",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "report_template",
+    "status",
+    "report_parameters"
+  ],
+  "properties": {
+    "href": {
+      "description": "Report URI",
+      "type": "string",
+      "format": "uri"
+    },
+    "report_template": {
+      "description": "Template for the report",
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Report Template URI",
+          "type": "string",
+          "format": "uri"
+        },
+        "name": {
+          "description": "Name of the report template",
+          "type": "string"
+        }
+      }
+    },
+    "description": {
+      "description": "Description of the report",
+      "type": "string",
+      "maxLength": 255
+    },
+    "send_by_email": {
+      "description": "Flag for whether to send user report by email",
+      "type": "boolean"
+    },
+    "progress_percentage": {
+      "description": "Progress percentage for this report",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "generated_at": {
+      "description": "Report generation timestamp in UTC",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "status": {
+      "description": "Current status of this report",
+      "type": "string"
+    },
+    "report_parameters": {
+      "description": "Any specific parameters required for this report template",
+      "type": "object",
+      "anyOf": [
+        {
+          "$ref": "executive_summary_report_params.schema.json"
+        },
+        {
+          "$ref": "traffic_flow_report_params.schema.json"
+        },
+        {
+          "$ref": "explorer_report_params.schema.json"
+        },
+        {
+          "$ref": "ves_report_params.schema.json"
+        },
+        {
+          "$ref": "ransomware_risk_report_params.schema.json"
+        }
+      ]
+    },
+    "created_at": {
+      "description": "Timestamp in UTC when this report was created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who created this report",
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "updated_at": {
+      "type": "string",
+      "description": "Timestamp in UTC when this report was last updated.",
+      "format": "date-time"
+    },
+    "updated_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who last updated this report",
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    }
+  }
+}

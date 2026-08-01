@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "A label group  parameter for a traffic query",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "label_group"
+  ],
+  "properties": {
+    "label_group": {
+      "type": "object",
+      "additional_properties": "false",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Label group URI",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

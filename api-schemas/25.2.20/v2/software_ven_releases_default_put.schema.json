@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "release"
+  ],
+  "properties": {
+    "release": {
+      "description": "The software release to set as the default for this org.",
+      "type": "string"
+    }
+  }
+}

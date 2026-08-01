@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "report_template": {
+      "description": "Template for the report",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Report Template URI",
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "name": {
+      "description": "Name of the report schedule",
+      "type": "string",
+      "maxLength": 255,
+      "minLength": 1
+    },
+    "report_format": {
+      "description": "Format in which the report should be generated",
+      "type": "string",
+      "enum": [
+        "pdf",
+        "json"
+      ]
+    },
+    "report_generation_frequency": {
+      "description": "Report generation frequency",
+      "type": "string",
+      "enum": [
+        "once",
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly"
+      ]
+    },
+    "send_by_email": {
+      "description": "Flag for whether to send user report by email",
+      "type": "boolean"
+    },
+    "scheduled_at": {
+      "description": "Time stamp in UTC for report generation",
+      "type": "string",
+      "format": "date-time"
+    },
+    "report_parameters": {
+      "description": "Any specific parameters required for this report template",
+      "type": "object",
+      "anyOf": [
+        {
+          "$ref": "executive_summary_report_params.schema.json"
+        },
+        {
+          "$ref": "traffic_flow_report_params.schema.json"
+        },
+        {
+          "$ref": "explorer_report_params.schema.json"
+        },
+        {
+          "$ref": "ves_report_params.schema.json"
+        },
+        {
+          "$ref": "rule_hit_count_report_params.schema.json"
+        },
+        {
+          "$ref": "ransomware_risk_report_params.schema.json"
+        }
+      ]
+    }
+  }
+}

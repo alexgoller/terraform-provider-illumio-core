@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "The short friendly name of the pairing profile",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the pairing profile",
+      "type": "string"
+    },
+    "mode": {
+      "$ref": "../common/legacy_workload_modes.schema.json"
+    },
+    "mode_lock": {
+      "description": "DEPRECATED AND REPLACED (USE /enforcement_mode_lock INSTEAD) Flag that controls whether mode can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "enforcement_mode": {
+      "$ref": "../common/workload_enforcement_mode.schema.json"
+    },
+    "enforcement_mode_lock": {
+      "description": "Flag that controls whether enforcement mode can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "enabled": {
+      "description": "The enabled flag of the pairing profile",
+      "type": "boolean"
+    },
+    "allowed_uses_per_key": {
+      "description": "The number of times pairing profile keys can be used",
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "string",
+          "enum": [
+            "unlimited"
+          ]
+        }
+      ]
+    },
+    "key_lifespan": {
+      "description": "Number of seconds pairing profile keys will be valid for",
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "string",
+          "enum": [
+            "unlimited"
+          ]
+        }
+      ]
+    },
+    "labels": {
+      "$ref": "labels.schema.json"
+    },
+    "env_label_lock": {
+      "description": "Flag that controls whether env label can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "loc_label_lock": {
+      "description": "Flag that controls whether loc label can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "role_label_lock": {
+      "description": "Flag that controls whether role label can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "app_label_lock": {
+      "description": "Flag that controls whether app label can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "log_traffic": {
+      "description": "DEPRECATED AND REMOVED. Alerting status",
+      "type": "boolean"
+    },
+    "log_traffic_lock": {
+      "description": "DEPRECATED AND REMOVED. Flag that controls whether log_traffic can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "visibility_level": {
+      "description": "Visibility level of the agent (DEPRECATED VALUE: 'flow_full_detail')",
+      "type": "string",
+      "enum": [
+        "flow_full_detail",
+        "flow_summary",
+        "flow_drops",
+        "flow_off",
+        "enhanced_data_collection"
+      ]
+    },
+    "visibility_level_lock": {
+      "description": "Flag that controls whether visibility_level can be overridden from pairing script",
+      "type": "boolean"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "agent_software_release": {
+      "description": "Agent software release associated with this paring profile",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

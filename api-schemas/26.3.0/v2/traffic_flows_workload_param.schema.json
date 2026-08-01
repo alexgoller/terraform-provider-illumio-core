@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "A workload parameter for a traffic query",
+  "type": "object",
+  "additional_properties": "false",
+  "required": [
+    "workload"
+  ],
+  "properties": {
+    "workload": {
+      "type": "object",
+      "additional_properties": "false",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Workload URI",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

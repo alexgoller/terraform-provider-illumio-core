@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "username",
+    "type"
+  ],
+  "properties": {
+    "username": {
+      "description": "username is an email address e.g. user@example.com",
+      "type": "string",
+      "format": "email"
+    },
+    "full_name": {
+      "description": "User's full name",
+      "type": "string"
+    },
+    "time_zone": {
+      "description": "Time Zone IANA Region Name",
+      "type": "string"
+    },
+    "type": {
+      "description": "User's type, i.e. user authenticated local or remotely via SAML",
+      "type": "string",
+      "enum": [
+        "local"
+      ]
+    }
+  }
+}

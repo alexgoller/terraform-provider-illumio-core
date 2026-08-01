@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "max_queued_reports": {
+      "description": "maximum number of queued reports at anytime per org",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 25
+    },
+    "report_retention_days": {
+      "description": "Number of days a report would be retained for",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 7
+    }
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$ref": "traffic_flows_async_queries_get.schema.json"
+}

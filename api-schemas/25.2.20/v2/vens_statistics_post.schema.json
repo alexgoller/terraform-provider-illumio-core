@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "property_counts"
+  ],
+  "properties": {
+    "property_counts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "property"
+        ],
+        "properties": {
+          "property": {
+            "type": "string",
+            "enum": [
+              "status",
+              "version",
+              "health",
+              "condition",
+              "os_id",
+              "enforcement_mode",
+              "ven_type"
+            ]
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "filter_property"
+              ],
+              "properties": {
+                "filter_property": {
+                  "type": "string",
+                  "enum": [
+                    "status",
+                    "version",
+                    "health",
+                    "condition",
+                    "os_id",
+                    "enforcement_mode",
+                    "ven_type"
+                  ]
+                },
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

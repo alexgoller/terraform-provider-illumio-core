@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "description": "The Backend Services associated with Container Clusters",
+  "items": {
+    "type": "object",
+    "required": [
+      "name",
+      "kind",
+      "updated_at",
+      "created_at",
+      "virtual_services"
+    ],
+    "properties": {
+      "name": {
+        "description": "The name of the Container Cluster Backend",
+        "type": "string"
+      },
+      "kind": {
+        "description": "The type (or kind) of Container Cluster Backend",
+        "type": "string"
+      },
+      "namespace": {
+        "description": "The namespace of the Container Cluster Backend",
+        "type": "string"
+      },
+      "updated_at": {
+        "description": "The time (rfc339 timestamp) at which the Container Cluster Backend was last updated",
+        "type": "string"
+      },
+      "created_at": {
+        "description": "The time (rfc339 timestamp) in which the Container Cluster Backend was created",
+        "type": "string"
+      },
+      "virtual_services": {
+        "type": "object",
+        "required": [
+          "href",
+          "name"
+        ],
+        "properties": {
+          "href": {
+            "description": "The URI to the associated virtual service",
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of virtual service",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

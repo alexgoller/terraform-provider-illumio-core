@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "oneOf": [
+      {
+        "type": "object",
+        "required": [
+          "ip"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "network"
+            ]
+          },
+          {
+            "required": [
+              "port"
+            ]
+          }
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "ip": {
+            "type": "string",
+            "description": "IP address to assign to the virtual service"
+          },
+          "network": {
+            "type": "object",
+            "required": [
+              "href"
+            ],
+            "properties": {
+              "href": {
+                "type": "string",
+                "description": "Network URI for this IP address"
+              }
+            }
+          },
+          "port": {
+            "type": "integer",
+            "description": "Port associated with the IP address for the service (1-65535 integer)"
+          }
+        }
+      },
+      {
+        "type": "object",
+        "required": [
+          "fqdn"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "fqdn": {
+            "type": "string",
+            "description": "FQDN to assign to the virtual service"
+          },
+          "description": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer",
+            "description": "Port associated with the FQDN for the service"
+          }
+        }
+      }
+    ]
+  }
+}

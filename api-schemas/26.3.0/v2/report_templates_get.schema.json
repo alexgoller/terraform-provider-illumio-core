@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Template for a report type",
+  "type": "object",
+  "required": [
+    "href",
+    "name",
+    "report_parameters"
+  ],
+  "properties": {
+    "href": {
+      "description": "Report Template URI",
+      "type": "string",
+      "format": "uri"
+    },
+    "name": {
+      "description": "Display name for this report template",
+      "type": "string",
+      "maxLength": 255
+    },
+    "enabled": {
+      "description": "Determines whether the report template is enabled for this org",
+      "type": "boolean"
+    },
+    "show_in_ui": {
+      "description": "Determines whether this report is to be shown in the PCE UI",
+      "type": "boolean",
+      "default": true
+    },
+    "report_parameters": {
+      "description": "Any specific parameters required for this report template",
+      "type": "object",
+      "anyOf": [
+        {
+          "$ref": "executive_summary_report_params.schema.json"
+        },
+        {
+          "$ref": "traffic_flow_report_params.schema.json"
+        },
+        {
+          "$ref": "explorer_report_params.schema.json"
+        },
+        {
+          "$ref": "ves_report_params.schema.json"
+        },
+        {
+          "$ref": "rule_hit_count_report_params.schema.json"
+        },
+        {
+          "$ref": "ransomware_risk_report_params.schema.json"
+        }
+      ]
+    }
+  }
+}

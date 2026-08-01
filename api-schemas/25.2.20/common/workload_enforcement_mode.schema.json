@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Workload enforcement mode",
+  "type": "string",
+  "enum": ["idle", "visibility_only", "full", "selective"]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "description": "State of the report",
+      "type": "string",
+      "enum": [
+        "cancel_requested"
+      ]
+    }
+  }
+}

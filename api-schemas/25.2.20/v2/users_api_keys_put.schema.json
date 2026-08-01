@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "The key name - just a label to be used",
+      "type": "string"
+    },
+    "description": {
+      "description": "The description of the key",
+      "type": "string"
+    }
+  }
+}

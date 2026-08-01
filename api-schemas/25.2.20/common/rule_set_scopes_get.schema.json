@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Rule set scopes",
+  "type": "array",
+  "items": {
+    "$ref": "rule_set_scope_get.schema.json"
+  }
+}

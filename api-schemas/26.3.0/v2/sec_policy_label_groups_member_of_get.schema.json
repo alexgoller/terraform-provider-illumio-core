@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "href"
+    ],
+    "properties": {
+      "href": {
+        "description": "Parent label group URI",
+        "type": "string"
+      },
+      "name": {
+        "description": "Name of parent label group",
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "auth_username",
+    "type",
+    "session_token",
+    "inactivity_expiration_minutes",
+    "full_name",
+    "product_version"
+  ],
+  "properties": {
+    "href": {
+      "description": "User URI",
+      "type": "string"
+    },
+    "auth_username": {
+      "description": "Username required for authentication",
+      "type": "string"
+    },
+    "session_token": {
+      "description": "A token used in place of a password for all REST API calls for this user - it is only valid for the IP the login was called from",
+      "type": "string"
+    },
+    "inactivity_expiration_minutes": {
+      "description": "How long this token will remain active if not used.  It will last for at least this long.",
+      "type": "integer"
+    },
+    "last_login_on": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time the user logged in"
+    },
+    "last_login_ip_address": {
+      "type": "string",
+      "description": "Last IP the user logged in from"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "User's full name"
+    },
+    "type": {
+      "description": "User's type, i.e. user authenticated local or remotely via SAML",
+      "type": "string"
+    },
+    "time_zone": {
+      "type": "string",
+      "description": "The time zone setting for this user"
+    },
+    "product_version": {
+      "type": "object",
+      "$ref": "product_version.schema.json"
+    }
+  }
+}

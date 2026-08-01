@@ -1,0 +1,121 @@
+{
+   "$schema":"http://json-schema.org/draft-04/schema#",
+   "type": "object",
+   "required": ["detected_vulnerability_summary", "workload_detected_vulnerabilities"],
+   "properties": {
+      "detected_vulnerability_summary": {
+         "$ref": "vulnerability_summary.schema.json"
+      },
+      "workload_detected_vulnerabilities": {
+         "type":"array",
+         "description": "Collection of the detected vulnerabilities associated with the workload",
+         "items":{
+            "type" : "object",
+            "required" : [
+               "ip_address",
+               "vulnerability"
+            ],
+            "additionalProperties" : false,
+            "properties" : {
+               "ip_address" : {
+                  "description" : "The ip address of the host where the vulnerability is found",
+                  "type" : "string"
+               },
+               "port" : {
+                  "description" : "The port which is associated with the vulnerability",
+                  "type" : "integer"
+               },
+               "proto" : {
+                  "description" : "The protocol which is associated with the vulnerability",
+                  "type" : "integer"
+               },
+               "port_exposure" : {
+                  "description" : "The exposure of the port based on the current policy",
+                  "type" : ["integer", "null"]
+               },
+               "port_vulnerability_exposure_score" : {
+                  "description" : "The vulnerability exposure score calculated for the port, based on the port exposure and vulnerability",
+                  "type" : ["integer", "null"]
+               },
+               "full_enforcement_vulnerability_exposure": {
+                  "$ref": "workloads_detected_vulnerabilities_exposure.schema.json",
+                  "description": "vulnerability exposure details for full enforcement mode"
+               },
+               "selective_enforcement_vulnerability_exposure": {
+                  "$ref": "workloads_detected_vulnerabilities_exposure.schema.json",
+                  "description": "vulnerability exposure details for selective enforcement mode"
+               },
+               "visibility_enforcement_vulnerability_exposure": {
+                  "$ref": "workloads_detected_vulnerabilities_exposure.schema.json",
+                  "description": "vulnerability exposure details for visibility-only enforcement mode"
+               },
+               "current_enforcement_vulnerability_exposure": {
+                  "$ref": "workloads_detected_vulnerabilities_exposure.schema.json",
+                  "description": "vulnerability exposure details for the current enforcement mode"
+               },
+               "port_wide_exposure" : {
+                  "additionalProperties" : false,
+                  "properties" : {
+                     "any" : {
+                        "description" : "The boolean value representing if the port is exposed to internet (any rule).",
+                        "type" : ["boolean", "null"]
+                     },
+                     "ip_list" : {
+                        "description" : "The boolean value representing if the port is exposed to ip_list(s)",
+                        "type" : ["boolean", "null"]
+                     }
+                  }
+               },
+               "workload" : {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["href"],
+                  "properties": {
+                     "href": {
+                        "description": "The URI of the workload to which this vulnerability belongs to",
+                        "type": "string"
+                     }
+                  }
+               },
+               "vulnerability" : {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["href"],
+                  "properties": {
+                     "href": {
+                        "description": "The URI of the vulnerability class to which this vulnerability belongs to",
+                        "type": "string"
+                     },
+                     "score": {
+                        "description": "The normalized score of the vulnerability within the range of 0 to 100",
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                     },
+                     "name": {
+                        "description": "The title/name of the vulnerability",
+                        "type": "string"
+                     }
+                  }
+               },
+               "vulnerability_report" : {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["href"],
+                  "properties": {
+                     "href": {
+                        "description": "The URI of the report to which this vulnerability belongs to",
+                        "type": "string"
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "last_updated_at": {
+         "description": "Indicates when the vulnerability data was last updated",
+         "type": "string",
+         "format": "date-time"
+      }
+   }
+}

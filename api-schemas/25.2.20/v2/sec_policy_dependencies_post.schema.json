@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "operation",
+    "change_subset"
+  ],
+  "properties": {
+    "operation": {
+      "description": "Commit or revert",
+      "type": "string",
+      "enum": [
+        "commit",
+        "revert"
+      ]
+    },
+    "change_subset": {
+      "$ref": "sec_policy_change_subset.schema.json"
+    }
+  }
+}

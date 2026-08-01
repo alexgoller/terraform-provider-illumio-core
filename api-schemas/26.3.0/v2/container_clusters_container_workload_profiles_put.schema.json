@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "A friendly name given to a profile if the namespace is not user friendly",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "description": "Description of the profile",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "assign_labels": {
+      "description": "DEPRECATED Labels to assign to the workload that matches the namespace",
+      "$ref": "../common/labels.schema.json"
+    },
+    "labels": {
+      "description": "Labels to assign to the workload that matches the namespace",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "../common/label_restrictions.schema.json"
+      }
+    },
+    "enforcement_mode": {
+      "$ref": "../common/workload_enforcement_mode.schema.json"
+    },
+    "managed": {
+      "description": "If the namespace is managed or not",
+      "type": "boolean"
+    }
+  }
+}

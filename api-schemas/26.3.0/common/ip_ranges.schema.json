@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "IP addresses or ranges",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["from_ip"],
+    "properties": {
+      "description": {
+        "description": "Description",
+        "type": "string"
+      },
+      "from_ip": {
+        "description": "IP address or a low end of IP range. Might be specified with CIDR notation",
+        "type": "string"
+      },
+      "to_ip": {
+        "description": "High end of an IP range",
+        "type": "string"
+      },
+      "exclusion": {
+        "description": "Whether this IP address is an exclusion. Exclusions must be a strict subset of inclusive IP addresses.",
+        "type": "boolean"
+      }
+    }
+  }
+}

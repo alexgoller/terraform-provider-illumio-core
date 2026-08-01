@@ -1,0 +1,265 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "source",
+      "destination",
+      "services"
+    ],
+    "properties": {
+      "source": {
+        "description": "Source entity",
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "maxProperties": 1,
+        "properties": {
+          "actors": {
+            "description": "Source rule actor ('all' or 'ams')",
+            "type": "string",
+            "enum": [
+              "ams",
+              "all"
+            ]
+          },
+          "workload": {
+            "description": "Source workload",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "description": "URI of workload",
+                "type": "string"
+              }
+            }
+          },
+          "container_workload": {
+            "description": "Source container workload",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "description": "URI of conatainer workload",
+                "type": "string"
+              }
+            }
+          },
+          "ip_list": {
+            "description": "Source IP list",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "description": "URI of IP list",
+                "type": "string"
+              }
+            }
+          },
+          "virtual_server": {
+            "description": "Source virtual server",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "description": "URI of virtual server",
+                "type": "string"
+              }
+            }
+          },
+          "virtual_service": {
+            "description": "Source virtual service",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "description": "URI of virtual service",
+                "type": "string"
+              }
+            }
+          },
+          "labels": {
+            "description": "Source labels",
+            "type": "array",
+            "additionalProperties": false,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "href": {
+                  "description": "URI of label",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "destination": {
+        "description": "Destination entity",
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "maxProperties": 1,
+        "properties": {
+          "actors": {
+            "description": "Destination rule actor ('all' or 'ams')",
+            "type": "string",
+            "enum": [
+              "ams",
+              "all"
+            ]
+          },
+          "workload": {
+            "description": "Destination workload",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "description": "URI of workload",
+                "type": "string"
+              }
+            }
+          },
+          "container_workload": {
+            "description": "Destination container workload",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "description": "URI of container workload",
+                "type": "string"
+              }
+            }
+          },
+          "ip_list": {
+            "description": "Destination IP list",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "description": "URI of IP list",
+                "type": "string"
+              }
+            }
+          },
+          "virtual_server": {
+            "description": "Destination virtual server",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "description": "URI of virtual server",
+                "type": "string"
+              }
+            }
+          },
+          "virtual_service": {
+            "description": "Destination virtual service",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "href": {
+                "description": "URI of virtual service",
+                "type": "string"
+              }
+            }
+          },
+          "labels": {
+            "description": "Destination labels",
+            "type": "array",
+            "additionalProperties": false,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "href": {
+                  "description": "URI of label",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "network": {
+        "description": "The network that the source and destination are on",
+        "type": "object",
+        "properties": {
+          "href": {
+            "description": "The href of the network that the source and destination are on",
+            "type": "string"
+          }
+        }
+      },
+      "services": {
+        "type": "array",
+        "items": {
+          "description": "Port and protocol, and optional process or windows service names, of matching rules",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "protocol"
+          ],
+          "properties": {
+            "port": {
+              "description": "Port number (integer 0-65535 or -1 for any port).",
+              "type": "integer"
+            },
+            "protocol": {
+              "$ref": "../common/service_ports_protocol_numeric.schema.json"
+            },
+            "os_type": {
+              "description": "service operating system type",
+              "type": "string",
+              "enum": [
+                "windows",
+                "linux",
+                "windows_outbound"
+              ]
+            },
+            "process_name": {
+              "description": "process name reported in traffic data",
+              "type": "string"
+            },
+            "windows_service_name": {
+              "description": "windows service name reported in traffic data",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "resolve_labels_as": {
+        "description": "Whether to resolve labels to workloads, virtual services, or both",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "type": "array",
+            "minLength": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "workloads",
+                "virtual_services"
+              ]
+            }
+          },
+          "destination": {
+            "type": "array",
+            "minLength": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "workloads",
+                "virtual_services"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

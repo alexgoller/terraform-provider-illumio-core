@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Windows services",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "$ref": "windows_service_v2.schema.json"
+  }
+}

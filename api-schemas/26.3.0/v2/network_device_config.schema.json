@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "The name of the device",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description of the device",
+      "type": "string"
+    },
+    "device_type": {
+      "description": "Type of device",
+      "type": "string"
+    },
+    "manufacturer": {
+      "description": "The manufacturer of the device",
+      "type": "string"
+    },
+    "model": {
+      "description": "The model of the device",
+      "type": "string"
+    },
+    "ip_address": {
+      "description": "The IP address of the device",
+      "type": "string"
+    },
+    "credentials": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "description": "The type of credential used to access the device",
+          "type": "string",
+          "enum": [
+            "cli",
+            "api"
+          ]
+        },
+        "port": {
+          "description": "The device port, if non-standard for credential type",
+          "type": "integer"
+        },
+        "username": {
+          "description": "The username used to access the device",
+          "type": "string"
+        },
+        "password": {
+          "description": "The password used to access the device",
+          "type": "string"
+        }
+      }
+    },
+    "rules_format": {
+      "description": "Format of the generated rules for the device",
+      "type": "string",
+      "enum": [
+        "cli",
+        "json"
+      ]
+    }
+  }
+}

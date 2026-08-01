@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authentication_type"
+  ],
+  "properties": {
+    "authentication_type": {
+      "description": "Authentication types",
+      "type": "string",
+      "enum": [
+        "Local",
+        "RADIUS",
+        "SAML",
+        "LDAP"
+      ]
+    }
+  }
+}

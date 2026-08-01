@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "created_at",
+    "updated_at",
+    "deleted_at",
+    "name",
+    "description",
+    "labels"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the virtual service",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "Timestamp when this virtual service was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when this virtual service was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "Timestamp when this virtual service was deleted",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_by": {
+      "description": "User who originally created this virtual service",
+      "$ref": "../common/nullable_href_object.schema.json"
+    },
+    "updated_by": {
+      "description": "User who last updated this virtual service",
+      "$ref": "../common/nullable_href_object.schema.json"
+    },
+    "deleted_by": {
+      "description": "User who deleted this virtual service",
+      "$ref": "../common/nullable_href_object.schema.json"
+    },
+    "update_type": {
+      "description": "Update type for the virtual service",
+      "$ref": "../common/sec_policy_update_type.schema.json"
+    },
+    "name": {
+      "description": "Name",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pce_fqdn": {
+      "description": "PCE FQDN for this container cluster. Used in Supercluster only",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "labels": {
+      "description": "Virtual service labels",
+      "type": "array",
+      "items": {
+        "$ref": "../common/label_optional_key_value.schema.json"
+      }
+    },
+    "service_ports": {
+      "$ref": "virtual_service_service_ports.schema.json"
+    },
+    "service": {
+      "description": "URI of associated service",
+      "type": "object"
+    },
+    "apply_to": {
+      "description": "Firewall rule target for workloads bound to this virtual service: host_only or internal_bridge_network",
+      "type": "string",
+      "expose_to": [
+        "end_user_experimental"
+      ]
+    },
+    "ip_overrides": {
+      "description": "Array of IPs or CIDRs as IP overrides",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "service_addresses": {
+      "$ref": "virtual_service_service_addresses.schema.json"
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "service"
+      ]
+    },
+    {
+      "required": [
+        "service_ports"
+      ]
+    }
+  ]
+}

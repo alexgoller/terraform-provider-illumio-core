@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "The list of core services",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "core_service_type"
+    ],
+    "properties": {
+      "href": {
+        "description": "The href of detected core service summary",
+        "type": "string",
+        "format": "uri"
+      },
+      "core_service_type": {
+        "href": {
+          "description": "The unique identifier for the core service type. A core service type is defined by a name, port information and PCE recommended labels",
+          "type": "string"
+        }
+      },
+      "recommended": {
+        "description": "Total number of detected core services which are skipped or no decision has been made yet",
+        "type": "integer"
+      },
+      "accepted": {
+        "description": "Number of accepted recommendations",
+        "type": "integer"
+      },
+      "rejected": {
+        "description": "Number of recommendations rejected by the user",
+        "type": "integer"
+      }
+    }
+  }
+}

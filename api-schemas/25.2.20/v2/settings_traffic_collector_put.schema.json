@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "transmission": {
+      "description": "transmission type: broadcast/multicast/unicast",
+      "type": "string",
+      "enum": [
+        "broadcast",
+        "multicast",
+        "unicast"
+      ]
+    },
+    "data_source": {
+      "type": "string",
+      "enum": [
+        "any",
+        "server",
+        "endpoint"
+      ],
+      "description": "flow summary data source"
+    },
+    "network": {
+      "type": "string",
+      "enum": [
+        "any",
+        "corporate",
+        "external"
+      ],
+      "description": "flow summary network"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "src_port": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "dst_port": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "proto": {
+          "type": "integer"
+        },
+        "dst_ip": {
+          "type": "string",
+          "description": "single destination ip address or CIDR"
+        },
+        "src_ip": {
+          "type": "string",
+          "description": "single source ip address or CIDR"
+        }
+      }
+    }
+  }
+}

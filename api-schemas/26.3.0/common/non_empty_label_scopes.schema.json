@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Collection of assigned list of labels",
+  "type": "array",
+  "items": {
+    "$ref": "labels.schema.json",
+    "minItems": 1
+  },
+  "uniqueItems": true,
+  "minItems": 1
+}

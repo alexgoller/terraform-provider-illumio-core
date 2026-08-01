@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Parameter representing broadcast/multiccast",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "transmission"
+  ],
+  "properties": {
+    "transmission": {
+      "description": "transmission type",
+      "type": "string",
+      "enum": [
+        "broadcast",
+        "multicast",
+        "unicast"
+      ]
+    }
+  }
+}

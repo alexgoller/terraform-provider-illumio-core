@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "href": {
+      "description": "URL of device endpoint",
+      "type": "string"
+    },
+    "config": {
+      "$ref": "network_endpoint_config.schema.json"
+    },
+    "workload_discovery": {
+      "description": "Flag to indicate if workload discovery is enabled",
+      "type": "boolean"
+    },
+    "network_device": {
+      "description": "Associated network device",
+      "type": "object",
+      "additional_properties": false,
+      "properties": {
+        "href": {
+          "description": "URI of network device",
+          "type": "string"
+        }
+      }
+    },
+    "workloads": {
+      "description": "List of managed workloads",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "description": "URI of workload",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "status": {
+      "description": "Endpoint status",
+      "type": "string"
+    }
+  }
+}

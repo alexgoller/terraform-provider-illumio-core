@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "oneOf": [
+    {
+      "required": ["key", "assignment"],
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "The label key",
+          "type": "string"
+        },
+        "assignment": {
+          "description": "The label href to set",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [ "href" ],
+          "properties": {
+            "href": {
+              "description": "Label URI",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "required": ["key", "restriction"],
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "The label key",
+          "type": "string"
+        },
+        "restriction": {
+          "description": "The list of allowed label hrefs",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [ "href" ],
+            "properties": {
+              "href": {
+                "description": "Label URI",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

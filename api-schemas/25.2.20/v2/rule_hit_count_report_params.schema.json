@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Returns the rule hit count stats for all the rules in a ruleset during the specified time-range",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_time_range",
+    "rule_sets"
+  ],
+  "properties": {
+    "report_time_range": {
+      "description": "Time range the report is built across",
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "report_time_range_definitions.schema.json#/definitions/custom_date_range"
+        },
+        {
+          "$ref": "report_time_range_definitions.schema.json#/definitions/last_num_days"
+        }
+      ]
+    },
+    "rule_sets": {
+      "$ref": "rule_set_lists.schema.json"
+    },
+    "max_results": {
+      "description": "maximum number of rules to return in the specified time-range in descending order of rule creation time",
+      "minimum": 0,
+      "maximum": 200000,
+      "type": "integer"
+    }
+  }
+}

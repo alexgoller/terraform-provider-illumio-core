@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "username",
+    "last_login_on",
+    "last_login_ip_address",
+    "login_count",
+    "full_name",
+    "time_zone",
+    "type",
+    "updated_at",
+    "created_at"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the user",
+      "type": "string"
+    },
+    "username": {
+      "description": "The User name as an email address",
+      "type": "string"
+    },
+    "last_login_on": {
+      "description": "This is populated automatically after a login",
+      "type": "string"
+    },
+    "last_login_ip_address": {
+      "description": "This is populated automatically after a login",
+      "type": "string"
+    },
+    "login_count": {
+      "description": "Number of times this user logged in",
+      "type": "integer"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "User's full name"
+    },
+    "time_zone": {
+      "description": "Time Zone IANA Region Name",
+      "type": "string"
+    },
+    "locked": {
+      "description": "Flag to indicate whether account is locked",
+      "type": "boolean"
+    },
+    "effective_groups": {
+      "description": "List of group names the user is a member of",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "local_profile": {
+      "description": "Local user profile",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "updated_at": {
+      "description": "Timestamp when this user was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_at": {
+      "description": "Timestamp when this user was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "type": {
+      "description": "User's type, i.e. user authenticated local or remotely via SAML",
+      "type": "string"
+    },
+    "presence_status": {
+      "description": "Status of the user",
+      "type": "string"
+    }
+  }
+}

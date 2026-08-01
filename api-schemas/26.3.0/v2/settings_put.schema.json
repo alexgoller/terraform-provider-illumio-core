@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "num_assets_requiring_ransomware_protection": {
+      "description": "number of assets that need ransomware protection for this org",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9999999
+    },
+    "total_lateral_address_space": {
+      "description": "total lateral address space for ransomware risk calculation for this org",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "total_internet_address_space": {
+      "description": "total internet address space for ransomware risk calculation for this org",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "automatic_label_application_on_ven_activation": {
+      "description": "Automatically apply labels rules when VEN is activated",
+      "type": "boolean"
+    },
+    "rule_based_label_maker_schedule_enabled": {
+      "description": "True or false based on whether the rule based label maker schedule is enabled.",
+      "type": "boolean"
+    },
+    "rule_based_label_maker_schedule": {
+      "$ref": "label_rules_application_schedule.schema.json"
+    },
+    "max_api_key_expiration_in_seconds": {
+      "description": "Validity of api_key in seconds; -1 specifies api_keys never expire",
+      "type": "integer",
+      "minimum": -1,
+      "default": 7776000,
+      "maximum": 2147483647
+    },
+    "expired_api_keys_retention_in_seconds": {
+      "description": "Retention of expired api_keys in the database",
+      "type": "integer",
+      "default": 7776000,
+      "minimum": 0,
+      "maximum": 31536000
+    },
+    "advanced_ruleset_display": {
+      "description": "When true, the UI will display rulesets in advanced mode. This means that scopes will be displayed for any unscoped rulesets, including newly added rulesets.",
+      "type": "boolean",
+      "default": true
+    },
+    "ven_maintenance_token_required": {
+      "description": "Identifies if the tampering protection for the VEN and endpoints is enabled or not.",
+      "type": "boolean",
+      "default": false
+    },
+    "cloud_secure_tenant_id": {
+      "description": "Cloud Secure tenant id corresponding to this organization",
+      "type": "string"
+    }
+  }
+}

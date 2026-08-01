@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "DEPRECATED AND REPLACED by 'ven', 'enforcement_mode', and 'visibility_level'",
+  "additionalProperties": false,
+  "properties": {
+    "mode": {
+      "$ref": "../common/workload_modes.schema.json"
+    },
+    "log_traffic": {
+      "description": "DEPRECATED WITH NO REPLACEMENT True if we want to log traffic events from this workload",
+      "type": "boolean"
+    }
+  }
+}

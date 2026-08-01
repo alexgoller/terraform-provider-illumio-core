@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "status"
+  ],
+  "properties": {
+    "href": {
+      "description": "The job URI.",
+      "type": "string"
+    },
+    "job_type": {
+      "description": "An arbitrary designator for the job type or kind, typically supplied by the job requestor.",
+      "type": "string"
+    },
+    "description": {
+      "description": "An arbitrary free-form description of the job, as supplied by the job requestor.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "description": "The current state of the job, to the effect of its success, failure, etc.",
+      "type": "string"
+    },
+    "requested_at": {
+      "description": "The time (rfc3339 timestamp) at which this job was requested or submitted.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "requested_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the user who requested this job.",
+          "type": "string"
+        }
+      }
+    },
+    "terminated_at": {
+      "description": "The time (rfc3339 timestamp) at which this job terminated, either successfully or failingly.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "result": {
+      "description": "The result produced by the job, typically a URI (with 'href' sub-property), or an error in case of failure.",
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "href": {
+          "description": "The href to collect the response body",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

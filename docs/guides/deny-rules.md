@@ -166,6 +166,43 @@ That produces:
 `illumio-core_security_rule` behaves the same way, so the two resources are
 written identically.
 
+### How multiple actors combine
+
+Illumio's label model is multidimensional — `role`, `app`, `env`, `loc`, plus
+any custom label types. Listing labels of **different types** in `providers` or
+`consumers` selects the **intersection**: the assets carrying all of them.
+
+```hcl
+providers {
+  label {
+    href = illumio-core_label.role_web.href
+  }
+}
+
+providers {
+  label {
+    href = illumio-core_label.app_sap.href
+  }
+}
+
+providers {
+  label {
+    href = illumio-core_label.env_prod.href
+  }
+}
+```
+
+That rule applies to assets that are `role:web` **and** `app:sap` **and**
+`env:prod` — not to everything that is any one of them.
+
+⚠️ **This matters most on a deny rule.** Adding another label of a different
+type makes the rule *narrower*, so a rule you expect to block more will block
+less. If a deny rule is not catching the traffic you expect, an over-specified
+provider or consumer set is the first thing to check.
+
+The same applies to `illumio-core_security_rule`; it is a property of the PCE's
+policy model rather than of any one resource.
+
 #### Several actors without repeating yourself
 
 Repeating the block by hand gets old quickly. `dynamic` blocks work here, and

@@ -258,6 +258,49 @@ that serves the fork under the same source address.
 
 See [Using this fork](using-this-fork.html).
 
+### PCE version-compatibility audit
+
+All 28 schemas that differ between the 25.2.20 and 26.3.0 bundles were checked
+against what the provider sends. **Deny rules were the only defect.**
+
+Method: a field missing from a release only breaks something if the provider
+*writes* it, so only `*_post` and `*_put` schemas matter. Those 26.3-only write
+fields, and whether any resource covers them:
+
+| Field | Write schema | Covered by a resource? |
+|---|---|---|
+| `all_ips_except_for_in_consumers` / `_providers` | `sec_rules_post/put`, `deny_rules` | **Yes — deny rule. Fixed in 2.0.1** |
+| `ip_list_attribute_id` | `sec_policy_ip_lists_post/put` | No |
+| `overwrite` | `label_mapping_rules_post/put` | No |
+| `members` | `security_principals_put` | No |
+| `uuid` | `service_accounts_post` | No |
+| `total_internet_address_space`, `total_lateral_address_space` | `settings_put` | No |
+| `golden_image` | `vens_put` | No |
+| `counts` | `sec_policy_rule_search_post` | No |
+
+`sec_rules_post/put` gained the same two `all_ips_except_*` fields as deny
+rules, but `illumio-core_security_rule` does not reference them, so it was never
+affected.
+
+The reverse direction was checked too — a field 26.3 *removed* would break a
+newer PCE. Only one exists on a write path, `use_census_permissions` on
+`settings_put`, and no resource sends it.
+
+The 16 schemas that exist only in 26.3.0 — `inactive_ven_cleanup_schedules`,
+`ip_list_attributes`, `security_principal_users`, `vens_bulk_transplant` and
+others — have no resource in the provider, so they cannot be a source of
+version breakage.
+
+Reads are safe in the other direction as well: a 25.2 response simply omits
+26.3 fields, and since 2.0.0 every API value is read through a helper that
+treats a missing field as empty rather than panicking.
+
+Re-run this audit after archiving a new release:
+
+```bash
+scripts/diff-api-schema.py 25.2.20 26.3.0
+```
+
 ## Not changed
 
 - No resource or data source was removed.

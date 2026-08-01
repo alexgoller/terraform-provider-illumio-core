@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "The list of traffic flows matching the query",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "src",
+      "dst",
+      "service",
+      "num_connections",
+      "policy_decision",
+      "flow_direction",
+      "timestamp_range",
+      "caps"
+    ],
+    "properties": {
+      "src": {
+        "$ref": "traffic_flows_endpoint.schema.json"
+      },
+      "dst": {
+        "$ref": "traffic_flows_endpoint.schema.json"
+      },
+      "service": {
+        "$ref": "traffic_flows_service.schema.json"
+      },
+      "num_connections": {
+        "description": "The number of times this flow was seen",
+        "type": "integer"
+      },
+      "policy_decision": {
+        "description": "Policy decision made",
+        "type": "string"
+      },
+      "boundary_decision": {
+        "description": "Boundary indicates if the flow was blocked due to an enforcement boundary",
+        "type": "string"
+      },
+      "draft_policy_decision": {
+        "description": "draft policy decision of the flow",
+        "type": "string"
+      },
+      "flow_direction": {
+        "description": "Flow direction",
+        "type": "string"
+      },
+      "transmission": {
+        "description": "transmission type: broadcast/multicast",
+        "type": "string"
+      },
+      "timestamp_range": {
+        "description": "Timestamp ranges for the flow detected",
+        "type": "object",
+        "additional_properties": false,
+        "required": [
+          "first_detected",
+          "last_detected"
+        ],
+        "properties": {
+          "first_detected": {
+            "description": "The first time this flow was detected within the time range specified by the query",
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_detected": {
+            "description": "The last time this flow was detected within the time range specified by the query",
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "state": {
+        "description": "state of the flow",
+        "type": "string"
+      },
+      "dst_bo": {
+        "description": "Bytes sent till now by the destination over the flow during the interval",
+        "type": "integer"
+      },
+      "dst_bi": {
+        "description": "Bytes received till now by the destination over the flow during the interval",
+        "type": "integer"
+      },
+      "icmp_type": {
+        "description": "ICMP type for the flow",
+        "type": "integer"
+      },
+      "icmp_code": {
+        "description": "ICMP code for the flow",
+        "type": "integer"
+      },
+      "network": {
+        "type": "object",
+        "description": "PCE network on which this flow was observed.",
+        "properties": {
+          "name": {
+            "description": "The network name.",
+            "type": "string"
+          },
+          "href": {
+            "type": "string",
+            "description": "network href"
+          }
+        }
+      },
+      "rules": {
+        "description": "Allow rules for specific policy objects. This is always the draft version.",
+        "type": "object",
+        "$ref": "traffic_flows_rules.schema.json"
+      },
+      "enforcement_boundaries": {
+        "description": "List of enforcement_boundaries details of the traffic-flow endpoint. This is always the draft version",
+        "type": "object",
+        "$ref": "traffic_flows_enforcement_boundary.schema.json"
+      },
+      "override_deny_rules": {
+        "description": "List of override deny rules for the traffic flow. This is always the draft version",
+        "$ref": "traffic_flows_enforcement_boundary.schema.json"
+      },
+      "caps": {
+        "description": "Array of permissions for the flow for the current user",
+        "type": "array",
+        "items": {
+          "$ref": "rbac_permission_types.schema.json"
+        }
+      },
+      "client_type": {
+        "description": "type of client which reported this flow",
+        "type": "string"
+      }
+    }
+  }
+}

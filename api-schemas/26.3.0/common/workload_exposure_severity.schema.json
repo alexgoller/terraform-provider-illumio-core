@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Exposed ransomware severity for workload",
+  "type": "string",
+  "enum": [
+    "critical",
+    "high",
+    "medium",
+    "low",
+    "fully_protected"
+  ]
+}

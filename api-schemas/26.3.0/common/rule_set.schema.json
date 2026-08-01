@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Parent Rule Set of a Rule",
+  "_comment": "Don't set additionalProperties:false here as it collides with usage in allOf, set that in the schema that references this one instead.",
+  "properties": {
+    "created_at": {
+      "description": "Timestamp when record was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when record was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "Timestamp when record was deleted",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "description": "The username which created this record",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "description": "The username which last updated this record",
+          "type": "string"
+        }
+      }
+    },
+    "deleted_by": {
+      "type": ["object", "null" ],
+      "properties": {
+        "username": {
+          "description": "The username which deleted this record",
+          "type": "string"
+        }
+      }
+    },
+    "update_type": {
+      "description": "Type of update",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "enum": ["create", "update", "delete"]
+        }
+      ]
+    },
+    "update_label": {
+      "description": "Type of update",
+      "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "string",
+            "enum": ["create", "update", "delete"]
+          }
+        ]
+    },
+    "href": {
+      "description": "URI of the rule set",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name (must be unique)",
+      "type": "string"
+    },
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [ "string", "null" ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [ "string", "null" ]
+    },
+    "scopes": { "$ref": "../common/rule_set_scopes_get.schema.json" },
+    "caps": {
+      "expose_to": ["end_user_private_perm"],
+      "$ref":"../common/entity_caps.schema.json"
+    }
+  }
+}

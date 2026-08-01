@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "idp_sso_target_url": {
+      "description": "The identity provider URL to which the authentication request should be sent",
+      "type": "string",
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "url"
+        },
+        {
+          "type": "string",
+          "enum": [
+            ""
+          ]
+        }
+      ]
+    },
+    "idp_slo_target_url": {
+      "description": "The identity provider URL to which the logout request should be sent",
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "url"
+        },
+        {
+          "type": "string",
+          "enum": [
+            ""
+          ]
+        }
+      ]
+    },
+    "idp_cert": {
+      "description": "The certificate provided from the identity provider when setting up the relationship",
+      "type": "string"
+    },
+    "authn_context": {
+      "description": "The URI of the authentication context class you want the identity provider to use to authenticate user, with possible values being NULL (unspecified) or urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport",
+      "type": "string"
+    },
+    "force_authn": {
+      "description": "Defines whether or not the identity provider should force re-authentication of the user, even if the user has still a valid session",
+      "type": "boolean"
+    },
+    "sign_authn_request": {
+      "description": "Defines whether or not PCE should sign saml authN request to IdP; default is false",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

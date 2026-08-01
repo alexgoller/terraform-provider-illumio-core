@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "name",
+    "kind",
+    "namespace"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the kubernetes workload",
+      "type": "string"
+    },
+    "name": {
+      "description": "Container workload name",
+      "type": "string"
+    },
+    "namespace": {
+      "description": "k8s namespace where this k8s Workload belongs to",
+      "type": "string"
+    },
+    "kind": {
+      "description": "k8s resource kind, e.g. Deployment",
+      "type": "string"
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/label_optional_key_value.schema.json"
+      }
+    },
+    "enforcement_mode": {
+      "$ref": "../common/workload_enforcement_mode.schema.json"
+    },
+    "visibility_level": {
+      "$ref": "../common/workload_visibility_level.schema.json"
+    },
+    "container_workload_profile": {
+      "$ref": "container_clusters_container_workload_profiles_get.schema.json"
+    },
+    "container_cluster": {
+      "$ref": "container_clusters_get.schema.json"
+    },
+    "security_policy_applied_at": {
+      "description": "Last reported time when policy was processed by CLAS to the k8s workload (UTC)",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "security_policy_sync_state": {
+      "description": "Current state of security policy",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "RFC 3339 timestamp at which this record was created",
+      "format": "date-time",
+      "type": "string"
+    },
+    "updated_at": {
+      "description": "RFC 3339 timestamp at which this record was updated",
+      "format": "date-time",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "../common/kubernetes_workloads_metadata.schema.json"
+    },
+    "private_ip_addresses": {
+      "$ref": "../common/kubernetes_workloads_private_ip_addresses.schema.json"
+    },
+    "container_cluster_service": {
+      "$ref": "sec_policy_virtual_services_get.schema.json"
+    }
+  }
+}

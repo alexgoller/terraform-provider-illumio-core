@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "modify labels",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "labels": {
+      "$ref": "core_services_labels.schema.json"
+    },
+    "required_ports": {
+      "description": "The required ports for this core service type, if any",
+      "$ref": "core_services_type_ports.schema.json"
+    },
+    "optional_ports": {
+      "description": "The optional ports for this core service type, if any",
+      "$ref": "core_services_type_ports.schema.json"
+    },
+    "num_optional_ports_required": {
+      "description": "Number of optional ports required",
+      "type": "integer",
+      "maximum": 65535
+    },
+    "provider": {
+      "description": "To indicate whether the provider is a core service. Default value is true which means provider is a core service",
+      "type": "boolean"
+    },
+    "priority": {
+      "description": "Each IP/workload is identified for 1 core service type and they are ordered by priority",
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

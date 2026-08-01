@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Assigned labels",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [ "href" ],
+    "properties": {
+      "href": {
+        "description": "Label URI",
+        "type": "string"
+      }
+    }
+  },
+  "uniqueItems": true
+}

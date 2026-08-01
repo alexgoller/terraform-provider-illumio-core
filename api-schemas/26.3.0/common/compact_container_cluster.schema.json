@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Container Cluster",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "href",
+    "name"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name",
+      "type": "string"
+    }
+  }
+}

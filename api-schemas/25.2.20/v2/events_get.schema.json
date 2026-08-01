@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "event_type",
+    "status",
+    "severity",
+    "timestamp",
+    "pce_fqdn",
+    "created_by"
+  ],
+  "properties": {
+    "href": {
+      "description": "Unique href for this event, which can be used for event lookup via the events API",
+      "type": "string"
+    },
+    "org_id": {
+      "description": "org_id for this event.",
+      "type": "integer"
+    },
+    "version": {
+      "description": "The event version of this event for the category it falls under",
+      "type": "string"
+    },
+    "event_id": {
+      "description": "Unique request/transaction identifier of the API request / context from which this event was generated",
+      "type": "string"
+    },
+    "event_type": {
+      "description": "Event name that clearly describes the event",
+      "type": "string"
+    },
+    "status": {
+      "description": "Status of the event; usually a mapping of api_status_code to a generic result string; nil if no action. For presentation purposes only.",
+      "type": "string"
+    },
+    "severity": {
+      "description": "This event's level of importance",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "RFC 3339 timestamp at which this event was originally created",
+      "format": "date-time",
+      "type": "string"
+    },
+    "pce_fqdn": {
+      "description": "Fully qualified domain name of the PCE, where this event originated",
+      "type": "string"
+    },
+    "created_by": {
+      "description": "The entity responsible for the creation of this event",
+      "type": "object",
+      "properties": {
+        "user": {
+          "description": "The user responsible for the creation of this event",
+          "type": "object",
+          "required": [
+            "href",
+            "username"
+          ],
+          "properties": {
+            "href": {
+              "description": "This user's href",
+              "type": "string"
+            },
+            "username": {
+              "description": "This user's username",
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          }
+        },
+        "agent": {
+          "description": "The agent responsible for the creation of this event",
+          "type": "object",
+          "properties": {
+            "href": {
+              "description": "This agent's href",
+              "type": "string"
+            },
+            "hostname": {
+              "description": "Hostname of this agent",
+              "type": "string"
+            }
+          }
+        },
+        "container_cluster": {
+          "description": "The container_cluster responsible for the creation of this event",
+          "type": "object",
+          "properties": {
+            "href": {
+              "description": "This container_cluster's href",
+              "type": "string"
+            },
+            "name": {
+              "description": "Name of this container_cluster",
+              "type": "string"
+            }
+          }
+        },
+        "system": {
+          "description": "The system generated this event",
+          "type": "object",
+          "properties": {
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "user"
+          ]
+        },
+        {
+          "required": [
+            "agent"
+          ]
+        },
+        {
+          "required": [
+            "container_cluster"
+          ]
+        },
+        {
+          "required": [
+            "system"
+          ]
+        }
+      ]
+    },
+    "action": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "action_log_events_get.schema.json"
+        }
+      ]
+    },
+    "resource_changes": {
+      "description": "Array of resource log events that were generated during this event",
+      "type": "array",
+      "items": {
+        "$ref": "resource_log_events_get.schema.json"
+      }
+    },
+    "notifications": {
+      "description": "Array of notification log events that were generated during this event",
+      "type": "array",
+      "items": {
+        "$ref": "notification_log_event.schema.json"
+      }
+    }
+  }
+}

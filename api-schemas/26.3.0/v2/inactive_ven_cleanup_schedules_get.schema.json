@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Schema for retrieving an inactive VEN cleanup schedule. This represents a schedule that automatically removes VEN workloads that have been inactive for a specified duration. The schedule can be enabled or disabled and can target specific workloads based on label criteria.",
+  "type": "object",
+  "properties": {
+    "href": {
+      "description": "URI for this inactive VEN cleanup schedule",
+      "type": "string"
+    },
+    "org_id": {
+      "description": "Organization ID this cleanup schedule belongs to",
+      "type": "integer"
+    },
+    "uuid": {
+      "description": "Unique UUID for this cleanup schedule",
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "description": "Name of the inactive VEN cleanup schedule",
+      "type": "string"
+    },
+    "labels": {
+      "$ref": "labels.schema.json"
+    },
+    "inactivity_threshold_in_hours": {
+      "description": "Number of hours of inactivity before VEN is considered for cleanup",
+      "type": "integer"
+    },
+    "enabled": {
+      "description": "Whether this cleanup schedule is enabled",
+      "type": "boolean"
+    },
+    "created_at": {
+      "description": "Timestamp when this cleanup schedule was created in UTC timezone in RFC3389 format",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when this cleanup schedule was updated in UTC timezone in RFC3389 format",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who originally created this cleanup schedule",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who last updated this cleanup schedule",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

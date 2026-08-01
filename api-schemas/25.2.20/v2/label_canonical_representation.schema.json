@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "key",
+    "value"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of this label",
+      "type": "string"
+    },
+    "key": {
+      "description": "Key in key-value pair",
+      "type": "string"
+    },
+    "value": {
+      "description": "Value in key-value pair",
+      "type": "string"
+    }
+  }
+}

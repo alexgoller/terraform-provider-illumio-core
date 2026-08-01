@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "name",
+    "labels",
+    "service",
+    "providers",
+    "mode",
+    "discovered_virtual_server",
+    "update_type",
+    "created_at",
+    "updated_at",
+    "deleted_at",
+    "created_by",
+    "updated_by",
+    "deleted_by"
+  ],
+  "properties": {
+    "href": {
+      "description": "href of virtual server",
+      "type": "string"
+    },
+    "name": {
+      "description": "The short friendly name of the virtual server",
+      "type": "string"
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/label_optional_key_value.schema.json"
+      }
+    },
+    "service": {
+      "description": "URI of associated service",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "providers": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "label": {
+          "$ref": "../common/label_optional_key_value.schema.json"
+        },
+        "workload": {
+          "description": "Workload href",
+          "$ref": "../common/href_object.schema.json"
+        }
+      }
+    },
+    "mode": {
+      "description": "Management mode of the virtual server",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the virtual server",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "discovered_virtual_server": {
+      "description": "Corresponding discovered virtual server",
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href",
+        "dvs_identifier",
+        "mode",
+        "name",
+        "vip_port"
+      ],
+      "properties": {
+        "href": {
+          "description": "Discovered virtual server URI",
+          "type": "string"
+        },
+        "dvs_identifier": {
+          "description": "NFC-generated unique identifier for virtual server",
+          "type": "string"
+        },
+        "mode": {
+          "description": "Virtual server mode of operation",
+          "type": "string"
+        },
+        "name": {
+          "description": "Configured name of virtual server",
+          "type": "string"
+        },
+        "vip_port": {
+          "description": "VIP including protocol and port for virtual server",
+          "$ref": "../common/dvs_vip_port.schema.json"
+        }
+      }
+    },
+    "update_type": {
+      "$ref": "../common/sec_policy_update_type.schema.json"
+    },
+    "created_at": {
+      "description": "The time (rfc3339 timestamp) at which this virtual server was created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "The time (rfc3339 timestamp) at which this virtual server was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "The time (rfc3339 timestamp) at which this virtual server was deleted",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_by": {
+      "description": "The URI of the user who created this virtual server",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "updated_by": {
+      "description": "The URI of the user who last updated this virtual server",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "deleted_by": {
+      "description": "The URI of the user who deleted this virtual server",
+      "$ref": "../common/nullable_href_object.schema.json"
+    }
+  }
+}

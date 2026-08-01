@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "IpList bulk_update",
+  "type": "array",
+  "maxItems": 1000
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "A label parameter for a traffic query",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "label"
+  ],
+  "properties": {
+    "label": {
+      "type": "object",
+      "additional_properties": "false",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Label URI",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

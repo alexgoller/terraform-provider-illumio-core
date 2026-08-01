@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "device_type",
+    "devices"
+  ],
+  "properties": {
+    "name": {
+      "description": "The short friendly name of the server load balancer",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the server load balancer",
+      "type": "string"
+    },
+    "nfc": {
+      "description": "DEPRECATED AND REPLACED (USE 'network_enforcement_node' INSTEAD) Network Function Controller that should manage this SLB. Can be skipped if there exists only 1 NFC in the system, or if there are no NFCs, in which case, the server would auto-deploy an NFC to manage the new SLB (and any SLBs created thereafter). Cannot be used along with network_enforcement_node",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "NFC URI",
+          "type": "string"
+        }
+      }
+    },
+    "network_enforcement_node": {
+      "description": "Network enforcement node that should manage this SLB. Can be skipped if there exists only 1 NEN in the system, or if there are no NENs, in which case, the server would auto-deploy an NEN to manage the new SLB (and any SLBs created thereafter). Cannot be used along with nfc",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Network enforcement node URI",
+          "type": "string"
+        }
+      }
+    },
+    "device_type": {
+      "$ref": "slb_device_type.schema.json"
+    },
+    "devices": {
+      "description": "Management configuration of the devices associated with this SLB Network VF.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "config"
+        ],
+        "properties": {
+          "config": {
+            "required": [
+              "host",
+              "port",
+              "credential_type",
+              "username",
+              "credential",
+              "check_certificate"
+            ],
+            "$ref": "slb_device_config.schema.json"
+          }
+        }
+      }
+    }
+  }
+}

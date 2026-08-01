@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "port",
+    "protocol",
+    "severity",
+    "port_status",
+    "protection_state",
+    "active_policy",
+    "draft_policy"
+  ],
+  "properties": {
+    "href": {
+      "description": "Reference of the service",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of the service",
+      "type": "string"
+    },
+    "port": {
+      "description": "Port Number",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "proto": {
+      "description": "Protocol Number",
+      "type": "integer"
+    },
+    "severity": {
+      "description": "Severity of this service",
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "category": {
+      "description": "Category of this service",
+      "type": "string",
+      "enum": [
+        "admin",
+        "legacy"
+      ]
+    },
+    "os_platforms": {
+      "description": "Operating system for this ransomware service",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "windows",
+          "linux"
+        ]
+      }
+    },
+    "port_status": {
+      "description": "Status of the port on the workload",
+      "type": "string",
+      "enum": [
+        "listening",
+        "inactive"
+      ]
+    },
+    "protection_state": {
+      "description": "Protection state of this service",
+      "type": "string",
+      "enum": [
+        "unprotected",
+        "protected_open",
+        "protected_closed"
+      ]
+    },
+    "active_policy": {
+      "description": "Active Policy that applies to this port",
+      "type": "string",
+      "enum": [
+        "allowed",
+        "allowed_across_boundary",
+        "blocked_by_boundary",
+        "blocked_no_rule"
+      ]
+    },
+    "draft_policy": {
+      "description": "Draft Policy that applies to this port",
+      "type": "string",
+      "enum": [
+        "allowed",
+        "allowed_across_boundary",
+        "blocked_by_boundary",
+        "blocked_no_rule"
+      ]
+    },
+    "recommendation": {
+      "description": "Recommendation for this port based on enforcement state, allow and deny rules and active/draft rule",
+      "type": "string",
+      "enum": [
+        "add_boundary",
+        "has_draft_policy_needs_provisioning"
+      ]
+    }
+  }
+}

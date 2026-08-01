@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "sec_policy_rule_sets_sec_rules_consumers_get.schema.json",
+  "description": "Consumers",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "actors": {
+        "description": "Rule actors are all workloads or container host",
+        "type": "string",
+        "enum": ["ams", "container_host"]
+      },
+      "label_dimension": {
+        "description": "Rule actors that are all workloads with a specific label dimension",
+        "type": "string",
+        "enum": ["app"]
+      },
+      "exclusion": {
+        "description": "Boolean to specify whether or not the actor is an exclusion - only for labels and label groups",
+        "expose_to": ["end_user_experimental"],
+        "type": "boolean",
+        "default": false
+      },
+      "label": {
+        "$ref": "../common/label_optional_key_value.schema.json"
+      },
+      "label_group": {
+        "$ref": "../common/label_group_optional_key_value.schema.json"
+      },
+      "workload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [ "href" ],
+        "properties": {
+          "href": {
+            "description": "Workload URI",
+            "type": "string"
+          },
+          "name": {
+            "description": "Interface name",
+            "type": ["string", "null"]
+          },
+          "hostname" : {
+            "description": "The hostname of this workload",
+            "type": ["string", "null"]
+          },
+          "deleted": {
+            "description": "This workload has been deleted",
+            "type": ["boolean", "null"]
+          }
+        }
+      },
+      "virtual_service": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [ "href" ],
+        "properties": {
+          "href": {
+            "description": "Virtual service URI",
+            "type": "string"
+          }
+        }
+      },
+      "ip_list": { "$ref": "../common/ip_list.schema.json" }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Minimum severity level of audit event messages.",
+  "type": "string",
+  "enum": [
+    "error",
+    "warning",
+    "informational"
+  ]
+}

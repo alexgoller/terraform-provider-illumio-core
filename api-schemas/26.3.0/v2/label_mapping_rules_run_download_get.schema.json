@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "description": "Workloads with existing and to-be assigned labels",
+        "type": "object",
+        "required": [
+          "href",
+          "existing_labels",
+          "labels_to_assign"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of the workload",
+            "type": "string"
+          },
+          "hostname": {
+            "description": "Hostname of the workload",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "existing_labels": {
+            "description": "List of existing labels for the workload",
+            "type": "array",
+            "items": {
+              "description": "Label data",
+              "type": "object",
+              "properties": {
+                "href": {
+                  "description": "URI of the label",
+                  "type": "string"
+                },
+                "key": {
+                  "description": "key for the label",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "value for the label",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "labels_to_assign": {
+            "description": "List of labels to assign for the workload",
+            "type": "array",
+            "items": {
+              "description": "Label data",
+              "type": "object",
+              "properties": {
+                "href": {
+                  "description": "URI of the label",
+                  "type": "string"
+                },
+                "key": {
+                  "description": "key for the label",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "value for the label",
+                  "type": "string"
+                },
+                "label_mapping_rule": {
+                  "description": "Defines which label mapping rule caused this label assignment",
+                  "type": "object",
+                  "properties": {
+                    "href": {
+                      "description": "HREF of the label mapping rule",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

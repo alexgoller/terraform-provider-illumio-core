@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "sec_rules": {
+      "description": "Array of allow rules",
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "../common/sec_rules_get.schema.json"
+          },
+          {
+            "rule_set": {
+              "$ref": "../common/rule_set.schema.json"
+            }
+          }
+        ]
+      }
+    },
+    "deny_rules": {
+      "description": "Array of deny rules",
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "../common/deny_rules_get.schema.json"
+          },
+          {
+            "rule_set": {
+              "$ref": "../common/rule_set.schema.json"
+            }
+          }
+        ]
+      }
+    },
+    "override_deny_rules": {
+      "description": "Array of override deny rules",
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "../common/deny_rules_get.schema.json"
+          },
+          {
+            "rule_set": {
+              "$ref": "../common/rule_set.schema.json"
+            }
+          }
+        ]
+      }
+    },
+    "ip_tables_rules": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "../common/ip_tables_rules_get.schema.json"
+          },
+          {
+            "rule_set": {
+              "$ref": "../common/rule_set.schema.json"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

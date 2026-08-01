@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "href"
+  ],
+  "properties": {
+    "href": {
+      "description": "Label Group URI",
+      "type": "string"
+    },
+    "key": {
+      "description": "Key in key-value pair",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of label group",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Vulnerability exposure details for workloads",
+  "properties": {
+    "vulnerable_port_exposure": {
+      "description": "The exposure of the port based on the current policy for the specified enforcement mode",
+      "type": ["integer", "null"]
+    },
+    "port_vulnerability_exposure_score": {
+      "description": "The vulnerability exposure score calculated for the port, based on the port exposure and vulnerability for the specified enforcement mode",
+      "type": ["integer", "null"]
+    }
+  }
+}

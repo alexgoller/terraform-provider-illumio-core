@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "rule_sets": {
+      "description": "Array of modified rulesets in the current policy draft",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "id",
+          "updated_by",
+          "updated_at",
+          "update_type"
+        ],
+        "properties": {
+          "name": {
+            "description": "Ruleset name",
+            "type": "string"
+          },
+          "href": {
+            "description": "URI of the Ruleset",
+            "type": "string"
+          },
+          "updated_by": {
+            "href": {
+              "description": "URI of user who updated the ruleset",
+              "type": "string"
+            }
+          },
+          "updated_at": {
+            "description": "Time stamp when this resource was last updated",
+            "type": "string",
+            "format": "date-time"
+          },
+          "update_type": {
+            "description": "Type of update",
+            "type": "string"
+          },
+          "related_ip_lists": {
+            "description": "Related IP Lists",
+            "type": "array",
+            "items": {
+              "required": [
+                "href"
+              ],
+              "properties": {
+                "href": {
+                  "description": "URI of IP List",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "related_services": {
+            "description": "Related Services",
+            "type": "array",
+            "items": {
+              "required": [
+                "href"
+              ],
+              "properties": {
+                "href": {
+                  "description": "URI of Service",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "firewall_settings": {
+      "$ref": "../common/sec_policy_pending_objects.schema.json"
+    },
+    "ip_lists": {
+      "$ref": "../common/sec_policy_pending_objects.schema.json"
+    },
+    "services": {
+      "$ref": "../common/sec_policy_pending_objects.schema.json"
+    },
+    "virtual_servers": {
+      "$ref": "../common/sec_policy_pending_objects.schema.json"
+    },
+    "label_groups": {
+      "$ref": "../common/sec_policy_pending_objects.schema.json"
+    },
+    "secure_connect_gateways": {
+      "$ref": "../common/sec_policy_pending_objects.schema.json"
+    },
+    "virtual_services": {
+      "$ref": "../common/sec_policy_pending_objects.schema.json"
+    },
+    "enforcement_boundaries": {
+      "$ref": "../common/sec_policy_pending_objects.schema.json"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "An DNS parameter for a traffic query",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "fqdn"
+  ],
+  "properties": {
+    "fqdn": {
+      "description": "parameter for querying the matched fqdn",
+      "type": "string"
+    }
+  }
+}

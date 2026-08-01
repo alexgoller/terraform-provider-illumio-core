@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Service ports",
+  "type": "array",
+  "additionalProperties": false,
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "required": [
+      "proto"
+    ],
+    "properties": {
+      "port": {
+        "description": "Port Number (integer 0-65535 or -1 for any port).  Also the startng port when specifying a range.",
+        "type": "integer"
+      },
+      "to_port": {
+        "description": "High end of port range inclusive if specifying a range.  If not specifying a range then don't send this.",
+        "type": "integer"
+      },
+      "proto": {
+        "type": "integer",
+        "enum": [
+          6,
+          17
+        ]
+      }
+    }
+  }
+}

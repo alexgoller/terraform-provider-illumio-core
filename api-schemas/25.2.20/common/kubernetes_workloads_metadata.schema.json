@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "k8s object metadata",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "labels": {
+      "description": "k8s key/value pairs attached to object that specify identifying attributes",
+      "type": "object"
+    },
+    "annotations": {
+      "description": "k8s key/value pairs representing arbitrary non-identifying metadata of object",
+      "type": "object"
+    },
+    "external_service_uid": {
+      "description": "k8s object uid of external traffic service (NodePort or LoadBalancer)",
+      "type": "string"
+    }
+  }
+}

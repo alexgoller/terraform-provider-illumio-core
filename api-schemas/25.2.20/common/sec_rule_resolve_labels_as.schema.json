@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": ["providers", "consumers"],
+  "properties": {
+    "providers": {
+      "type": "array",
+      "minLength": 1,
+      "items": {
+        "type": "string",
+        "enum": ["workloads", "virtual_services"]
+      }
+    },
+    "consumers": {
+      "type": "array",
+      "minLength": 1,
+      "items": {
+        "type": "string",
+        "enum": ["workloads", "virtual_services"]
+      }
+    }
+  }
+}

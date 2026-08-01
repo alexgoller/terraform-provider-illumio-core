@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "maxItems": 2,
+  "expose_to": "end_user_private_transitional",
+  "description": "Whether to use workload subnets instead of IP addresses for the providers/consumers",
+  "items": {
+    "type": "string",
+    "enum": ["providers", "consumers"]
+  }
+}

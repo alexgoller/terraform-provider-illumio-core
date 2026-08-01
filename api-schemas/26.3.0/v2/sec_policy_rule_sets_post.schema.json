@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "scopes"
+  ],
+  "properties": {
+    "name": {
+      "description": "Name (must be unique)",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description",
+      "type": "string"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    },
+    "scopes": {
+      "$ref": "../common/rule_set_scopes_put.schema.json"
+    },
+    "rules": {
+      "description": "Array of sec rules (access rules) in this rule set",
+      "type": "array",
+      "items": {
+        "$ref": "sec_policy_rule_sets_sec_rules_post.schema.json"
+      }
+    },
+    "ip_tables_rules": {
+      "description": "Array of custom iptables rules in this rule set",
+      "type": "array",
+      "items": {
+        "$ref": "../common/ip_tables_rules_post.schema.json"
+      }
+    }
+  }
+}

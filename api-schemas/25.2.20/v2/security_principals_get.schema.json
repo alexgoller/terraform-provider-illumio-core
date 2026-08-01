@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "sid",
+    "name",
+    "deleted",
+    "used_by_ruleset"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of security principal",
+      "type": "string"
+    },
+    "sid": {
+      "description": "Active Directory SID",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of the security principal",
+      "type": "string"
+    },
+    "description": {
+      "description": "A longer description of the security principal",
+      "type": "string"
+    },
+    "deleted": {
+      "description": "Flag to indicate if security principal has been deleted",
+      "type": "boolean"
+    },
+    "used_by_ruleset": {
+      "description": "Flag to indicate if this security principal is being used by a ruleset",
+      "type": "boolean"
+    }
+  }
+}

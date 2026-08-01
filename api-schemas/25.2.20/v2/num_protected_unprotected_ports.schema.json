@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "num_protected_ports",
+    "num_unprotected_ports"
+  ],
+  "properties": {
+    "num_protected_ports": {
+      "description": "Number of protected ports for this risk level, across all protection ready workloads",
+      "type": "integer"
+    },
+    "num_unprotected_ports": {
+      "description": "Number of unprotected ports for this risk level, across all protection ready workloads",
+      "type": "integer"
+    }
+  }
+}

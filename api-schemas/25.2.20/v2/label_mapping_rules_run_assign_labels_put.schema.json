@@ -1,0 +1,4 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "dummy schema file to assign labels when user clicks on Confirm. This applies the labels from review stage"
+}

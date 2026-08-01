@@ -1,0 +1,598 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Canonical representations of a resource",
+  "oneOf": [
+    {
+      "org": {
+        "type": "object",
+        "required": [
+          "href",
+          "display_name"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of the resource",
+            "type": "string"
+          },
+          "display_name": {
+            "description": "The org name display name (e.g. Illumio, Inc)",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "agent": {
+        "type": "object",
+        "required": [
+          "href",
+          "hostname"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "hostname": {
+            "description": "The hostname corresponding to this agent",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "network": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "workload": {
+        "$ref": "workload_canonical_representation.schema.json"
+      }
+    },
+    {
+      "label": {
+        "$ref": "label_canonical_representation.schema.json"
+      }
+    },
+    {
+      "label_group": {
+        "type": "object",
+        "required": [
+          "href",
+          "name",
+          "key"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of resource",
+            "type": "string"
+          },
+          "key": {
+            "description": "Key in key-value pair of contained labels or label groups",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "ip_list": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "service": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "bound_service": {
+        "$ref": "bound_service_canonical_representation.schema.json"
+      }
+    },
+    {
+      "service_binding": {
+        "type": "object",
+        "required": [
+          "href",
+          "bound_service",
+          "workload"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "bound_service": {
+            "$ref": "bound_service_canonical_representation.schema.json"
+          },
+          "workload": {
+            "$ref": "workload_canonical_representation.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "slb": {
+        "type": "object",
+        "required": [
+          "href",
+          "name",
+          "devices"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of resource",
+            "type": "string"
+          },
+          "devices": {
+            "description": "Basic info regarding the devices backing this SLB Network VF.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "href",
+                "config"
+              ],
+              "properties": {
+                "href": {
+                  "description": "URI of the managed SLB device.",
+                  "type": "string"
+                },
+                "config": {
+                  "type": "object",
+                  "description": "Management configuration info for the SLB device.",
+                  "required": [
+                    "host"
+                  ],
+                  "properties": {
+                    "host": {
+                      "type": "string",
+                      "description": "The IP or fqdn of the device"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "virtual_server": {
+        "type": "object",
+        "required": [
+          "href",
+          "name",
+          "labels"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of resource",
+            "type": "string"
+          },
+          "labels": {
+            "description": "Assigned labels for this virtual_server",
+            "type": "array",
+            "items": {
+              "$ref": "label_canonical_representation.schema.json"
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    {
+      "secure_connect_gateway": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "security_principal": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "rule_set": {
+        "type": "object",
+        "required": [
+          "href",
+          "name",
+          "scopes"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of resource",
+            "type": "string"
+          },
+          "scopes": {
+            "description": "Rule set scopes",
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "href"
+                    ],
+                    "properties": {
+                      "href": {
+                        "description": "Label URI",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "label_group": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "href"
+                    ],
+                    "properties": {
+                      "href": {
+                        "description": "Label group URI",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "sec_rule": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of this rule",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "ip_tables_rule": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of this rule",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "firewall_setting": {
+        "type": "object",
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "pairing_profile": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "auth_security_principal": {
+        "$ref": "org_auth_security_principal_canonical_representation.schema.json"
+      }
+    },
+    {
+      "permission": {
+        "type": "object",
+        "required": [
+          "href",
+          "scope",
+          "auth_security_principal"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "scope": {
+            "description": "Assigned labels",
+            "type": "array",
+            "items": {
+              "$ref": "label_canonical_representation.schema.json"
+            },
+            "uniqueItems": true
+          },
+          "auth_security_principal": {
+            "$ref": "org_auth_security_principal_canonical_representation.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "api_key": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "api_usage_limit_profile": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "object_limit_profile": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "user": {
+        "type": "object",
+        "required": [
+          "href",
+          "type",
+          "username"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "type": {
+            "description": "User's type, i.e. user authenticated local or remotely via SAML",
+            "type": "string",
+            "enum": [
+              "local",
+              "external"
+            ]
+          },
+          "username": {
+            "description": "The User name as an email address",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "domain": {
+        "type": "object",
+        "required": [
+          "href",
+          "domain_name",
+          "display_name"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "domain_name": {
+            "description": "The domain name (e.g. illumio.com)",
+            "type": "string"
+          },
+          "display_name": {
+            "description": "The domain display name (e.g. Illumio, Inc)",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "cluster": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "resource": {
+        "type": "object",
+        "required": [
+          "href",
+          "org",
+          "cluster",
+          "domain"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "cluster": {
+            "type": "object",
+            "required": [
+              "href"
+            ],
+            "properties": {
+              "href": {
+                "description": "Cluster URI",
+                "type": "string"
+              }
+            }
+          },
+          "domain": {
+            "type": "object",
+            "required": [
+              "href"
+            ],
+            "properties": {
+              "href": {
+                "description": "Domain URI",
+                "type": "string"
+              }
+            }
+          },
+          "org": {
+            "type": "object",
+            "required": [
+              "href"
+            ],
+            "properties": {
+              "href": {
+                "description": "Org URI on the associated cluster",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "saml_sp_config": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "syslog_destination": {
+        "type": "object",
+        "required": [
+          "href",
+          "pce_scope",
+          "type"
+        ],
+        "properties": {
+          "href": {
+            "description": "Destination URI",
+            "type": "string"
+          },
+          "pce_scope": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "type": {
+            "description": "Destination type",
+            "type": "string",
+            "enum": [
+              "local_syslog",
+              "remote_syslog"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "traffic_collector_setting": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "workload_setting": {
+        "type": "object",
+        "properties": {
+          "workload_disconnected_timeout_seconds": {
+            "description": "Disconnected timeout in seconds",
+            "type": "integer"
+          },
+          "workload_goodbye_timeout_seconds": {
+            "description": "Goodbye timeout in seconds",
+            "type": "integer"
+          },
+          "ven_uninstall_timeout_hours": {
+            "description": "VEN uninstall timeout in hours",
+            "type": "integer"
+          },
+          "workload_disconnect_notification_info": {
+            "description": "Threshold in seconds for LOG_INFO level notification of a workload going offline",
+            "type": "integer"
+          },
+          "workload_disconnect_notification_warning": {
+            "description": "Threshold in seconds for LOG_WARNING level notification of a workload going offline",
+            "type": "integer"
+          },
+          "workload_disconnect_notification_error": {
+            "description": "Threshold in seconds for LOG_ERR level notification of a workload going offline",
+            "type": "integer"
+          }
+        }
+      }
+    },
+    {
+      "security_policy": {
+        "type": "object",
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Security policy URI",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "container_cluster": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "container_workload": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "network_enforcement_node": {
+        "type": "object",
+        "required": [
+          "href",
+          "hostname"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of resource",
+            "type": "string"
+          },
+          "hostname": {
+            "description": "The hostname corresponding to this network enforcement node",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "network_device": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    },
+    {
+      "network_endpoint": {
+        "$ref": "auditable_resource.schema.json"
+      }
+    }
+  ]
+}

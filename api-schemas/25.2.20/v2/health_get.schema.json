@@ -1,0 +1,287 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Health information of PCE Cluster and its nodes",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "status": {
+        "$ref": "health_definitions.schema.json#/definitions/health"
+      },
+      "type": {
+        "description": "Type of the PCE",
+        "type": "string"
+      },
+      "fqdn": {
+        "description": "FQDN of the PCE",
+        "type": "string"
+      },
+      "available_seconds": {
+        "description": "Seconds since this PCE has been available",
+        "type": "number"
+      },
+      "notifications": {
+        "description": "Notifications for the PCE",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "status",
+            "token"
+          ],
+          "properties": {
+            "status": {
+              "$ref": "health_definitions.schema.json#/definitions/health"
+            },
+            "token": {
+              "description": "Description token of this notification",
+              "type": "string"
+            },
+            "message": {
+              "description": "Description string of this notification",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "listen_only_mode_enabled_at": {
+        "description": "Timestamp at which PCE Listen Only Mode was enabled",
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date-time"
+      },
+      "nodes": {
+        "description": "Nodes in the PCE",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "hostname",
+            "ip_address",
+            "services",
+            "generated_at"
+          ],
+          "properties": {
+            "hostname": {
+              "description": "Hostname of the node",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "ip_address": {
+              "description": "IP address of the node",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "runlevel": {
+              "description": "Runlevel of the node",
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 6
+            },
+            "uptime_seconds": {
+              "description": "Seconds since this node cluster has been rebooted",
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "cpu": {
+              "description": "CPU usage of this node",
+              "$ref": "health_status_percent.schema.json"
+            },
+            "disk": {
+              "description": "Disk usage of this node per individual location",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "location",
+                  "value"
+                ],
+                "properties": {
+                  "location": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "$ref": "health_status_percent.schema.json"
+                  }
+                }
+              },
+              "minItems": 1
+            },
+            "memory": {
+              "description": "Memory usage of this node",
+              "$ref": "health_status_percent.schema.json"
+            },
+            "metrics": {
+              "description": "Additional reported metrics",
+              "expose_to": [
+                "end_user_experimental"
+              ],
+              "type": "array",
+              "items": {
+                "$ref": "health_definitions.schema.json#/definitions/metric"
+              }
+            },
+            "services": {
+              "description": "Status of all the PCE Services of this node",
+              "type": "object",
+              "properties": {
+                "status": {
+                  "description": "Overall Service status of the PCE",
+                  "type": "string"
+                },
+                "running": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "not_running": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "partial": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "optional": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "unknown": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "generated_at": {
+              "description": "Timestamp of when this node information was generated",
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "network": {
+        "description": "Network information of the PCE",
+        "type": "object",
+        "required": [
+          "replication"
+        ],
+        "properties": {
+          "replication": {
+            "description": "Replication information for databases",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "type",
+                "details",
+                "value"
+              ],
+              "properties": {
+                "type": {
+                  "description": "Type of replication",
+                  "type": "string"
+                },
+                "details": {
+                  "type": "object",
+                  "oneOf": [
+                    {
+                      "required": [
+                        "database_name",
+                        "primary_fqdn",
+                        "replica_fqdn"
+                      ],
+                      "properties": {
+                        "database_name": {
+                          "description": "Name of the Database being replicated",
+                          "type": "string"
+                        },
+                        "primary_fqdn": {
+                          "description": "FQDN of the primary database node",
+                          "type": "string"
+                        },
+                        "replica_fqdn": {
+                          "description": "FQDN of the replica database node",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "required": [
+                        "fqdn"
+                      ],
+                      "properties": {
+                        "fqdn": {
+                          "description": "FQDN of the PCE for replication",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "value": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "lag_seconds"
+                  ],
+                  "properties": {
+                    "status": {
+                      "description": "Lag status",
+                      "type": "string"
+                    },
+                    "lag_seconds": {
+                      "description": "The number of lag seconds",
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "groups": {
+        "type": "array",
+        "description": "Additional metric groups.",
+        "expose_to": [
+          "end_user_experimental"
+        ],
+        "items": {
+          "$ref": "health_definitions.schema.json#/definitions/group"
+        }
+      },
+      "generated_at": {
+        "description": "Timestamp of when this PCE information was generated",
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date-time"
+      }
+    }
+  }
+}

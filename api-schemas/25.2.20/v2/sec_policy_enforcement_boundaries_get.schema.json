@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Enforcement boundary",
+  "type": "object",
+  "required": [
+    "href",
+    "name",
+    "providers",
+    "consumers",
+    "ingress_services"
+  ],
+  "properties": {
+    "href": {
+      "description": "The job URI.",
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the enforcement boundary"
+    },
+    "providers": {
+      "$ref": "../common/enforcement_boundary_actor.schema.json"
+    },
+    "consumers": {
+      "$ref": "../common/enforcement_boundary_actor.schema.json"
+    },
+    "ingress_services": {
+      "$ref": "../common/sec_rule_ingress_services.schema.json"
+    },
+    "created_at": {
+      "description": "Timestamp when this Enforcement Boundary was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when this Enforcement Boundary was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "Timestamp when this Enforcement Boundary was deleted",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who originally created this Enforcement Boundary",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who last updated this Enforcement Boundary",
+          "type": "string"
+        }
+      }
+    },
+    "deleted_by": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who deleted this Enforcement Boundary",
+          "type": "string"
+        }
+      }
+    },
+    "update_type": {
+      "description": "Type of update",
+      "type": "string"
+    },
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    }
+  }
+}

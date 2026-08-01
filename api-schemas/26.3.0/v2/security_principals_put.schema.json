@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "Name of the security principal",
+      "type": "string"
+    },
+    "description": {
+      "description": "A longer description of the security principal",
+      "type": "string"
+    },
+    "members": {
+      "description": "Member security principal user ids array",
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    }
+  }
+}

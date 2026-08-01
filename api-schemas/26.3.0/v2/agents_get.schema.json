@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "DEPRECATED AND REPLACED (USE /orgs/:xorg_id/vens/:ven_uuid INSTEAD)",
+  "required": [
+    "name",
+    "online",
+    "mode",
+    "uid",
+    "last_heartbeat_on",
+    "uptime_seconds",
+    "hostname",
+    "public_ip",
+    "log_traffic",
+    "visibility_level"
+  ],
+  "properties": {
+    "name": {
+      "description": "The short friendly name of the agent",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "description": "The long description of the agent",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "online": {
+      "description": "If this agent is online",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "mode": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "../common/workload_modes.schema.json"
+        }
+      ]
+    },
+    "uid": {
+      "description": "The unique ID reported by the server",
+      "type": "string"
+    },
+    "last_heartbeat_on": {
+      "description": "The last time (rfc3339 timestamp) a heartbeat was received from this agent",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "uptime_seconds": {
+      "description": "How long since the last reboot of this server. Recorded in DB at the time of the last heartbeat",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "hostname": {
+      "description": "The hostname reported from the host itself",
+      "type": "string"
+    },
+    "agent_version": {
+      "description": "Agent software version string",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "public_ip": {
+      "description": "The public IP address of the server",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ip_tables_saved": {
+      "description": "The agent was able to save IP tables",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "os_id": {
+      "description": "Our OS identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "os_detail": {
+      "description": "Additional OS details - just displayed to end user",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "log_traffic": {
+      "description": "True if we want to log traffic events from this agent",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "target_pce_fqdn": {
+      "description": "The FQDN of the PCE the agent will use for future connections",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "active_pce_fqdn": {
+      "description": "The FQDN of the PCE that received the agent's last heartbeat",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "labels": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "labels.schema.json"
+        }
+      ]
+    },
+    "visibility_level": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "expose_to": [
+            "end_user_private_perm"
+          ],
+          "description": "Visibility level of the agent",
+          "type": "string"
+        }
+      ]
+    },
+    "ven": {
+      "description": "The href under the VENs resource that points to this agent. The agents API is deprecated, and the VEN href should be used to identify and manipulate this resource.",
+      "$ref": "../common/href_object.schema.json"
+    }
+  }
+}

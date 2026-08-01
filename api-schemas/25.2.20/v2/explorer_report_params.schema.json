@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Report parameters for explorer report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_time_range",
+    "filters"
+  ],
+  "properties": {
+    "report_time_range": {
+      "description": "Time range the report is built across",
+      "type": "object",
+      "$ref": "report_time_range_definitions.schema.json#/definitions/last_num_days"
+    },
+    "filters": {
+      "description": "Saved traffic query filters",
+      "type": "object",
+      "$ref": "explorer_filters.schema.json"
+    }
+  }
+}

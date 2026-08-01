@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Versioned policy object update type",
+  "type": ["string", "null"],
+  "enum": ["create", "update", "delete", null]
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "transmission",
+    "action"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the destination",
+      "type": "string"
+    },
+    "transmission": {
+      "description": "transmission type: broadcast/multicast/unicast",
+      "type": "string"
+    },
+    "data_source": {
+      "type": "string",
+      "description": "flow summary data source"
+    },
+    "network": {
+      "type": "string",
+      "description": "flow summary network"
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "proto"
+      ],
+      "properties": {
+        "src_port": {
+          "type": "integer"
+        },
+        "dst_port": {
+          "type": "integer"
+        },
+        "proto": {
+          "type": "integer"
+        },
+        "dst_ip": {
+          "type": "string",
+          "description": "single destination ip address or CIDR"
+        },
+        "src_ip": {
+          "type": "string",
+          "description": "single source ip address or CIDR"
+        }
+      }
+    },
+    "action": {
+      "description": "drop or aggregate the target traffic",
+      "type": "string"
+    }
+  }
+}

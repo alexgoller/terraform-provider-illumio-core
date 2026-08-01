@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": [
+    "object",
+    "null"
+  ],
+  "description": "Schedule used for application of label rules",
+  "additionalProperties": false,
+  "properties": {
+    "schedule_time": {
+      "description": "The time at which the label rules should be run",
+      "type": "string",
+      "format": "date-time"
+    },
+    "frequency": {
+      "description": "The frequency at which the schedule is to be executed",
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly"
+      ]
+    },
+    "day_of_week": {
+      "description": "Applies only in case of weekly schedule and indicates the days on which the schedule will be run.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "sunday",
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday"
+        ]
+      }
+    },
+    "day_of_month": {
+      "description": "Applies only in case of monthly schedule and indicates the day on which the schedule will be run.",
+      "type": "integer",
+      "maximum": 31,
+      "minimum": 1
+    }
+  }
+}

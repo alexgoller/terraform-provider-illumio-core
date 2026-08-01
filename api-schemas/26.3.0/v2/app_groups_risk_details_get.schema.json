@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Risk Details for this app group",
+  "properties": {
+    "risk_details": {
+      "type": "object",
+      "required": [
+        "ransomware"
+      ],
+      "ransomware": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "workload_count_by_enforcement_state": {
+            "description": "Workload count by enforcement state",
+            "type": "object",
+            "properties": {
+              "idle": {
+                "description": "Count of workloads in idle state ",
+                "type": "integer"
+              },
+              "visibility_only": {
+                "description": "Count of workloads in visibility state",
+                "type": "integer"
+              },
+              "selective": {
+                "description": "Count of workloads in selective state",
+                "type": "integer"
+              },
+              "full_enforced": {
+                "description": "Count of workloads in enforced state",
+                "type": "integer"
+              }
+            }
+          },
+          "workload_risk_summary_by_service": {
+            "description": "Workload risk summary by ransomware service",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "href",
+                "name",
+                "os_platforms",
+                "port",
+                "protocol",
+                "severity",
+                "num_unprotected_workloads",
+                "num_protected_workloads",
+                "average_ransomware_service_protection_coverage_percent"
+              ],
+              "properties": {
+                "href": {
+                  "description": "HREF of the service",
+                  "type": "string"
+                },
+                "name": {
+                  "description": "Name of the ransomware service",
+                  "type": "string"
+                },
+                "os_platforms": {
+                  "description": "Operating system for this ransomware service",
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "port": {
+                  "description": "Port Number",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 65535
+                },
+                "protocol": {
+                  "description": "Protocol Number",
+                  "type": "integer"
+                },
+                "severity": {
+                  "description": "Severity of the ransomware service",
+                  "type": "string"
+                },
+                "num_unprotected_workloads": {
+                  "description": "Count of unprotected workloads for this service whose exposure severity is one of critical, high, medium or low",
+                  "type": "integer"
+                },
+                "num_protected_workloads": {
+                  "description": "Count of protected workloads for this service whose exposure severity is fully protected",
+                  "type": "integer"
+                },
+                "average_ransomware_service_protection_coverage_percent": {
+                  "description": "The average of protection coverage percentage for all the workloads in the app group that are associated with this service",
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "num_protected_workloads": {
+            "description": "Count of protected workloads for this app group whose exposure severity is fully protected",
+            "type": "integer"
+          },
+          "num_unprotected_workloads": {
+            "description": "Count of un-protected workloads for this app group whose exposure severity is one of critical, high, medium or low",
+            "type": "integer"
+          },
+          "ransomware_protection_coverage_percent": {
+            "description": "This is the average protection coverage that accounts for all the workloads that are part of this app group",
+            "type": "number"
+          },
+          "workloads_by_exposure": {
+            "description": "Workloads of this app group by Ransomware Exposure",
+            "type": "object",
+            "$ref": "workloads_by_exposure.schema.json"
+          },
+          "last_updated_at": {
+            "description": "The time at which the stats were last computed at",
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}

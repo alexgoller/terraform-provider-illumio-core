@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "name",
+    "labels",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "href": {
+      "description": "The href of this core service type",
+      "type": "string",
+      "format": "uri"
+    },
+    "name": {
+      "description": "The name of the core service type",
+      "type": "string"
+    },
+    "required_ports": {
+      "description": "The required ports for this core service type, if any",
+      "$ref": "core_services_type_ports.schema.json"
+    },
+    "optional_ports": {
+      "description": "The optional ports for this core service type, if any",
+      "$ref": "core_services_type_ports.schema.json"
+    },
+    "labels": {
+      "$ref": "core_services_labels.schema.json"
+    },
+    "created_at": {
+      "description": "Timestamp at which this core service type was created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp at which this core service type was updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "priority": {
+      "description": "Each IP/workload is identified for 1 core service type and they are ordered by priority",
+      "type": "integer"
+    },
+    "num_optional_ports_required": {
+      "description": "Number of optional ports required",
+      "type": "integer"
+    }
+  }
+}

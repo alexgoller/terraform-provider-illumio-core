@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "sec_policy_rule_sets_sec_rules_providers_get.schema.json",
+  "description": "Providers",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "actors": {
+        "description": "Rule actors are all workloads ('ams')",
+        "type": "string",
+        "enum": ["ams"]
+      },
+      "label_dimension": {
+        "description": "Rule actors that are all workloads with a specific label dimension",
+        "type": "string",
+        "enum": ["app"]
+      },
+      "exclusion": {
+        "description": "Boolean to specify whether or not the actor is an exclusion - only for labels and label groups",
+        "type": "boolean",
+        "expose_to": ["end_user_experimental"],
+        "default": false
+      },
+      "label": {
+        "$ref": "../common/label_optional_key_value.schema.json"
+      },
+      "label_group": {
+        "$ref": "../common/label_group_optional_key_value.schema.json"
+      },
+      "workload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [ "href" ],
+        "properties": {
+          "href": {
+            "description": "Workload URI",
+            "type": "string"
+          }
+        }
+      },
+      "virtual_service": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [ "href" ],
+        "properties": {
+          "href": {
+            "description": "Virtual service URI",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of virtual service",
+            "type": ["string", "null"]
+          }
+        }
+      },
+      "virtual_server": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [ "href" ],
+        "properties": {
+          "href": {
+            "description": "Virtual server URI",
+            "type": "string"
+          }
+        }
+      },
+      "ip_list": { "$ref": "../common/ip_list.schema.json" }
+    }
+  }
+}

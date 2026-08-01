@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "vens",
+    "recovery_enabled",
+    "recovery_duration_seconds"
+  ],
+  "properties": {
+    "vens": {
+      "description": "List of VENs to be put in or out of recovery",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "URI of the VEN ",
+            "type": "string"
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 1000
+    },
+    "recovery_enabled": {
+      "description": "Enable/disable recovery for the VENs",
+      "type": "boolean",
+      "default": false
+    },
+    "recovery_duration_seconds": {
+      "description": "Put the VENs in recovery for the specified duration in seconds",
+      "type": "integer",
+      "minimum": 3600,
+      "maximum": 2592000
+    }
+  }
+}

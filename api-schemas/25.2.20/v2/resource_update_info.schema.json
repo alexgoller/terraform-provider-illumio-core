@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Update info about a change tracked resource in the system.",
+  "type": "object",
+  "required": [
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by"
+  ],
+  "properties": {
+    "created_at": {
+      "description": "The time (rfc3339 timestamp) at which this resource was created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "The time (rfc3339 timestamp) at which this resource was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the user who created this resource",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the user who last updated this resource",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

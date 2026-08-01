@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "product_version"
+  ],
+  "properties": {
+    "product_version": {
+      "type": "object",
+      "description": "The product version object",
+      "required": [
+        "version",
+        "build",
+        "product_name"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "The product version major.minor.patch"
+        },
+        "build": {
+          "type": "integer",
+          "description": "The build number"
+        },
+        "release_info": {
+          "type": "string",
+          "description": "A extra string designator for the release"
+        },
+        "engineering_info": {
+          "type": "string",
+          "description": "A extra string designator used for engineering only"
+        },
+        "long_display": {
+          "type": "string",
+          "description": "A version string for human consumption"
+        },
+        "short_display": {
+          "type": "string",
+          "description": "A version string for human consumption"
+        },
+        "product_name": {
+          "type": "string",
+          "description": "The product name (e.g. asp or edge)"
+        }
+      }
+    }
+  }
+}

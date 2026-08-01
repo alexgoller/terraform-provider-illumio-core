@@ -1,0 +1,5 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "The list of the auth_security_principals in this org",
+  "$ref": "orgs_auth_security_principal_get.schema.json"
+}

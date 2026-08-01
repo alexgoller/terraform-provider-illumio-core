@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "string",
+  "description": "Type of VEN that this pairing profile will enforce. specified_during_activation option is deprecated and will be removed in the next API version.",
+  "enum": ["specified_during_activation", "server", "endpoint"]
+}

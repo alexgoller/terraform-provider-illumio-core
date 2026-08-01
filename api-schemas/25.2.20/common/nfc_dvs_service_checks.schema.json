@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Health checks for virtual server",
+  "type": "array",
+  "items": {
+    "oneOf": [
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["protocol", "port"],
+        "properties": {
+          "protocol": {
+            "type": "string",
+            "enum": ["tcp", "udp"]
+          },
+          "port": {
+            "type": "integer"
+          }
+        }
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["protocol"],
+        "properties": {
+          "protocol": {
+            "type": "string",
+            "enum": ["icmp"]
+          }
+        }
+      }
+    ]
+  }
+}

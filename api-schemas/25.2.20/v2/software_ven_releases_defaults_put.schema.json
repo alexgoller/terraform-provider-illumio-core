@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "maxItems": 2,
+  "minItems": 1,
+  "uniqueItems": true,
+  "items": {
+    "$ref": "../common/software_ven_default_release.schema.json"
+  }
+}

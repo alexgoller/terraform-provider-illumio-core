@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "User assigned name of the cluster",
+      "type": "string"
+    },
+    "description": {
+      "description": "User assigned description of the cluster",
+      "type": "string"
+    },
+    "datacenter_nat_1to1": {
+      "description": "Datacenter NAT 1to1 mode ON. Used for enforcing creation of pseudo public interfaces on nodes",
+      "type": "boolean"
+    }
+  }
+}

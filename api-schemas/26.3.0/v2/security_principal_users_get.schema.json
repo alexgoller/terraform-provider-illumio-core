@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "sid",
+    "name",
+    "deleted",
+    "upn"
+  ],
+  "properties": {
+    "id": {
+      "description": "System generated identifier for the principal user",
+      "type": "integer"
+    },
+    "href": {
+      "description": "URI of security principal user",
+      "type": "string"
+    },
+    "sid": {
+      "description": "Active Directory SID",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of the security principal user",
+      "type": "string"
+    },
+    "deleted": {
+      "description": "Flag to indicate if security principal user has been deleted",
+      "type": "boolean"
+    },
+    "upn": {
+      "description": "User Principal Name, typically an email address",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "Time stamp when this principal user was created",
+      "type": "string"
+    },
+    "updated_at": {
+      "description": "Time stamp when this principal user information was modified",
+      "type": "string"
+    }
+  }
+}

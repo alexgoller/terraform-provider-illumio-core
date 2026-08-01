@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "dependency": {
+        "type": "object",
+        "properties": {
+          "label_groups": {
+            "$ref": "../common/href_object.schema.json"
+          },
+          "services": {
+            "$ref": "../common/href_object.schema.json"
+          },
+          "rule_sets": {
+            "$ref": "../common/href_object.schema.json"
+          },
+          "ip_lists": {
+            "$ref": "../common/href_object.schema.json"
+          },
+          "virtual_services": {
+            "$ref": "../common/href_object.schema.json"
+          },
+          "firewall_settings": {
+            "$ref": "../common/href_object.schema.json"
+          },
+          "secure_connect_gateways": {
+            "$ref": "../common/href_object.schema.json"
+          },
+          "virtual_servers": {
+            "$ref": "../common/href_object.schema.json"
+          },
+          "enforcement_boundaries": {
+            "$ref": "../common/href_object.schema.json"
+          }
+        }
+      },
+      "required_by": {
+        "type": "object",
+        "properties": {
+          "label_groups": {
+            "type": "array",
+            "items": {
+              "$ref": "../common/href_object.schema.json"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "../common/href_object.schema.json"
+            }
+          },
+          "rule_sets": {
+            "type": "array",
+            "items": {
+              "$ref": "../common/href_object.schema.json"
+            }
+          },
+          "ip_lists": {
+            "type": "array",
+            "items": {
+              "$ref": "../common/href_object.schema.json"
+            }
+          },
+          "virtual_services": {
+            "type": "array",
+            "items": {
+              "$ref": "../common/href_object.schema.json"
+            }
+          },
+          "firewall_settings": {
+            "type": "array",
+            "items": {
+              "$ref": "../common/href_object.schema.json"
+            }
+          },
+          "secure_connect_gateways": {
+            "type": "array",
+            "items": {
+              "$ref": "../common/href_object.schema.json"
+            }
+          },
+          "virtual_servers": {
+            "type": "array",
+            "items": {
+              "$ref": "../common/href_object.schema.json"
+            }
+          },
+          "enforcement_boundaries": {
+            "type": "array",
+            "items": {
+              "$ref": "../common/href_object.schema.json"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "label": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Label URI",
+            "type": "string"
+          },
+          "key": {
+            "description": "Label type",
+            "type": "string"
+          },
+          "value": {
+            "description": "Label name",
+            "type": "string"
+          }
+        }
+      },
+      "label_group": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Label group URI",
+            "type": "string"
+          },
+          "key": {
+            "description": "Label group type",
+            "type": "string"
+          },
+          "name": {
+            "description": "Label group name",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

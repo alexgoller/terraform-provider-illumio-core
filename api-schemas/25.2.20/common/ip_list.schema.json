@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "IP List",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [ "href" ],
+  "properties": {
+    "href": {
+      "description": "IP List URI",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "Timestamp when this rule set was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when this rule set was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "Timestamp when this rule set was deleted",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": ["href"],
+      "properties": {
+        "href": {
+          "description": "User who originally created this rule set",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": "object",
+      "required": ["href"],
+      "properties": {
+        "href": {
+          "description": "User who last updated this rule set",
+          "type": "string"
+        }
+      }
+    },
+    "deleted_by": {
+      "type": ["object", "null"],
+      "required": ["href"],
+      "properties": {
+        "href": {
+          "description": "User who deleted this rule set",
+          "type": "string"
+        }
+      }
+    },
+    "update_type": {
+      "$ref": "../common/sec_policy_update_type.schema.json"
+    },
+    "name": {
+      "description": "Name (must be unique)",
+      "type": "string"
+    }
+  }
+}

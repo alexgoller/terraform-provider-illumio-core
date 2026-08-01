@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Allow rules for specific policy objects",
+  "additionalProperties": false,
+  "expose_to": [
+    "end_user_private_perm"
+  ],
+  "type": "array",
+  "items": {
+    "type": "object",
+    "oneOf": [
+      {
+        "required": [
+          "href"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "href": {
+            "description": "The resource (URI) representation of an allow rule. This is always the draft version.",
+            "type": "string"
+          }
+        }
+      },
+      {
+        "required": [
+          "essential_service_rule"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "essential_service_rule": {
+            "description": "The name of an essential service rule.",
+            "type": "string"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Details of virtual servers discovery",
+  "type": "object",
+  "required": [
+    "href",
+    "status",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the requested Virtual Servers discovery job",
+      "type": "string"
+    },
+    "status": {
+      "description": "The current state of the request",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "The time (rfc3339 timestamp) at which this job was created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "description": "The time (rfc3339 timestamp) at which this job was completed",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who originally created this Virtual Server discovery job",
+          "type": "string"
+        }
+      }
+    },
+    "connection_state": {
+      "description": "Status of most recent connection to the SLB device",
+      "type": "string"
+    },
+    "virtual_server_infos": {
+      "description": "Information of job completion",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "ip_address": {
+            "description": "Virtual server IP address",
+            "type": "string"
+          },
+          "port": {
+            "description": "Virtual server port",
+            "type": "integer"
+          },
+          "discovered_virtual_server": {
+            "description": "Discovered Virtual Server. Null indicates not found",
+            "type": "object",
+            "required": [
+              "href"
+            ],
+            "properties": {
+              "href": {
+                "description": "URI of Discovered Virtual Server",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

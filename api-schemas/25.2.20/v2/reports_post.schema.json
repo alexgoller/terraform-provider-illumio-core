@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_template",
+    "report_parameters"
+  ],
+  "properties": {
+    "report_template": {
+      "description": "Template for the report",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Report Template URI",
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "send_by_email": {
+      "description": "Flag for whether to send user report by email",
+      "type": "boolean"
+    },
+    "description": {
+      "oneOf": [
+        {
+          "description": "Description for the report",
+          "type": "string",
+          "maxLength": 255
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "report_parameters": {
+      "description": "Any specific parameters required for this report template",
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "executive_summary_report_params.schema.json"
+        },
+        {
+          "$ref": "traffic_flow_report_params.schema.json"
+        },
+        {
+          "$ref": "explorer_report_params.schema.json"
+        },
+        {
+          "$ref": "ves_report_params.schema.json"
+        },
+        {
+          "$ref": "rule_hit_count_report_params.schema.json"
+        }
+      ]
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who created this report, used when requesting report via interservice call on member",
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    }
+  }
+}

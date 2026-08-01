@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Providers for Rule Search",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "actors": {
+        "description": "Rule actors are all workloads ('ams')",
+        "type": "string"
+      },
+      "label": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Label URI",
+            "type": "string"
+          }
+        }
+      },
+      "label_group": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Label group URI",
+            "type": "string"
+          }
+        }
+      },
+      "workload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Workload URI",
+            "type": "string"
+          }
+        }
+      },
+      "container_workload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Container workload URI",
+            "type": "string"
+          }
+        }
+      },
+      "kubernetes_workload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Kubernetes workload URI",
+            "type": "string"
+          }
+        }
+      },
+      "virtual_service": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Virtual service URI",
+            "type": "string"
+          }
+        }
+      },
+      "virtual_server": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Virtual server URI",
+            "type": "string"
+          }
+        }
+      },
+      "ip_list": {
+        "description": "URI of associated IP List",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "IP List URI",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [ "href", "ven_type" ],
+  "description": "The ven bundle release with the ven type property",
+  "additionalProperties": false,
+  "properties": {
+    "href": {
+      "description": "URI associated to this release",
+      "type": "string"
+    },
+    "ven_type": {
+      "type": "string",
+      "description": "The type of the release marked as default",
+      "enum": ["server", "endpoint"]
+    }
+  }
+}

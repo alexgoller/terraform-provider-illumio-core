@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Supply one of the following properties",
+  "properties": {
+    "all_devices": {
+      "description": "Flag to indicate that enforcement instructions are required for all network devices",
+      "type": "boolean",
+      "enum": [
+        true
+      ]
+    },
+    "network_devices": {
+      "desc": "An array specifying which network devices need enforcement instructions",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "description": "href of network device",
+            "type": "string"
+          }
+        },
+        "minItems": 1
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "all_devices"
+      ]
+    },
+    {
+      "required": [
+        "network_devices"
+      ]
+    }
+  ]
+}

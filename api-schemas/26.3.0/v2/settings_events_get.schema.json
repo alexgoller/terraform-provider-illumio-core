@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Org-based event setting",
+  "type": "object",
+  "required": [
+    "audit_event_retention_seconds",
+    "audit_event_min_severity",
+    "format"
+  ],
+  "properties": {
+    "audit_event_retention_seconds": {
+      "description": "The time in seconds an audit event is stored in the database",
+      "type": "integer"
+    },
+    "audit_event_min_severity": {
+      "$ref": "audit_event_min_severity.schema.json"
+    },
+    "format": {
+      "description": "The log format (JSON, CEF, LEEF), which applies to all remote syslog destinations",
+      "type": "string"
+    }
+  }
+}

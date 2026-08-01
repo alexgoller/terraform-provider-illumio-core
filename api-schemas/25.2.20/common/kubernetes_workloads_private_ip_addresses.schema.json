@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Kubernetes Workload's private Pod IP addresses",
+  "additionalProperties": false,
+  "type": "array",
+  "items": {
+    "description": "Pod's private IP Address",
+    "type": "string",
+    "$ref": "../common/ip_address_format_validation.schema.json"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["errors_count", "acked_at"],
+  "properties": {
+    "total_pods_count": {
+      "description": "Total number of Pods",
+      "type": "integer"
+    },
+    "success_pods_count": {
+      "description": "Number of Pods with successfully applied Policy",
+      "type": "integer"
+    },
+    "pending_pods_count": {
+      "description": "Number of Pods that yet, do not have latest policy applied",
+      "type": "integer"
+    },
+    "errors_count": {
+      "description": "Number of Pods that yet, do not have latest policy applied",
+      "type": "integer"
+    },
+    "acked_at": {
+      "description": "Timestamp of last reported C-VEN's Policy acknowledgement",
+      "type": "string",
+      "format": "date-time"
+    },
+    "fully_converged_at": {
+      "description": "Timestamp of last successful and fully converged Workload Policy",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "errors": { "$ref": "../common/container_policy_convergence_errors.schema.json" }
+  }
+}

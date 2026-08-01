@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "value": {
+      "description": "Value in key-value pair",
+      "type": "string"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

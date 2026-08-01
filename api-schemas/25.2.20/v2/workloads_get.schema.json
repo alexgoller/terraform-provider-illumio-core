@@ -1,0 +1,568 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "deleted",
+    "name",
+    "description",
+    "managed",
+    "hostname",
+    "service_principal_name",
+    "public_ip",
+    "interfaces",
+    "service_provider",
+    "data_center",
+    "data_center_zone",
+    "os_id",
+    "os_detail",
+    "online",
+    "labels",
+    "services",
+    "agent",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of workload",
+      "type": "string"
+    },
+    "deleted": {
+      "description": "This workload has been deleted",
+      "type": "boolean"
+    },
+    "delete_type": {
+      "description": "DEPRECATED WITH NO REPLACEMENT: Workload deletion type",
+      "type": "string"
+    },
+    "name": {
+      "description": "Interface name",
+      "type": "string"
+    },
+    "description": {
+      "description": "The description of this workload",
+      "type": "string"
+    },
+    "managed": {
+      "description": "True if the workload is managed, else false",
+      "type": "boolean"
+    },
+    "hostname": {
+      "description": "The hostname of this workload",
+      "type": "string"
+    },
+    "service_principal_name": {
+      "description": "The Kerberos Service Principal Name (SPN)",
+      "type": "string"
+    },
+    "agent_to_pce_certificate_authentication_id": {
+      "description": "PKI Certificate identifier to be used by the PCE for authenticating the VEN",
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "distinguished_name": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "X.509 Subject distinguished name",
+      "type": "string"
+    },
+    "public_ip": {
+      "description": "The public IP address of the server",
+      "type": "string"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "interfaces": {
+      "$ref": "workloads_interfaces_get.schema.json"
+    },
+    "service_provider": {
+      "description": "Service provider",
+      "type": "string"
+    },
+    "data_center": {
+      "description": "Data center",
+      "type": "string"
+    },
+    "data_center_zone": {
+      "description": "Data center zone",
+      "type": "string"
+    },
+    "os_id": {
+      "description": "Our OS identifier",
+      "type": "string"
+    },
+    "os_detail": {
+      "description": "Additional OS details - just displayed to end user",
+      "type": "string"
+    },
+    "online": {
+      "description": "If this workload is online",
+      "type": "boolean"
+    },
+    "firewall_coexistence": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "Firewall coexistence mode ",
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "illumio_primary": {
+          "type": "boolean",
+          "description": "Illumio is the primary firewall if set to true"
+        }
+      }
+    },
+    "containers_inherit_host_policy": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "This workload will apply the policy it receives both to itself and the containers hosted by it",
+      "type": "boolean"
+    },
+    "blocked_connection_action": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "firewall action for blocked connections",
+      "type": "string",
+      "default": "drop"
+    },
+    "labels": {
+      "description": "List of labels associated with this workload",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "href",
+          "key",
+          "value"
+        ],
+        "properties": {
+          "href": {
+            "description": "The URI of the VEN that manages this workload. This replaces the 'agent' field of this object.",
+            "type": "string"
+          },
+          "key": {
+            "description": "Key in key-value pair",
+            "type": "string"
+          },
+          "value": {
+            "description": "Value in key-value pair",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "services": {
+      "description": "Service report",
+      "type": "object",
+      "properties": {
+        "uptime_seconds": {
+          "description": "How long since the last reboot of this box - used as a timestamp for this",
+          "type": "integer"
+        },
+        "created_at": {
+          "description": "Timestamp when this service was first created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "open_service_ports": {
+          "description": "A list of open ports",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "protocol",
+              "address",
+              "port",
+              "process_name",
+              "user"
+            ],
+            "properties": {
+              "protocol": {
+                "$ref": "../common/service_ports_protocol_numeric.schema.json"
+              },
+              "address": {
+                "description": "The local address this service is bound to",
+                "type": "string"
+              },
+              "port": {
+                "description": "The local port this service is bound to",
+                "type": "integer"
+              },
+              "process_name": {
+                "description": "The process name (including the full  path)",
+                "type": "string"
+              },
+              "user": {
+                "description": "The user account that the process is running under",
+                "type": "string"
+              },
+              "package": {
+                "description": "The RPM/DEB pacakge that the program is part of",
+                "type": "string"
+              },
+              "win_service_name": {
+                "description": "Name of the Windows service",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "vulnerabilities_summary": {
+      "$ref": "../common/vulnerability_summary.schema.json"
+    },
+    "detected_vulnerabilities": {
+      "$ref": "../common/workloads_detected_vulnerabilities.schema.json"
+    },
+    "risk_summary": {
+      "description": "Risk Summary for this workload",
+      "type": "object",
+      "required": [
+        "ransomware"
+      ],
+      "properties": {
+        "ransomware": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "workload_exposure_severity",
+            "ransomware_protection_percent",
+            "last_updated_at"
+          ],
+          "properties": {
+            "workload_exposure_severity": {
+              "$ref": "../common/workload_exposure_severity.schema.json"
+            },
+            "ransomware_protection_percent": {
+              "description": "Ransomware protection percentage for this workload",
+              "type": "number"
+            },
+            "last_updated_at": {
+              "description": "The time at which the ransomware stats are last computed at",
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "agent": {
+      "description": "DEPRECATED AND REPLACED (USE 'ven' INSTEAD). Information about the agent that manages this workload.",
+      "type": "object",
+      "properties": {
+        "config": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "description": "DEPRECATED AND REPLACED (Use workload enforcement_mode instead)",
+              "type": "string"
+            },
+            "log_traffic": {
+              "description": "True if we want to log traffic events from this workload",
+              "type": "boolean"
+            },
+            "security_policy_update_mode": {
+              "description": "Defines the current policy update mode which can be either adaptive or static based on static policy scopes",
+              "type": "string"
+            }
+          }
+        },
+        "href": {
+          "description": "URI of agent",
+          "type": "string"
+        },
+        "secure_connect": {
+          "type": "object",
+          "properties": {
+            "matching_issuer_name": {
+              "type": "string",
+              "description": "Issuer name match criteria for certificate used during establishing secure connections."
+            }
+          }
+        },
+        "status": {
+          "type": "object",
+          "required": [
+            "uid",
+            "last_heartbeat_on",
+            "uptime_seconds",
+            "fw_config_current",
+            "managed_since",
+            "agent_health_errors",
+            "agent_health",
+            "firewall_rule_count",
+            "security_policy_refresh_at"
+          ],
+          "properties": {
+            "uid": {
+              "description": "The unique ID reported by the server",
+              "type": "string"
+            },
+            "last_heartbeat_on": {
+              "description": "The last time (rfc3339 timestamp) a heartbeat was received from this workload",
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "uptime_seconds": {
+              "description": "How long since the last reboot of this server. Recorded in DB at the time of the last heartbeat",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "agent_version": {
+              "description": "Agent software version string",
+              "type": "string"
+            },
+            "managed_since": {
+              "description": "The time (rfc3339 timestamp) at which this workload became managed by a VEN",
+              "type": "string",
+              "format": "date-time"
+            },
+            "fw_config_current": {
+              "description": "If this workload's firewall config is up to date'",
+              "type": "boolean"
+            },
+            "firewall_rule_count": {
+              "description": "DEPRECATED WITH NO REPLACEMENT: Number of firewall rules currently installed",
+              "type": "integer"
+            },
+            "security_policy_refresh_at": {
+              "description": "DEPRECATED AND REPLACED (USE security_policy_applied_at and security_policy_received_at INSTEAD)",
+              "type": "string",
+              "format": "date-time"
+            },
+            "security_policy_applied_at": {
+              "description": "Last reported time when policy was applied (UTC)",
+              "type": "string",
+              "format": "date-time"
+            },
+            "security_policy_received_at": {
+              "description": "Last reported time when policy was received  (UTC)",
+              "type": "string",
+              "format": "date-time"
+            },
+            "agent_health_errors": {
+              "description": "DEPRECATED AND REPLACED (USE agent_health property INSTEAD)",
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "description": "Errors associated with the security policy",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "warnings": {
+                  "description": "Warnings associated with the security policy",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "agent_health": {
+              "description": "VEN Health. If there are no errors or warnings, then the array value will be empty.",
+              "minItems": 0,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "description": "This field describes the error or the warning type",
+                    "type": "string"
+                  },
+                  "severity": {
+                    "description": "severity of the error type",
+                    "type": "string"
+                  },
+                  "audit_event": {
+                    "description": "The URI of the audit event that was generated for the corresponding error or warning",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "severity"
+                ]
+              }
+            },
+            "security_policy_sync_state": {
+              "description": "Current state of security policy",
+              "type": "string"
+            }
+          }
+        },
+        "active_pce_fqdn": {
+          "description": "The FQDN of the PCE that received the agent's last heartbeat",
+          "type": "string"
+        },
+        "target_pce_fqdn": {
+          "description": "The FQDN of the PCE the agent will use for future connections",
+          "type": "string"
+        },
+        "type": {
+          "description": "Agent type",
+          "type": "string"
+        }
+      }
+    },
+    "ven": {
+      "type": "object",
+      "required": [
+        "href",
+        "hostname",
+        "name",
+        "status"
+      ],
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the VEN that manages this workload. This replaces the 'agent' field of this object.",
+          "type": "string"
+        },
+        "hostname": {
+          "description": "The hostname of the host managed by the VEN.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The friendly name of the VEN.",
+          "type": "string"
+        },
+        "status": {
+          "description": "Status of the VEN.",
+          "type": "string"
+        },
+        "ven_type": {
+          "$ref": "../common/ven_type.schema.json"
+        }
+      }
+    },
+    "enforcement_mode": {
+      "$ref": "../common/workload_enforcement_mode.schema.json"
+    },
+    "selectively_enforced_services": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "proto"
+        ],
+        "properties": {
+          "port": {
+            "description": "Port number, or the starting port of a range. If unspecified, this will apply to all ports for the given protocol.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535
+          },
+          "to_port": {
+            "description": "Upper end of port range; this field should not be included if specifying an individual port.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535
+          },
+          "proto": {
+            "description": "Transport protocol (numeric)",
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "created_at": {
+      "description": "The time (rfc3339 timestamp) at which this workload was created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "The time (rfc3339 timestamp) at which this workload was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "The time (rfc3339 timestamp) at which this workload was deleted",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the user who created this workload",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the user who last updated this workload",
+          "type": "string"
+        }
+      }
+    },
+    "deleted_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the user who deleted this workload",
+          "type": "string"
+        }
+      }
+    },
+    "container_cluster": {
+      "$ref": "../common/compact_container_cluster.schema.json"
+    },
+    "ike_authentication_certificate": {
+      "description": "IKE authentication certificate for certificate-based Secure Connect and Machine Auth connections",
+      "type": "object"
+    },
+    "datacenter_nat_1to1": {
+      "description": "Datacenter NAT 1to1 mode ON. Used for enforcing creation of pseudo public interface",
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "ips"
+  ],
+  "properties": {
+    "name": {
+      "description": "User assigned name of the access restriction",
+      "type": "string"
+    },
+    "description": {
+      "description": "User assigned description of the access restriction",
+      "type": "string"
+    },
+    "ips": {
+      "description": "Array of ip addresses or CIDR blocks",
+      "type": "array",
+      "items": {
+        "$ref": "../common/ipv4_ipv6_subnet.schema.json"
+      }
+    },
+    "enforcement_exclusions": {
+      "description": "The types of API access methods that are excluded from access restriction enforcement",
+      "type": [
+        "array",
+        "null"
+      ],
+      "minLength": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "user_sessions",
+          "api_keys"
+        ]
+      }
+    }
+  }
+}

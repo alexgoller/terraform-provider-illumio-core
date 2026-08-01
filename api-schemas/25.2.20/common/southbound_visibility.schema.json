@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Visibility level of the workload",
+  "type": "string",
+  "enum": ["starts_and_drops", "drops_only", "full", "none", "enhanced_data_collection"]
+}

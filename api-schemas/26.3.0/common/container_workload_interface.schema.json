@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Workload network interfaces",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "address", "cidr_block", "default_gateway_address", "friendly_name"],
+  "properties": {
+    "name": {
+      "description": "Interface name",
+      "type": "string"
+    },
+    "address": {
+      "description": "The IP Address to assign to this interface",
+      "type": "string"
+    },
+    "cidr_block": {
+      "description": "The number of bits in the subnet /24 is 255.255.255.0",
+      "type": "integer"
+    },
+    "default_gateway_address": {
+      "description": "The IP Address of the default gateway",
+      "type": "string"
+    },
+    "friendly_name": {
+      "description": "User-friendly name for interface",
+      "type": "string"
+    }
+  }
+}

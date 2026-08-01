@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "config",
+    "supported_endpoint_type",
+    "network_enforcement_node"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of network device",
+      "type": "string"
+    },
+    "config": {
+      "$ref": "network_device_config.schema.json"
+    },
+    "configure": {
+      "description": "Enable configuration of the device by the network enforcement platform",
+      "type": "boolean"
+    },
+    "enforcement_instructions_generation_in_progress": {
+      "description": "Flag to indicate if an enforceement instructions generation is in progress for this network_device",
+      "type": "boolean"
+    },
+    "enforcement_instructions_data_href": {
+      "description": "href to download the enforcement instructions data (this expires 7 days after data uploaded from network enforcement node)",
+      "type": "string"
+    },
+    "enforcement_instructions_data_timestamp": {
+      "description": "Timestamp indicating when enforcement instructions data were received from network enforcement node",
+      "type": "string",
+      "format": "date-time"
+    },
+    "enforcement_instructions_ack_href": {
+      "description": "href to download the enforcement instructions ack log (this expires 7 days after data uploaded from network enforcement node)",
+      "type": "string"
+    },
+    "enforcement_instructions_ack_timestamp": {
+      "description": "Timestamp indicating when enforcement instructions ack log was received from network enforcement node",
+      "type": "string",
+      "format": "date-time"
+    },
+    "supported_endpoint_type": {
+      "description": "Type of endpoint supported by this device",
+      "type": "string"
+    },
+    "network_endpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "description": "URI of endpoint",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "network_enforcement_node": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "description": "URI of owning network_enforcement_agent",
+          "type": "string"
+        }
+      }
+    },
+    "status": {
+      "description": "Status of device",
+      "type": "string"
+    }
+  }
+}

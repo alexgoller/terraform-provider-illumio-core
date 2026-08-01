@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "virtual service details of the traffic-flow endpoint",
+  "required": [
+    "href"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "Name of the virtual service",
+      "type": "string"
+    },
+    "href": {
+      "description": "The resource(URI) representation of the virtual service",
+      "type": "string"
+    },
+    "labels": {
+      "$ref": "traffic_flows_endpoint_labels.schema.json"
+    },
+    "workload_enforcement_mode": {
+      "$ref": "../common/workload_enforcement_mode.schema.json"
+    }
+  }
+}

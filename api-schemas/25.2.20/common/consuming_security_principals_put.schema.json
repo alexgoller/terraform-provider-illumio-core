@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Hrefs of consuming security principals",
+  "expose_to": [
+    "end_user_private_transitional"
+  ],
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "href"
+    ],
+    "properties": {
+      "href": {
+        "description": "URI of security principal",
+        "type": "string"
+      }
+    }
+  }
+}

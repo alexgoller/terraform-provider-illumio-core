@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "List of Pod errors, max 1 error per pod",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["token", "message"],
+    "properties": {
+      "pod_name": {
+        "description": "Name of the k8s Pod",
+        "type": "string"
+      },
+      "workload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["href"],
+        "properties": {
+          "href": {
+            "description": "Uri of the Workload that represents the k8s Node where the Pod is running",
+            "type": "string"
+          }
+        }
+      },
+      "token": {
+        "description": "Short error token, serves for an error identification",
+        "type": "string"
+      },
+      "message": {
+        "description": "Full error message",
+        "type": "string"
+      }
+    }
+  }
+}

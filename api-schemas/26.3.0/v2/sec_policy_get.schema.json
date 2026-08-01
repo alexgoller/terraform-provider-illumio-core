@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "commit_message",
+    "version",
+    "workloads_affected",
+    "created_at"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the policy",
+      "type": "string"
+    },
+    "version": {
+      "description": "Policy version",
+      "type": "integer"
+    },
+    "workloads_affected": {
+      "description": "Number of workloads affected by the policy",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "commit_message": {
+      "description": "Commit message for the policy",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "object_counts": {
+      "description": "Number of objects present in the given version of policy",
+      "type": "object",
+      "properties": {
+        "rule_sets": {
+          "type": "integer"
+        },
+        "ip_lists": {
+          "type": "integer"
+        },
+        "services": {
+          "type": "integer"
+        },
+        "virtual_services": {
+          "type": "integer"
+        },
+        "label_groups": {
+          "type": "integer"
+        },
+        "virtual_servers": {
+          "type": "integer"
+        },
+        "firewall_settings": {
+          "type": "integer"
+        },
+        "secure_connect_gateways": {
+          "type": "integer"
+        },
+        "enforcement_boundaries": {
+          "expose_to": [
+            "end_user_experimental"
+          ],
+          "type": "integer"
+        }
+      }
+    },
+    "created_at": {
+      "description": "Timestamp when this label was first created",
+      "type": "string"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who originally created this label",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

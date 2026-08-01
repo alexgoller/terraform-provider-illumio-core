@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "oneOf": [
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "enabled"
+        ],
+        "properties": {
+          "name": {
+            "description": "Name of the feature",
+            "type": "string",
+            "enum": [
+              "ip_forwarding_firewall_setting",
+              "ui_analytics",
+              "illumination_classic",
+              "ransomware_readiness_dashboard",
+              "per_rule_flow_log_setting",
+              "lightning_default",
+              "collector_scanner_filters",
+              "corporate_ips_groups",
+              "labels_editing_warning_for_enforcement_mode",
+              "label_based_network_detection",
+              "cloudsecure_enabled",
+              "windows_outbound_process_enforcement",
+              "rule_based_label_mapping",
+              "core_insights",
+              "rule_info_exposure_to_syslog",
+              "workload_usages_enabled",
+              "hybrid_policy",
+              "container_cluster_label_set_based_kubernetes_workload_instructions",
+              "quarantine_policy",
+              "ugm_support",
+              "policy_perspective_externalization",
+              "ven_ingestion",
+              "agent_policy_delivery_metrics"
+            ]
+          },
+          "enabled": {
+            "description": "Enable or disable this feature",
+            "type": "boolean"
+          }
+        }
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "enabled"
+        ],
+        "properties": {
+          "name": {
+            "description": "Name of the feature",
+            "type": "string",
+            "enum": [
+              "editable_dns_client_rule",
+              "editable_dhcp_client_rule"
+            ]
+          },
+          "enabled": {
+            "description": "Enable or disable this feature",
+            "type": "boolean"
+          },
+          "key": {
+            "description": "Key required to enable the feature. Contact Illumio Support for more details.",
+            "type": "string"
+          }
+        }
+      }
+    ]
+  }
+}

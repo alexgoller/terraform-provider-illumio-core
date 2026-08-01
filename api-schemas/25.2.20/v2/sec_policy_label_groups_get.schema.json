@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "name",
+    "description",
+    "key",
+    "created_at",
+    "updated_at",
+    "deleted_at",
+    "created_by",
+    "updated_by",
+    "deleted_by"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of this Label Group",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of the Label Group",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the Label Group",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "key": {
+      "description": "Key in key-value pair of contained Labels or Label Groups",
+      "type": "string"
+    },
+    "labels": {
+      "description": "Contained Labels",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "href",
+          "key",
+          "value"
+        ],
+        "properties": {
+          "href": {
+            "description": "Label URI",
+            "type": "string"
+          },
+          "key": {
+            "description": "Label key (same as Label Group key)",
+            "type": "string"
+          },
+          "value": {
+            "description": "Label value in key-value pair",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sub_groups": {
+      "description": "Contained Label Groups",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "href",
+          "name"
+        ],
+        "properties": {
+          "href": {
+            "description": "Contained Label Group URI",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of sub Label Group",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "required": [
+        "label_group",
+        "ruleset",
+        "rule",
+        "static_policy_scopes",
+        "containers_inherit_host_policy_scopes",
+        "blocked_connection_reject_scopes",
+        "enforcement_boundary",
+        "loopback_interfaces_in_policy_scopes",
+        "ip_forwarding_enabled_scopes",
+        "rule_hit_count_enabled_scopes"
+      ],
+      "properties": {
+        "label_group": {
+          "description": "Label Group is referenced by another Label Group",
+          "type": "boolean"
+        },
+        "ruleset": {
+          "description": "Label Group is referenced by at least one Ruleset",
+          "type": "boolean"
+        },
+        "rule": {
+          "description": "Label Group is referenced by at least one Rule",
+          "type": "boolean"
+        },
+        "static_policy_scopes": {
+          "description": "Label Group is referenced by Static Policy Scopes",
+          "type": "boolean"
+        },
+        "containers_inherit_host_policy_scopes": {
+          "description": "Label Group is referenced by Containers Inherit Host Policy Scopes",
+          "type": "boolean"
+        },
+        "blocked_connection_reject_scopes": {
+          "description": "Label Group is referenced by Blocked Connection Reject Scopes",
+          "type": "boolean"
+        },
+        "enforcement_boundary": {
+          "description": "Label Group is referenced by at least one Enforcement Boundary",
+          "type": "boolean"
+        },
+        "loopback_interfaces_in_policy_scopes": {
+          "description": "Label Group is referenced by Loopback Interfaces in Policy Scopes",
+          "type": "boolean"
+        },
+        "ip_forwarding_enabled_scopes": {
+          "description": "Label Group is referenced by IP Forwarding Enabled Scopes",
+          "type": "boolean"
+        },
+        "rule_hit_count_enabled_scopes": {
+          "description": "Label Group is referenced by Rule Hit Count Enabled Scopes",
+          "type": "boolean"
+        },
+        "protection_schema": {
+          "description": "Label Group is referenced by Protection Schema objects (Xpress)",
+          "type": "boolean"
+        }
+      }
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "update_type": {
+      "description": "Type of update",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "description": "Timestamp when this Label Group was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when this Label Group was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "Timestamp when this Label Group was deleted",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_by": {
+      "description": "User who originally created this Label Group",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "updated_by": {
+      "description": "User who last updated this Label Group",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "deleted_by": {
+      "description": "User who deleted this Label Group",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "../common/href_object.schema.json"
+        }
+      ]
+    }
+  }
+}

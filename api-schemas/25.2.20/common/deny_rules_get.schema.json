@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Enforcement boundary",
+  "type": "object",
+  "required": ["href", "providers", "consumers", "ingress_services"],
+  "expose_to": ["end_user_private_perm"],
+  "_comment": "Don't set additionalProperties:false here as it collides with usage in allOf, set that in the schema that references this one instead.",
+  "properties": {
+    "created_at": {
+      "description": "Timestamp when this Enforcement Boundary was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when this Enforcement Boundary was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "description": "Timestamp when this Enforcement Boundary was deleted",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": ["object", "null"],
+      "required": ["href"],
+      "properties": {
+        "href": {
+          "description": "User who originally created this Enforcement Boundary",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": ["object", "null"],
+      "required": ["href"],
+      "properties": {
+        "href": {
+          "description": "User who last updated this Enforcement Boundary",
+          "type": "string"
+        }
+      }
+    },
+    "deleted_by": {
+      "type": ["object", "null"],
+      "required": ["href"],
+      "properties": {
+        "href": {
+          "description": "User who deleted this Enforcement Boundary",
+          "type": "string"
+        }
+      }
+    },
+    "update_type": {
+      "$ref": "../common/sec_policy_update_type.schema.json"
+    },
+    "href": {
+      "description": "The job URI.",
+      "type": "string"
+    },
+    "providers": { "$ref": "deny_rule_actor.schema.json" },
+    "consumers": { "$ref": "deny_rule_actor.schema.json" },
+    "ingress_services": {
+      "$ref": "sec_rule_ingress_services.schema.json"
+    },
+    "egress_services": {
+      "$ref": "sec_rule_egress_services.schema.json"
+    },
+    "caps": {
+      "$ref": "../common/entity_caps.schema.json"
+    },
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    },
+    "description": {
+      "description": "Description",
+      "type": ["string", "null"]
+    },
+    "network_type": {
+      "$ref": "../common/rule_network_type.schema.json"
+    },
+    "override": {
+      "description": "When true, the deny rule will override and take precedence over other user defined allow rules.",
+      "default": false,
+      "type": "boolean"
+    },
+    "unscoped_consumers": {
+      "description": "Set the scope for rule consumers to All",
+      "type": "boolean"
+    }
+  }
+}

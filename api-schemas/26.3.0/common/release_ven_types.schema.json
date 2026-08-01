@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Supported ven types in this release",
+  "type": "array",
+  "items": {
+    "type": "string",
+    "enum": ["server", "endpoint"]
+  }
+}

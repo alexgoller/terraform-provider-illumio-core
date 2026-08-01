@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "rule_href_mapping": {
+      "type": "object",
+      "patternProperties": {
+        "^[0-9]+$": {
+          "type": "string",
+          "description": "URI of (a matching) rule referred to in 'edges' by this index"
+        }
+      }
+    },
+    "rule_edges": {
+      "type": "array",
+      "description": "A list with a placeholder for each requested source and destination pair",
+      "items": {
+        "type": "array",
+        "description": "A list with with a placeholder for each requested service (per source and destination pair)",
+        "items": {
+          "type": "array",
+          "description": "A list of indexes of matching rules (for each service per source and destination pair)",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "description": "Indexes and URI lookups for matching rules for the given source, destination, and services",
+  "properties": {
+    "override_deny_rules": {
+      "$ref": "#/definitions/rule_href_mapping"
+    },
+    "override_deny_edges": {
+      "$ref": "#/definitions/rule_edges"
+    },
+    "rules": {
+      "$ref": "#/definitions/rule_href_mapping"
+    },
+    "edges": {
+      "$ref": "#/definitions/rule_edges"
+    },
+    "deny_rules": {
+      "$ref": "#/definitions/rule_href_mapping"
+    },
+    "deny_edges": {
+      "$ref": "#/definitions/rule_edges"
+    }
+  },
+  "additionalProperties": false
+}

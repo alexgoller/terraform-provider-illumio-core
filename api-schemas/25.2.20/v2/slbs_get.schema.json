@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "name",
+    "nfc",
+    "device_type",
+    "devices",
+    "network_enforcement_node"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of this SLB",
+      "type": "string"
+    },
+    "name": {
+      "description": "The short friendly name of the server load balancer",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the server load balancer",
+      "type": "string"
+    },
+    "nfc": {
+      "description": "DEPRECATED AND REPLACED (USE 'network_enforcement_node' INSTEAD) Network Function Controller managing this SLB",
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "NFC URI",
+          "type": "string"
+        }
+      }
+    },
+    "network_enforcement_node": {
+      "description": "Network enforcement node managing this SLB",
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "Network enforcement node URI",
+          "type": "string"
+        }
+      }
+    },
+    "device_type": {
+      "$ref": "slb_device_type.schema.json"
+    },
+    "devices": {
+      "description": "Configuration and runtime state of the devices backing this SLB Network VF.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "slb_devices_get.schema.json"
+      }
+    },
+    "status": {
+      "description": "Status of the SLB: error, pending connection, or active. In an HA pair, the status will be pending connection or error if either device is pending connection or error.",
+      "type": "string"
+    }
+  },
+  "$ref": "resource_update_info.schema.json"
+}

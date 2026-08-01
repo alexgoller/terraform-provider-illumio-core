@@ -1,0 +1,124 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "pce_fqdn",
+    "address",
+    "port",
+    "authentication_method",
+    "request_timeout_seconds",
+    "bind_distinguished_name",
+    "is_bind_password_set",
+    "user_base_distinguished_name",
+    "username_attribute",
+    "tls_ca_bundle",
+    "insecure_disable_tls_certificate_verification",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "updated_by"
+  ],
+  "properties": {
+    "href": {
+      "description": "LDAP config URI",
+      "type": "string"
+    },
+    "pce_fqdn": {
+      "description": "The FQDN of the PCE cluster",
+      "type": "string"
+    },
+    "name": {
+      "description": "Friendly name of the LDAP server",
+      "type": "string"
+    },
+    "address": {
+      "description": "IP address or host name of the LDAP server",
+      "type": "string"
+    },
+    "port": {
+      "description": "Port number of the LDAP server",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "authentication_method": {
+      "description": "Authentication types",
+      "type": "string"
+    },
+    "request_timeout_seconds": {
+      "description": "Number of seconds to wait for response",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 60
+    },
+    "bind_distinguished_name": {
+      "description": "Distinguished name (DN) used to bind to the LDAP server",
+      "type": "string"
+    },
+    "is_bind_password_set": {
+      "description": "Flag to indicate whether Bind DN password is set",
+      "type": "boolean"
+    },
+    "user_base_distinguished_name": {
+      "description": "Base distinguished name to be used for login",
+      "type": "string"
+    },
+    "user_distinguished_name_pattern": {
+      "description": "Pattern used to create a DN string for a user during login, e.g. uid=*,ou=people, where * will be replaced with the username",
+      "type": "string"
+    },
+    "user_base_filter": {
+      "description": "Search filter used to query the LDAP tree for users",
+      "type": "string"
+    },
+    "username_attribute": {
+      "description": "Attribute on a user object which contains the username, e.g. uid, sAMAccountName",
+      "type": "string"
+    },
+    "full_name_attribute": {
+      "description": "Attribute on a user object which contains the full name, e.g. cn, commonName, displayName",
+      "type": "string"
+    },
+    "user_memberof_attribute": {
+      "description": "Attribute on a user object containing group membership information, e.g. memberOf, isMemberOf",
+      "type": "string"
+    },
+    "tls_ca_bundle": {
+      "description": "Trustee CA bundle",
+      "type": "string"
+    },
+    "insecure_disable_tls_certificate_verification": {
+      "description": "Specifies whether to verify the server certificate when establishing an SSL connection to the LDAP server.  WARNING: The use of this feature decreases the security of the system, and should only be used with full understanding of the ramifications.",
+      "type": "boolean"
+    },
+    "created_at": {
+      "description": "Timestamp when LDAP configuration was first created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when LDAP configuration was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "description": "The username which created this LDAP configuration",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "description": "The username which last updated this LDAP configuration",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

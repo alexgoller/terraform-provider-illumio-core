@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Suggested labels",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "oneOf": [
+      {
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      {
+        "required": [
+          "href"
+        ]
+      }
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "value": {
+        "description": "Label name",
+        "type": "string"
+      },
+      "key": {
+        "description": "Label type",
+        "type": "string"
+      },
+      "href": {
+        "description": "Label URI",
+        "type": "string",
+        "format": "uri"
+      }
+    }
+  },
+  "uniqueItems": true
+}

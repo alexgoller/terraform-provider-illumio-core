@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "property",
+      "counts",
+      "total_filtered_count"
+    ],
+    "properties": {
+      "property": {
+        "type": "string",
+        "enum": [
+          "status",
+          "version",
+          "health",
+          "condition",
+          "os_id",
+          "enforcement_mode"
+        ]
+      },
+      "counts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "value",
+            "filtered_count",
+            "unfiltered_count"
+          ],
+          "properties": {
+            "value": {
+              "type": "string"
+            },
+            "filtered_count": {
+              "type": "integer"
+            },
+            "unfiltered_count": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "total_filtered_count": {
+        "type": "integer"
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "config"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of the managed SLB device.",
+      "type": "string"
+    },
+    "config": {
+      "required": [
+        "host",
+        "port",
+        "credential_type"
+      ],
+      "$ref": "slb_device_config.schema.json"
+    },
+    "status": {
+      "$ref": "slb_device_status.schema.json"
+    }
+  }
+}

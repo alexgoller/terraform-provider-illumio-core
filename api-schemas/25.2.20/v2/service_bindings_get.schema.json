@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "required": [
+      "bound_service"
+    ],
+    "properties": {
+      "bound_service": {
+        "description": "Bound service href",
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          }
+        }
+      },
+      "workload": {
+        "description": "Workload href",
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          }
+        }
+      },
+      "port_overrides": {
+        "type": "array",
+        "items": {
+          "$ref": "port_overrides.schema.json"
+        }
+      },
+      "external_data_set": {
+        "description": "External data set identifier",
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "external_data_reference": {
+        "description": "External data reference identifier",
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "oneOf": [
+      {
+        "required": [
+          "workload"
+        ]
+      },
+      {
+        "required": [
+          "container_workload"
+        ]
+      }
+    ]
+  }
+}

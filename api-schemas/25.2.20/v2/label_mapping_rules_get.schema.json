@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "href": {
+      "description": "URI for this label mapping rule",
+      "type": "string"
+    },
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    },
+    "expression": {
+      "$ref": "label_mapping_rule_expression.schema.json"
+    },
+    "label_assignments": {
+      "$ref": "label_mapping_rule_label_assignments.schema.json"
+    },
+    "created_at": {
+      "description": "Timestamp when this rule was created in UTC timezone in RFC3389 format",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "Timestamp when this rule was updated in UTC timezone in RFC3389 format",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who originally created this rule",
+          "type": "string"
+        }
+      }
+    },
+    "updated_by": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who last updated this rule",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action",
+    "vens"
+  ],
+  "properties": {
+    "action": {
+      "description": "Remote action type",
+      "type": "string",
+      "enum": [
+        "restart"
+      ]
+    },
+    "vens": {
+      "description": "An array of VENs to restart",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "VEN URI",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

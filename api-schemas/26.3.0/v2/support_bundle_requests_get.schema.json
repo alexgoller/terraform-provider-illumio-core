@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "href",
+    "name",
+    "download_url",
+    "requested_at",
+    "completed_at",
+    "created_by",
+    "status",
+    "include_logs",
+    "starting_at",
+    "ending_at"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of this request",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "name": {
+      "description": "The name of the support bundle",
+      "type": "string"
+    },
+    "download_url": {
+      "oneOf": [
+        {
+          "description": "URI of associated report file",
+          "$ref": "../common/href_object.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "requested_at": {
+      "description": "Time support bundle requested",
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "description": "Time support bundle completed",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "status": {
+      "description": "A status annunciator indicating the state of this request",
+      "type": "string"
+    },
+    "created_by": {
+      "description": "URI of initiator",
+      "$ref": "../common/href_object.schema.json"
+    },
+    "include_logs": {
+      "description": "Set to true if logs are to be included",
+      "type": "boolean"
+    },
+    "starting_at": {
+      "description": "Start date for log filtering",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "ending_at": {
+      "description": "End date for log filtering.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

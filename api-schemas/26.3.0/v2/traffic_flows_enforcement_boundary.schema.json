@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "List of enforcement_boundaries details of the traffic-flow endpoint. This is always the draft version",
+  "additionalProperties": false,
+  "expose_to": [
+    "end_user_private_perm"
+  ],
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "href"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "href": {
+        "description": "The resource (URI) representation of an enforcement boundary. This is always the draft version.",
+        "type": "string"
+      }
+    }
+  }
+}

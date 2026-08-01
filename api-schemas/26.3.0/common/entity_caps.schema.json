@@ -1,0 +1,6 @@
+{
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "description": "Array of permissions for the entity for the current user - an empty array implies read only access",
+  "type": "array",
+  "items": {"$ref":"../common/rbac_permission_types.schema.json"}
+}

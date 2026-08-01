@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Bulk transplant VENs to a new PCE based on the new PCE FQDN.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pce_endpoint",
+    "ev_service_endpoint",
+    "vens"
+  ],
+  "properties": {
+    "vens": {
+      "description": "An array of VENs to transplant",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 25000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "VEN URI",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pce_endpoint": {
+      "description": "pce cluster FQDN and port for target PCE. example: devtest0.ilabs.io:8443",
+      "type": "string"
+    },
+    "ev_service_endpoint": {
+      "description": "ev service FQDN and port for target PCE. example: devtest0.ilabs.io:8444",
+      "type": "string"
+    }
+  }
+}

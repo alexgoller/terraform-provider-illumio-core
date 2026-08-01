@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "Name of the label group",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the label group",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "labels": {
+      "description": "Contained labels",
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "sub_groups": {
+      "description": "Contained label groups",
+      "type": "array",
+      "items": {
+        "$ref": "../common/href_object.schema.json"
+      }
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

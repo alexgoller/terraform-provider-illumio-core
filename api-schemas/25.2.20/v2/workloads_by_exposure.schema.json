@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "critical": {
+      "description": "Number of workloads that have 1 or more critically risky services as its highest risk",
+      "type": "integer"
+    },
+    "high": {
+      "description": "Number of workloads that have 1 or more high risk services as its highest risk",
+      "type": "integer"
+    },
+    "medium": {
+      "description": "Number of workloads that have 1 or more medium risk services as its highest risk",
+      "type": "integer"
+    },
+    "low": {
+      "description": "Number of workloads that have 1 or more low risk services as its highest risk",
+      "type": "integer"
+    },
+    "fully_protected": {
+      "description": "Number of workloads that have no risky services and are fully protected",
+      "type": "integer"
+    }
+  }
+}

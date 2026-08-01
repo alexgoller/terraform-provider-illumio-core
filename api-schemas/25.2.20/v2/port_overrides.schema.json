@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "new_port"
+  ],
+  "properties": {
+    "port": {
+      "description": "Port Number in the original service which to override (integer 0-65535). Starting port when specifying a range.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "proto": {
+      "description": "Transport protocol in the original service which to override",
+      "type": "integer",
+      "enum": [
+        6,
+        17
+      ]
+    },
+    "new_port": {
+      "description": "Overriding port number (or starting point when specifying a range)",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "new_to_port": {
+      "description": "Overriding port range ending port",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    }
+  }
+}

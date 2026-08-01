@@ -1,0 +1,33 @@
+{
+  "$schema" : "http://json-schema.org/draft-04/schema#",
+  "description" : "Service Protocol definition",
+  "type" : "object",
+  "required": ["proto"],
+  "additionalProperties": false,
+  "properties": {
+    "port" : {
+      "description" : "Port Number (integer 1-65535). If not provided and proto needs ports it defaults to any.Also the starting port when specifying a range.",
+      "type" : "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "to_port" : {
+      "description" : "High end of port range inclusive if specifying a range.  If not specifying a range then don't send this.",
+      "type" : "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "proto" : {
+      "description": "Transport protocol",
+      "type": "integer"
+    },
+    "icmp_type" : {
+      "description" : "ICMP Type (integer 0-255 for icmp protocol)",
+      "type" : ["integer", "null"]
+    },
+    "icmp_code" : {
+      "description" : "ICMP Code (integer 0-15 for icmp protocol)",
+      "type" : ["integer", "null"]
+    }
+  }
+}

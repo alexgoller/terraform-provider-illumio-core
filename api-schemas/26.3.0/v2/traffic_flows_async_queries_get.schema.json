@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Asynchronous explorer query status",
+  "type": "object",
+  "required": [
+    "href",
+    "status",
+    "created_at",
+    "created_by",
+    "query_parameters"
+  ],
+  "properties": {
+    "href": {
+      "description": "Query URI",
+      "type": "string",
+      "format": "uri"
+    },
+    "result": {
+      "description": "Result download URI, availble only if status is completed",
+      "type": "string",
+      "format": "uri"
+    },
+    "status": {
+      "description": "Current query status",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "Timestamp in UTC when this query was created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "User who created this query",
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "query_parameters": {
+      "description": "Explorer query parameters",
+      "type": "object",
+      "$ref": "traffic_flows_async_queries_post.schema.json"
+    },
+    "updated_at": {
+      "type": "string",
+      "description": "Timestamp in UTC when this async query was last updated.",
+      "format": "date-time"
+    },
+    "matches_count": {
+      "description": "query result count",
+      "type": "integer"
+    },
+    "flows_count": {
+      "description": "result count after query limits and RBAC filtering are applied",
+      "type": "integer"
+    },
+    "regions": {
+      "description": "Region-specific response metadata",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "pce_fqdn",
+          "responded"
+        ],
+        "properties": {
+          "pce_fqdn": {
+            "type": "string",
+            "description": "FQDN of PCE region"
+          },
+          "responded": {
+            "description": "supercluster region responded with query results",
+            "type": "boolean"
+          },
+          "matches_count": {
+            "description": "region query result count",
+            "type": "integer"
+          },
+          "flows_count": {
+            "description": "region result count after query limits and RBAC filtering are applied",
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

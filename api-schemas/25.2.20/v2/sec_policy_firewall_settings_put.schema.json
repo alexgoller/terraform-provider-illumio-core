@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "update_type": {
+      "description": "Type of update",
+      "type": "string",
+      "enum": [
+        "create",
+        "update",
+        "delete"
+      ]
+    },
+    "static_policy_scopes": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "Scopes that have static policy application mode",
+      "$ref": "../common/rule_set_scopes_put.schema.json"
+    },
+    "ike_authentication_type": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "IKE authentication type to use for IPsec (SecureConnect and Machine Authentication)",
+      "type": "string",
+      "enum": [
+        "psk",
+        "certificate"
+      ]
+    },
+    "firewall_coexistence": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "additionalProperties": false,
+      "type": [
+        "array",
+        "null"
+      ],
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": [
+          "illumio_primary",
+          "scope"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "description": "Label scope that limits the workload(s)",
+            "$ref": "labels.schema.json"
+          },
+          "workload_mode": {
+            "type": "string",
+            "description": "Additional match criteria to select workload(s)",
+            "enum": [
+              "enforced",
+              "illuminated"
+            ]
+          },
+          "illumio_primary": {
+            "description": "Configure Illumio to be the primary firewall",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "allow_captive_portal_outbound": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "Defines whether or not to open the endpoint firewall to all outbound traffic when a captive portal scenario is discovered by the VEN",
+      "type": "boolean"
+    },
+    "containers_inherit_host_policy_scopes": {
+      "description": "Workloads that match the scope will apply the policy it receives both to itself and the containers hosted by it",
+      "$ref": "../common/rule_set_scopes_put.schema.json"
+    },
+    "blocked_connection_reject_scopes": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "Scopes whose blocked connection action will be reject",
+      "type": "array",
+      "items": {
+        "$ref": "../common/rule_set_scope_put.schema.json"
+      }
+    },
+    "loopback_interfaces_in_policy_scopes": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "Workloads that match the scope will apply policy on loopback interfaces and the loopback interface's IPs will be distributed to peers.",
+      "type": "array",
+      "items": {
+        "$ref": "../common/rule_set_scope_put.schema.json"
+      }
+    },
+    "ip_forwarding_enabled_scopes": {
+      "description": "Host Workloads that match the scope will have IP forwarding enabled",
+      "$ref": "../common/rule_set_scopes_put.schema.json"
+    },
+    "rule_hit_count_enabled_scopes": {
+      "expose_to": [
+        "end_user_experimental"
+      ],
+      "description": "Workloads that match the scope will have rule hit count enabled",
+      "$ref": "../common/rule_set_scopes_put.schema.json"
+    }
+  }
+}

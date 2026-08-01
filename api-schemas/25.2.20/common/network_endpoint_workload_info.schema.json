@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "interfaces"],
+  "properties": {
+    "href": {
+      "description": "URI of workload",
+      "type": "string"
+    },
+    "name": {
+      "description": "The name of the workload",
+      "type": "string"
+    },
+    "description": {
+      "description": "The long description of the workload",
+      "type": "string"
+    },
+    "external_data_set": {
+      "description": "External data set identifier",
+      "type": [ "string", "null" ]
+    },
+    "external_data_reference": {
+      "description": "External data reference identifier",
+      "type": [ "string", "null" ]
+    },
+    "hostname": {
+      "description": "The hostname of the workload",
+      "type": "string"
+    },
+    "public_ip": {
+      "description": "Public IP address of workload",
+      "type": "string"
+    },
+    "mode": {
+      "description": "Workload mode",
+      "type": "string",
+      "enum": ["idle", "illuminated", "enforced"]
+    },
+    "deleted": {
+      "description": "Flag to indicate if workload has been deleted",
+      "type": "boolean"
+    },
+    "os_id": {
+      "description": "Our OS identifier",
+      "type": "string"
+    },
+    "os_detail": {
+      "description": "Additional OS details - just displayed to end user",
+      "type": "string"
+    },
+    "online": {
+      "description": "If this workload is online",
+      "type": "boolean"
+    },
+    "labels": {
+      "description": "Workload labels",
+      "type": "array",
+      "items": {
+        "type":"object",
+        "properties":{
+          "key":{
+            "description":"Key in key-value pair",
+            "type":"string"
+          },
+          "value":{
+            "description":"Value in key-value pair",
+            "type":"string"
+          }
+        }
+      }
+    },
+    "interfaces": {
+      "description": "Workload interfaces",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "requiredProperties": ["name", "address"],
+        "properties": {
+          "name": {
+            "description": "Interface name",
+            "type": "string"
+          },
+          "address": {
+            "description": "The IP Address assigned to this interface",
+            "type": "string"
+          },
+          "cidr_block": {
+            "description": "The number of bits in the subnet /24 is 255.255.255.0",
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

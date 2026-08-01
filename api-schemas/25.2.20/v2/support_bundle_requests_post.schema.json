@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Support bundle request for PCE cluster",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "include_logs": {
+      "description": "Set to true if logs are to be included",
+      "type": "boolean"
+    },
+    "starting_at": {
+      "description": "Start date for log filtering",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "ending_at": {
+      "description": "End date for log filtering.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "oneOf": [
+    {
+      "format": "ipv6",
+      "pattern": "^[^/]*$"
+    },
+    {
+      "format": "ipv4",
+      "pattern": "^[^/]*$"
+    }
+  ]
+}

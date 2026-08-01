@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "virtual server details of the traffic-flow endpoint",
+  "required": [
+    "href"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "Name of the virtual server",
+      "type": "string"
+    },
+    "href": {
+      "description": "The resource(URI) representation of the virtual server",
+      "type": "string"
+    },
+    "enforcement_mode": {
+      "type": "string",
+      "description": "virtual server enforcement mode",
+      "enum": [
+        "unmanaged",
+        "enforced"
+      ]
+    },
+    "labels": {
+      "$ref": "traffic_flows_endpoint_labels.schema.json"
+    }
+  }
+}

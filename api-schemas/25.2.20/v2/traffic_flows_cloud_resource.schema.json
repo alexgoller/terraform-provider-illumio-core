@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Cloud Resource details of the traffic-flow endpoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "resource_uuid",
+    "labels",
+    "type"
+  ],
+  "properties": {
+    "resource_uuid": {
+      "description": "The UUID of the resource",
+      "type": "string"
+    },
+    "labels": {
+      "$ref": "traffic_flows_endpoint_labels.schema.json"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "aws",
+        "azure",
+        "ocp",
+        "gcp",
+        "unknown"
+      ]
+    }
+  }
+}

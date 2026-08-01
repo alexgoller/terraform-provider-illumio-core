@@ -1,0 +1,220 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "query_name",
+    "sources",
+    "destinations",
+    "services",
+    "policy_decisions",
+    "max_results"
+  ],
+  "properties": {
+    "query_name": {
+      "description": "Query Name",
+      "type": "string"
+    },
+    "start_date": {
+      "description": "Starting date for query",
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "description": "Ending date for query",
+      "type": "string",
+      "format": "date"
+    },
+    "sources_destinations_query_op": {
+      "description": "Query logical operator between sources and destinations",
+      "type": "string",
+      "enum": [
+        "and",
+        "or"
+      ],
+      "default": "and"
+    },
+    "sources": {
+      "description": "Source labels, workloads, IP addresses to include or exclude",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "include",
+        "exclude"
+      ],
+      "properties": {
+        "include": {
+          "$ref": "traffic_flows_include_array_list.schema.json"
+        },
+        "exclude": {
+          "$ref": "traffic_flows_exclude_array.schema.json"
+        }
+      }
+    },
+    "destinations": {
+      "description": "Target labels, workloads, IP addresses, domain names, transmission to include or exclude",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "include",
+        "exclude"
+      ],
+      "properties": {
+        "include": {
+          "$ref": "traffic_flows_destination_include_array_list.schema.json"
+        },
+        "exclude": {
+          "$ref": "traffic_flows_destination_exclude_array.schema.json"
+        }
+      }
+    },
+    "data_sources": {
+      "description": "Data sources of the flows to include or exclude",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "include": {
+          "description": "List of included services",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "server",
+              "endpoint",
+              "flowlink",
+              "scanner"
+            ]
+          }
+        },
+        "exclude": {
+          "description": "List of excluded data sources",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "server",
+              "endpoint",
+              "flowlink",
+              "scanner"
+            ]
+          }
+        }
+      }
+    },
+    "services": {
+      "description": "Services (5-tuple of port/to_port/proto/process/service) to include or exclude",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "include",
+        "exclude"
+      ],
+      "properties": {
+        "include": {
+          "description": "List of included services (5-tuple of port/to_port/proto/process/service)",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "description": "Port Number (integer 0-65535).  Also the starting port when specifying a range.",
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535
+              },
+              "to_port": {
+                "description": "High end of port range inclusive if specifying a range.  If not specifying a range then don't send this.",
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535
+              },
+              "proto": {
+                "description": "protocol number",
+                "type": "integer"
+              },
+              "process_name": {
+                "description": "Process Name",
+                "type": "string"
+              },
+              "windows_service_name": {
+                "description": "Windows Service Name",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "exclude": {
+          "description": "List of excluded services (5-tuple of port/to_port/proto/process/service)",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "description": "Port Number (integer 0-65535).  Also the starting port when specifying a range.",
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535
+              },
+              "to_port": {
+                "description": "High end of port range inclusive if specifying a range.  If not specifying a range then don't send this.",
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535
+              },
+              "proto": {
+                "description": "protocol number",
+                "type": "integer"
+              },
+              "process_name": {
+                "description": "Process Name",
+                "type": "string"
+              },
+              "windows_service_name": {
+                "description": "Windows Service Name",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "policy_decisions": {
+      "description": "List of policy decisions",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "allowed",
+          "potentially_blocked",
+          "blocked",
+          "unknown"
+        ]
+      }
+    },
+    "boundary_decisions": {
+      "description": "List of boundary decisions",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "blocked",
+          "blocked_by_override_deny",
+          "blocked_non_illumio_rule"
+        ]
+      }
+    },
+    "max_results": {
+      "description": "maximum number of flows to return",
+      "minimum": 0,
+      "maximum": 200000,
+      "type": "integer"
+    },
+    "exclude_workloads_from_ip_list_query": {
+      "description": "exclude workload traffic when IP List is provided either in consumer or provider part of traffic query",
+      "default": true,
+      "type": "boolean"
+    }
+  }
+}

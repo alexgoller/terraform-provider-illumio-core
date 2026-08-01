@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "action": {
+      "description": "Accept, skip or reject the core service detection",
+      "type": "string",
+      "enum": [
+        "accept",
+        "skip",
+        "reject",
+        "recommended"
+      ]
+    },
+    "feedback": {
+      "description": "Feedback from user about the detected core service",
+      "type": "string",
+      "maxLength": 512
+    },
+    "labels_applied": {
+      "description": "Indicates if the end user applied the suggested labels for this detected core service",
+      "type": "boolean"
+    },
+    "workload": {
+      "additionalProperties": false,
+      "required": [
+        "href"
+      ],
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "The workload URI to be associated with this core service recommendation",
+          "format": "uri"
+        }
+      }
+    }
+  }
+}

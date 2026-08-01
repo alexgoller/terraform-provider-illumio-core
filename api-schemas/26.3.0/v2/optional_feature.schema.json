@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "PCE Feature",
+  "required": [
+    "name",
+    "enabled"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the feature"
+    },
+    "preview": {
+      "type": "boolean",
+      "description": "Is this a preview feature"
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "Is this feature enabled"
+    }
+  }
+}

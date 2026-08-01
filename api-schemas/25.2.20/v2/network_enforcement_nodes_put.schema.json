@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Update a NEN's target PCE.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "target_pce_fqdn": {
+      "description": "cluster FQDN for target PCE",
+      "type": "string"
+    }
+  }
+}

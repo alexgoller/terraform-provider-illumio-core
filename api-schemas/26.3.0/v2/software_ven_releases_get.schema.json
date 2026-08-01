@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "List of VEN bundles in the PCE repo",
+  "type": "object",
+  "required": [
+    "release",
+    "href",
+    "default",
+    "org_id"
+  ],
+  "properties": {
+    "release": {
+      "description": "The release version",
+      "type": "string"
+    },
+    "href": {
+      "description": "URI associated to this release",
+      "type": "string"
+    },
+    "default": {
+      "description": "Flag to indicate if this is the default release for this Org",
+      "type": "boolean"
+    },
+    "default_release_ven_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "The type of the release marked as default"
+      }
+    },
+    "org_id": {
+      "description": "ID of the Org",
+      "type": "integer"
+    },
+    "ven_types": {
+      "$ref": "../common/release_ven_types.schema.json"
+    },
+    "images": {
+      "$ref": "software_ven_releases_images_get.schema.json"
+    }
+  }
+}

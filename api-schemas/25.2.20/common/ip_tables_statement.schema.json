@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["table_name", "chain_name", "parameters"],
+  "properties": {
+    "table_name": {
+      "description": "name of the iptables table for this rule",
+      "type": "string",
+      "enum": ["nat", "mangle", "filter"]
+    },
+    "chain_name": {
+      "description": "name of the iptables chain for this rule",
+      "type": "string",
+      "enum": ["PREROUTING", "INPUT", "OUTPUT", "FORWARD", "POSTROUTING"]
+    },
+    "parameters": {
+      "description": "the remainder of the iptables rules (excluding table/chain)",
+      "type": "string"
+    }
+  }
+}

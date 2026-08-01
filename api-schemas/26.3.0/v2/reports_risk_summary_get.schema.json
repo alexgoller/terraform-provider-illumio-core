@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Risk Summary for this org",
+  "type": "object",
+  "required": [
+    "ransomware"
+  ],
+  "properties": {
+    "ransomware": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "num_total_workloads",
+        "num_protected_workloads",
+        "workloads_by_exposure",
+        "risky_ports_by_severity",
+        "risky_ports_by_category",
+        "top_risky_applications",
+        "top_risky_services",
+        "num_risky_services",
+        "num_unenforced_workloads",
+        "last_updated_at"
+      ],
+      "properties": {
+        "num_total_workloads": {
+          "description": "Total workload count",
+          "type": "integer"
+        },
+        "num_protected_workloads": {
+          "description": "Count of protected workloads",
+          "type": "integer"
+        },
+        "ransomware_protection_coverage_percent": {
+          "description": "Ransomware protection coverage percentage",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "workloads_by_exposure": {
+          "description": "Workloads by Ransomware Exposure",
+          "type": "object",
+          "$ref": "workloads_by_exposure.schema.json"
+        },
+        "risky_ports_by_severity": {
+          "description": "Risky ports by Severity",
+          "type": "object",
+          "properties": {
+            "critical": {
+              "$ref": "num_protected_unprotected_ports.schema.json"
+            },
+            "high": {
+              "$ref": "num_protected_unprotected_ports.schema.json"
+            },
+            "medium": {
+              "$ref": "num_protected_unprotected_ports.schema.json"
+            },
+            "low": {
+              "$ref": "num_protected_unprotected_ports.schema.json"
+            }
+          }
+        },
+        "risky_ports_by_category": {
+          "description": "Risky ports by category type",
+          "type": "object",
+          "properties": {
+            "admin": {
+              "$ref": "num_protected_unprotected_ports.schema.json"
+            },
+            "legacy": {
+              "$ref": "num_protected_unprotected_ports.schema.json"
+            }
+          }
+        },
+        "top_risky_applications": {
+          "description": "Top risky app groups in the organization by ransomware protection percent",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "app_group",
+              "labels",
+              "num_workloads",
+              "ransomware_protection_percent"
+            ],
+            "properties": {
+              "app_group": {
+                "type": "object",
+                "properties": {
+                  "href": {
+                    "description": "URI of the app group",
+                    "type": "string"
+                  }
+                }
+              },
+              "labels": {
+                "$ref": "labels_summary.schema.json"
+              },
+              "num_workloads": {
+                "description": "Total Number of workloads in this app group",
+                "type": "integer"
+              },
+              "ransomware_protection_percent": {
+                "description": "Ransomware protection percentage for this app group in the org",
+                "type": "number"
+              }
+            }
+          }
+        },
+        "top_risky_services": {
+          "description": "Top risky ransomware services in the organization by ransomware protection percent",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "href",
+              "name",
+              "ransomware_protection_percent"
+            ],
+            "properties": {
+              "href": {
+                "description": "href of the service",
+                "type": "string"
+              },
+              "name": {
+                "description": "Name of the service",
+                "type": "string"
+              },
+              "ransomware_protection_percent": {
+                "description": "Ransomware protection percentage for this service in the org",
+                "type": "number"
+              }
+            }
+          }
+        },
+        "num_risky_services": {
+          "description": "Total number of risky services in the organization",
+          "type": "integer"
+        },
+        "num_unenforced_workloads": {
+          "description": "The number of unenforced workloads (idle/visibility) in the organization",
+          "type": "integer"
+        },
+        "last_updated_at": {
+          "description": "The time at which the protection stats are last computed at",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

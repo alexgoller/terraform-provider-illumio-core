@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Update enforcement boundary",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the enforcement boundary"
+    },
+    "enabled": {
+      "description": "Enabled flag",
+      "type": "boolean"
+    },
+    "providers": {
+      "$ref": "../common/enforcement_boundary_actor.schema.json"
+    },
+    "consumers": {
+      "$ref": "../common/enforcement_boundary_actor.schema.json"
+    },
+    "ingress_services": {
+      "$ref": "../common/sec_rule_ingress_services.schema.json"
+    }
+  }
+}

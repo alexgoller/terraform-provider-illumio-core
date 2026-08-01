@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "risk_details": {
+      "type": "object",
+      "required": [
+        "ransomware"
+      ],
+      "ransomware": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "workload_ransomware_services.schema.json"
+            }
+          },
+          "last_updated_at": {
+            "description": "The time at which the protection stats were last computed at",
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}

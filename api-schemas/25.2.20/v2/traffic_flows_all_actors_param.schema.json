@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Explorer filter for all managed services (workloads, virtual_services etc)",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "actors": {
+      "description": "All managed workloads ('ams')",
+      "type": "string",
+      "enum": [
+        "ams"
+      ]
+    }
+  }
+}

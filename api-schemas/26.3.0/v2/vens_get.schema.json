@@ -1,0 +1,397 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "hostname"
+  ],
+  "properties": {
+    "href": {
+      "description": "URI of VEN",
+      "type": "string"
+    },
+    "name": {
+      "description": "Friendly name for the VEN",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "description": "The description of the VEN",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hostname": {
+      "description": "The hostname of the host managed by the VEN",
+      "type": "string"
+    },
+    "uid": {
+      "description": "The unique ID of the host managed by the VEN",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "os_id": {
+      "description": "OS identifier of the host managed by the VEN",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "os_detail": {
+      "description": "Additional OS details from the host managed by the VEN",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "os_platform": {
+      "description": "OS platform of the host managed by the VEN",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "version": {
+      "description": "Software version of the VEN",
+      "type": "string"
+    },
+    "status": {
+      "description": "Status of the VEN",
+      "type": "string"
+    },
+    "activation_type": {
+      "description": "The method by which the VEN was activated",
+      "type": "string"
+    },
+    "active_pce_fqdn": {
+      "description": "The FQDN of the PCE that the VEN last connected to",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "target_pce_fqdn": {
+      "description": "The FQDN of the PCE that the VEN will use for future connections",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "golden_image": {
+      "description": "Indicates whether this VEN is a golden image",
+      "type": "boolean",
+      "default": false
+    },
+    "labels": {
+      "description": "Labels assigned to the host managed by the VEN.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "description": "Label URI",
+            "type": "string"
+          },
+          "key": {
+            "description": "Key of the label, only present in expanded representations.",
+            "type": "string"
+          },
+          "value": {
+            "description": "Value of the label, only present in expanded representations.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "interfaces": {
+      "description": "Network interfaces of the host managed by the VEN.",
+      "type": "array",
+      "items": {
+        "$ref": "workloads_interfaces_get.schema.json"
+      }
+    },
+    "workloads": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "Workload URI"
+          },
+          "name": {
+            "description": "The short friendly name of the workload, only present in expanded representations.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "managed": {
+            "description": "True if the workload is managed, else false",
+            "type": "boolean"
+          },
+          "hostname": {
+            "description": "The hostname of the workload, only present in expanded representations.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "instance_id": {
+            "description": "Instance identifier for the host",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "data_center": {
+            "description": "Data center",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "data_center_zone": {
+            "description": "Data center zone",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "service_principal_name": {
+            "description": "The Kerberos Service Principal Name (SPN)",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "os_id": {
+            "description": "OS identifier for the workload, only present in expanded representations.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "os_detail": {
+            "description": "Additional OS details, only present in expanded representations.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "labels": {
+            "description": "Labels assigned to the workload., only present in expanded representations.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "href": {
+                  "description": "Label URI",
+                  "type": "string"
+                },
+                "key": {
+                  "description": "Key of the label",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "Value of the label",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "public_ip": {
+            "description": "The public IP of the server, only present in expanded representations.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "interfaces": {
+            "description": "Network interfaces of the workload, only present in expanded representations.",
+            "type": "array",
+            "items": {
+              "$ref": "workloads_interfaces_get.schema.json"
+            }
+          },
+          "security_policy_applied_at": {
+            "description": "Last reported time when policy was applied to the workload (UTC), only present in expanded representations.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "security_policy_received_at": {
+            "description": "Last reported time when policy was received by the workload (UTC), only present in expanded representations.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "security_policy_last_delivered_at": {
+            "description": "Last time when policy was delivered (UTC)",
+            "type": "string",
+            "format": "date-time"
+          },
+          "security_policy_last_delivered_num_cidrs": {
+            "description": "Number of IP addresses or CIDR ranges in last delivered policy",
+            "type": "integer"
+          },
+          "security_policy_last_delivered_num_rules": {
+            "description": "Number of rules in last delivered policy",
+            "type": "integer"
+          },
+          "security_policy_sync_state": {
+            "description": "Current state of security policy",
+            "type": "string"
+          },
+          "log_traffic": {
+            "description": "DEPRECATED AND REMOVED. True if we want to log traffic events from this workload, only present in expanded representations.",
+            "type": "boolean"
+          },
+          "mode": {
+            "description": "Policy enforcement mode, only present in expanded representations.",
+            "$ref": "../common/workload_modes.schema.json"
+          },
+          "enforcement_mode": {
+            "description": "Policy enforcement mode, only present in expanded representations.",
+            "$ref": "../common/workload_enforcement_mode.schema.json"
+          },
+          "visibility_level": {
+            "description": "Visibility level of the workload, only present in expanded representations.",
+            "type": "string"
+          },
+          "online": {
+            "description": "If this workload is online and present in policy, only present in expanded representations.",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "container_cluster": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the container cluster managed by this VEN",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the container cluster managed by this VEN, only present in expanded representations.",
+          "type": "string"
+        }
+      }
+    },
+    "secure_connect": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "matching_issuer_name": {
+          "type": "string",
+          "description": "Issuer name match criteria for certificate used during establishing secure connections."
+        }
+      }
+    },
+    "last_heartbeat_at": {
+      "description": "The last time (rfc3339 timestamp) a heartbeat was received from this VEN",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "last_goodbye_at": {
+      "description": "The time (rfc3339 timestamp) of the last goodbye from the VEN",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_at": {
+      "description": "The time (rfc3339 timestamp) at which this VEN was created",
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the user who created this VEN",
+          "type": "string"
+        }
+      }
+    },
+    "updated_at": {
+      "description": "The time (rfc3339 timestamp) at which this VEN was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_by": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "description": "The URI of the user who last updated this VEN",
+          "type": "string"
+        }
+      }
+    },
+    "conditions": {
+      "$ref": "../common/resource_condition.schema.json"
+    },
+    "authentication_recovery": {
+      "description": "Specifies if the VEN is in authentication recovery",
+      "type": "boolean"
+    },
+    "caps": {
+      "type": "array",
+      "description": "Permission types",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ven_type": {
+      "$ref": "../common/ven_type.schema.json"
+    },
+    "upgrade_expires_at": {
+      "description": "The time (rfc3339 timestamp) at which the PCE stops attempting VEN upgrade",
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "upgrade_target_version": {
+      "description": "The software release to upgrade to.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

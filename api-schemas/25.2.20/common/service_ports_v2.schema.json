@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Service ports",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "$ref": "service_protocol_def.schema.json"
+  }
+}

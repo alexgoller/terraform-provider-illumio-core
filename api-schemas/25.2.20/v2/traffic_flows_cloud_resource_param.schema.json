@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Cloud resource Id parameter for a traffic query",
+  "type": "object",
+  "additional_properties": "false",
+  "required": [
+    "cloud_resource"
+  ],
+  "properties": {
+    "cloud_resource": {
+      "type": "object",
+      "additional_properties": "false",
+      "required": [
+        "resource_uuid"
+      ],
+      "properties": {
+        "resource_uuid": {
+          "description": "UUID of cloud resource",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

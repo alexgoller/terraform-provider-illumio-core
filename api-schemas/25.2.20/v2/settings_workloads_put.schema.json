@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Workload setting properties",
+  "additionalProperties": false,
+  "properties": {
+    "workload_disconnected_timeout_seconds": {
+      "$ref": "settings_workload_detailed.schema.json"
+    },
+    "workload_goodbye_timeout_seconds": {
+      "$ref": "settings_workload_detailed.schema.json"
+    },
+    "workload_disconnected_notification_seconds": {
+      "$ref": "settings_workload_notifications.schema.json"
+    },
+    "ven_uninstall_timeout_hours": {
+      "$ref": "settings_workload.schema.json"
+    }
+  }
+}

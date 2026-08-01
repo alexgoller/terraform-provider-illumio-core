@@ -109,9 +109,9 @@ resource "illumio-core_deny_rule" "block_icmp" {
 
 ### Required
 
-- `consumers` (Block Set, Min: 1) Consumers of the Deny Rule - the sources that initiate the connection. Only one actor can be specified in one consumers block (see [below for nested schema](#nestedblock--consumers))
+- `consumers` (Block Set, Min: 1) Consumers of the Deny Rule - the sources that initiate the connection. Each block holds exactly ONE actor, because the PCE stores actors as an array of single-actor entries. For several consumers, repeat the whole consumers block - two label blocks inside one consumers block is not valid (see [below for nested schema](#nestedblock--consumers))
 - `ingress_services` (Block Set, Min: 1) Collection of ingress services. Only one of the {"href"} or {"proto", "port", "to_port"} parameter combinations is allowed. ICMP has no inline representation - reference an ICMP service by href instead (see [below for nested schema](#nestedblock--ingress_services))
-- `providers` (Block Set, Min: 1) Providers of the Deny Rule - the destinations that provide the service. Only one actor can be specified in one providers block (see [below for nested schema](#nestedblock--providers))
+- `providers` (Block Set, Min: 1) Providers of the Deny Rule - the destinations that provide the service. Each block holds exactly ONE actor, because the PCE stores actors as an array of single-actor entries. For several providers, repeat the whole providers block - two label blocks inside one providers block is not valid (see [below for nested schema](#nestedblock--providers))
 - `rule_set_href` (String) URI of the rule set in which the deny rule will be created
 
 ### Optional

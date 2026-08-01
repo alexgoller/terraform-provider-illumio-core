@@ -113,14 +113,14 @@ func denyRuleResourceSchemaMap() map[string]*schema.Schema {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MinItems:    1,
-			Description: "Providers of the Deny Rule - the destinations that provide the service. Only one actor can be specified in one providers block",
+			Description: "Providers of the Deny Rule - the destinations that provide the service. Each block holds exactly ONE actor, because the PCE stores actors as an array of single-actor entries. For several providers, repeat the whole providers block - two label blocks inside one providers block is not valid",
 			Elem:        denyRuleActorSchema("provider"),
 		},
 		"consumers": {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MinItems:    1,
-			Description: "Consumers of the Deny Rule - the sources that initiate the connection. Only one actor can be specified in one consumers block",
+			Description: "Consumers of the Deny Rule - the sources that initiate the connection. Each block holds exactly ONE actor, because the PCE stores actors as an array of single-actor entries. For several consumers, repeat the whole consumers block - two label blocks inside one consumers block is not valid",
 			Elem:        denyRuleActorSchema("consumer"),
 		},
 		"ingress_services": {
@@ -281,9 +281,15 @@ func expandIllumioDenyRule(d *schema.ResourceData) (*models.DenyRule, *diag.Diag
 	var diags diag.Diagnostics
 
 	denyRule := &models.DenyRule{
-		Enabled:     d.Get("enabled").(bool),
-		Override:    d.Get("override").(bool),
-		NetworkType: d.Get("network_type").(string),
+		Enabled:  d.Get("enabled").(bool),
+		Override: d.Get("override").(bool),
+	}
+
+	// network_type is Optional+Computed, so state holds whatever the PCE
+	// returned. Only send it back when the user actually asked for it -
+	// a PCE older than 26.2 does not have the field.
+	if isConfigured(d, "network_type") {
+		denyRule.NetworkType = d.Get("network_type").(string)
 	}
 
 	if desc, ok := d.GetOk("description"); ok {
@@ -298,10 +304,12 @@ func expandIllumioDenyRule(d *schema.ResourceData) (*models.DenyRule, *diag.Diag
 		"all_ips_except_for_in_consumers": &denyRule.AllIPsExceptForInConsumers,
 		"all_ips_except_for_in_providers": &denyRule.AllIPsExceptForInProviders,
 	} {
-		// GetOkExists distinguishes an explicit false from an unset value, so
-		// the PCE keeps ownership of defaults the provider does not set.
-		if v, ok := d.GetOkExists(key); ok { //nolint:staticcheck // no SDKv2 replacement
-			*target = PtrTo(v.(bool))
+		// Only send what the configuration actually sets. These attributes are
+		// Optional+Computed, so after a read they hold a value in state, and
+		// GetOkExists would report them as set on every subsequent update -
+		// sending fields a PCE older than 26.2 does not recognise.
+		if isConfigured(d, key) {
+			*target = PtrTo(d.Get(key).(bool))
 		}
 	}
 

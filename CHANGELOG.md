@@ -1,3 +1,13 @@
+## 2.0.1 (August 1, 2026)
+
+BUG FIXES:
+
+* Fix `illumio-core_deny_rule` failing against a PCE older than 26.2. `all_ips_except_for_in_consumers`, `all_ips_except_for_in_providers` and `unscoped_consumers` were sent on every update even when unset — they are `Optional + Computed`, so a read puts a value in state and `GetOkExists` then reports them as configured. Those fields do not exist before PCE 26.2, so the update was rejected. Along with `network_type`, they are now sent only when the configuration actually sets them, which is determined from the raw configuration rather than from state.
+
+NOTES:
+
+* Each `providers` or `consumers` block on a deny rule holds exactly one actor, matching `illumio-core_security_rule` and the PCE's actor array. Several actors means repeating the block; two `label` blocks inside one `providers` block fails with `Too many label blocks`. The schema descriptions and the deny-rules guide now say so.
+
 ## 2.0.0 (July 30, 2026)
 
 First release of this fork. It is a superset of upstream 1.1.6 — no resource or

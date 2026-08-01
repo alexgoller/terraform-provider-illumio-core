@@ -121,6 +121,51 @@ Blocks of type "virtual_service" are not expected here.
 Exactly one selector per `providers` or `consumers` block. Two selectors, or
 none, is an error.
 
+### One actor per block
+
+Each `providers` or `consumers` block holds exactly **one** actor. The PCE
+stores actors as an array of single-actor entries, so several actors means
+repeating the whole block:
+
+```hcl
+# Correct - two providers
+providers {
+  label {
+    href = illumio-core_label.role_db.href
+  }
+}
+
+providers {
+  label {
+    href = illumio-core_label.env_prod.href
+  }
+}
+```
+
+```hcl
+# NOT valid - fails with "Too many label blocks"
+providers {
+  label {
+    href = illumio-core_label.role_db.href
+  }
+  label {
+    href = illumio-core_label.env_prod.href
+  }
+}
+```
+
+That produces:
+
+```json
+"providers": [
+  {"label": {"href": "/orgs/1/labels/1"}},
+  {"label": {"href": "/orgs/1/labels/2"}}
+]
+```
+
+`illumio-core_security_rule` behaves the same way, so the two resources are
+written identically.
+
 ## Services
 
 ### Ingress services
@@ -220,6 +265,26 @@ output "override_deny_rules" {
 
 The plural data source requires `rule_set_href`: deny rules exist only below a
 rule set, and there is no policy-version-wide collection to query.
+
+## PCE version compatibility
+
+`illumio-core_deny_rule` only sends the fields your configuration sets, so a
+deny rule that uses no 26.2-specific feature works against an older PCE.
+
+These attributes do not exist before PCE 26.2 and are omitted unless configured:
+
+- `all_ips_except_for_in_consumers`
+- `all_ips_except_for_in_providers`
+- `unscoped_consumers`
+- `network_type`
+
+Setting any of them against a PCE older than 26.2 produces an error from the
+PCE, because the field genuinely is not there. Leave them unset and the deny
+rule is compatible.
+
+⚠️ Provider versions **before 2.0.1** sent `all_ips_except_for_in_consumers`,
+`all_ips_except_for_in_providers` and `unscoped_consumers` on every *update*
+even when unset, so updating a deny rule failed on a 25.2 PCE.
 
 ## Fields that do not exist
 

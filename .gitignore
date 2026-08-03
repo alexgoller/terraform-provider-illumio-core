@@ -37,7 +37,10 @@ TEST*.xml
 pkg/
 
 # local environment config files
+# .env* covers .env-25.2 and similar per-PCE variants; a bare *.env does not,
+# since those filenames do not end in ".env".
 *.env
+.env*
 env.bat
 
 # misc

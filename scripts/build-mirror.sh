@@ -26,7 +26,7 @@
 #
 set -euo pipefail
 
-VERSION="${VERSION:-2.0.2}"
+VERSION="${VERSION:-2.0.3}"
 NAMESPACE="${NAMESPACE:-illumio}"
 TYPE="illumio-core"
 HOSTNAME_="${HOSTNAME_:-registry.terraform.io}"

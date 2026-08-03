@@ -539,6 +539,25 @@ error from the PCE, because the field genuinely is not there.
 `all_ips_except_for_in_providers` on every *update* even when unset, so updating
 a deny rule failed on a 25.2 PCE.
 
+### Testing compatibility without an old PCE
+
+An old PCE is rarely available to test against, so the archived schemas act as
+the oracle instead. `illumio-core/schema_compat_test.go` builds the payload a
+deny rule would send with nothing version-specific configured, and fails if any
+field is absent from the oldest archived release:
+
+```
+deny rule payload carries [all_ips_except_for_in_consumers
+all_ips_except_for_in_providers], which PCE 25.2.20 does not have.
+```
+
+The test reads `api-schemas/25.2.20/common/deny_rules_get.schema.json` directly,
+so it cannot drift from what Illumio published, and it starts covering a newer
+floor as soon as a different release is archived.
+
+It was verified by reintroducing the original bug and confirming the test fails
+— a guard that cannot fail is not a guard.
+
 ### Checking this yourself
 
 Illumio publishes the OpenAPI spec and the API schema bundle per release. The

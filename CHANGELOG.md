@@ -1,3 +1,9 @@
+## Unreleased
+
+TESTING:
+
+* Add a schema-driven compatibility guard. `illumio-core/schema_compat_test.go` builds the deny-rule payload with nothing version-specific configured and fails if any field is absent from the oldest archived release, using `api-schemas/25.2.20/common/deny_rules_get.schema.json` as the oracle. This makes PCE compatibility testable without an old PCE to point at, and the test cannot drift from what Illumio published. Verified by reintroducing the original bug and confirming the test fails.
+
 ## 2.0.3 (August 3, 2026)
 
 **No provider code changes.** The binary is functionally identical to 2.0.2;

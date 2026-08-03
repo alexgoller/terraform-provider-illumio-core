@@ -483,14 +483,37 @@ stores them as an array of single-actor entries. A rule set scope is an array of
 label entries, so the labels go inside one block. Repeating the block creates an
 additional scope, which broadens the rule set rather than narrowing it.
 
-### Exclusions apply to the whole block
+### Scoping a rule set to several applications
 
-`exclusion` sits on the `scopes` block, not on each label, so every label in a
-block shares it. A scope mixing included and excluded labels — app:sap included,
-env:dev excluded — cannot be expressed, because splitting them into two blocks
-makes two scopes rather than one scope with a mixed entry. The PCE's schema
-allows per-entry exclusion; this provider inherits the upstream block-level
-shape.
+Each `scopes` block is an independent scope: the rules apply wherever **any** of
+them matches. To cover several applications, list a scope per application:
+
+```hcl
+resource "illumio-core_rule_set" "shared" {
+  name = "RS-shared-services"
+
+  scopes {
+    label {
+      href = illumio-core_label.app_sap.href
+    }
+    label {
+      href = illumio-core_label.env_prod.href
+    }
+  }
+
+  scopes {
+    label {
+      href = illumio-core_label.app_crm.href
+    }
+    label {
+      href = illumio-core_label.env_prod.href
+    }
+  }
+}
+```
+
+If a rule should apply everywhere instead, leave the rule set unscoped rather
+than trying to describe "everything except" with scopes.
 
 ## PCE version compatibility
 

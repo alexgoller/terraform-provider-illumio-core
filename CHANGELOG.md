@@ -1,3 +1,14 @@
+## 2.0.3 (August 3, 2026)
+
+**No provider code changes.** The binary is functionally identical to 2.0.2;
+this release ships documentation only.
+
+DOCUMENTATION:
+
+* Add a ring-fencing example: a rule set scoped to an application plus an all-workloads-to-all-workloads rule inside it. `actors = "ams"` is bounded by the rule set's scope, so it resolves to that application's workloads rather than the whole organization.
+* Document that a rule set scope takes several `label` blocks in **one** `scopes` block, producing one AND-ed scope. This is the one place the syntax differs from `providers`/`consumers`, which hold exactly one actor per block — repeating a `scopes` block creates a second, independent scope and *broadens* the rule set rather than narrowing it.
+* Document scoping a rule set to several applications with one scope per application, and leaving a rule set unscoped when the rules should apply everywhere.
+
 ## 2.0.2 (August 1, 2026)
 
 **No provider code changes.** The binary is functionally identical to 2.0.1;

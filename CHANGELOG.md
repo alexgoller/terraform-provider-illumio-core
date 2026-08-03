@@ -2,6 +2,8 @@
 
 TESTING:
 
+* The 2.0.1 deny-rule fix is now confirmed against a live PCE 25.2.10. The pre-fix provider creates a deny rule and then fails the first update with `406 input_validation_error` naming `all_ips_except_for_in_consumers` and `all_ips_except_for_in_providers`; the current provider creates, updates and re-updates cleanly with an empty plan afterwards. Previously this was verified only by capturing the request payload, because no 25.2 PCE was available.
+
 * Add a schema-driven compatibility guard. `illumio-core/schema_compat_test.go` builds the deny-rule payload with nothing version-specific configured and fails if any field is absent from the oldest archived release, using `api-schemas/25.2.20/common/deny_rules_get.schema.json` as the oracle. This makes PCE compatibility testable without an old PCE to point at, and the test cannot drift from what Illumio published. Verified by reintroducing the original bug and confirming the test fails.
 
 ## 2.0.3 (August 3, 2026)

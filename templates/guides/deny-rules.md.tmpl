@@ -537,7 +537,21 @@ error from the PCE, because the field genuinely is not there.
 
 ⚠️ Provider versions **before 2.0.1** sent `all_ips_except_for_in_consumers` and
 `all_ips_except_for_in_providers` on every *update* even when unset, so updating
-a deny rule failed on a 25.2 PCE.
+a deny rule failed on a 25.2 PCE:
+
+```
+406 Not Acceptable: input_validation_error
+The property '#/' contains additional properties
+["all_ips_except_for_in_consumers", "all_ips_except_for_in_providers"]
+outside of the schema when none are allowed in schema
+sec_policy_rule_sets_deny_rules_put.schema.json
+```
+
+Confirmed against a live PCE **25.2.10 build 24**: the pre-fix provider creates
+a deny rule successfully and then fails on the first update with the error
+above, while 2.0.1 and later create, update and re-update cleanly and leave an
+empty plan. The rule the PCE returns has 18 fields, matching the archived
+25.2.20 schema exactly.
 
 ### Testing compatibility without an old PCE
 

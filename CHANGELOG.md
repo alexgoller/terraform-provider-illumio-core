@@ -1,4 +1,8 @@
-## Unreleased
+## 2.0.4 (August 3, 2026)
+
+**No shipped code changes.** Only a test file was added, so the binary is
+functionally identical to 2.0.3. The 2.0.1 deny-rule fix is now confirmed
+against a live PCE 25.2.10 rather than inferred from the request payload.
 
 TESTING:
 

@@ -55,3 +55,8 @@ website/data-sources/
 website/guides/
 _site/
 .jekyll-cache/
+
+# stepwise suite local state
+test-suite/.terraform/
+test-suite/.terraform.lock.hcl
+test-suite/terraform.tfstate*

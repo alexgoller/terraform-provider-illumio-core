@@ -152,24 +152,56 @@ Neither is an acceptable automatic consequence of destroying a bookkeeping
 resource, so the resource never calls either. Removing it from state changes
 nothing in the PCE.
 
-### `terraform destroy` does not provision deletions
+### `terraform destroy` needs two passes
 
-This is a real limitation, not an oversight.
+This is a real limitation, not an oversight, and it is more disruptive than
+simply leaving objects in draft.
 
 `illumio-core_provisioning` depends on the objects it provisions, so Terraform
 destroys it **first**, then the objects. Their deletions are therefore left
-unprovisioned in draft, and the objects stay active in the PCE until something
-provisions the deletion.
+unprovisioned in draft — and anything the still-active policy references cannot
+be deleted at all. `terraform destroy` **fails partway**:
+
+```
+Error: 406 Not Acceptable
+[{"token":"label_still_has_associated_rule_set",
+  "message":"Label still has an associated rule set"}]
+```
+
+Labels, IP lists and services used by a provisioned rule set are all affected:
+the rule set is gone from draft but still live, so the PCE correctly refuses to
+remove what it depends on. You are left with a partial teardown.
+
+The working sequence is:
+
+```bash
+# 1. Removes what it can. Policy objects go to draft; anything the active
+#    policy still references fails with a 406.
+terraform destroy
+
+# 2. Provision the pending deletions, so the rule set actually goes away.
+#    Use explicit hrefs — never provision_all_pending on a shared PCE.
+curl -u "$KEY:$SECRET" -X POST -H "Content-Type: application/json" \
+  -d '{"update_description":"teardown","change_subset":{"rule_sets":[{"href":"..."}]}}' \
+  "https://pce:8443/api/v2/orgs/1/sec_policy"
+
+# 3. Now the dependants can go.
+terraform destroy
+```
+
+Step 2 can also be the deprecated `provision` binary, or a separate minimal
+configuration containing only an `illumio-core_provisioning` resource.
+
+Capture the HREFs **before** step 1 — `terraform show -json` no longer has them
+once the resources leave state.
+
+Observed on a live PCE: a 17-resource configuration destroyed 13 objects, failed
+on 4 labels, and completed after the pending deletions were provisioned.
 
 The upstream binary has the identical problem, which is why its documentation
 says to run `provision` after a destroy. It is inherent to modelling a
-post-apply side effect as a resource.
-
-Workarounds, in order of preference:
-
-1. Run the `provision` binary once after `terraform destroy`.
-2. Apply a separate, minimal configuration containing only an
-   `illumio-core_provisioning` resource with `provision_all_pending = true`.
+post-apply side effect as a resource: nothing is left to activate the deletions
+once the provisioning resource itself is gone.
 
 The real fix is a post-destroy hook — Terraform 1.14's `action_trigger` — which
 requires migrating the provider to terraform-plugin-framework.

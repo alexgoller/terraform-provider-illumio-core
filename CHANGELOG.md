@@ -1,3 +1,17 @@
+## 2.0.5 (August 4, 2026)
+
+**No shipped code changes.** Only tests and documentation, so the binary is
+functionally identical to 2.0.4.
+
+TESTING:
+
+* Add `test-suite/`, a stepwise acceptance suite. It creates one resource at a time and reads each back from the API, so a step that reports OK exists on the PCE rather than only in Terraform state. Covers labels, a label group, IP lists with ranges and FQDNs, services, a rule set with an AND-ed app scope, a ring-fence rule, a tiered rule, a deny rule, an override-deny rule, an enforcement boundary, an unmanaged workload, and provisioning with explicit hrefs. `teardown` runs the three-pass sequence and provisions only the suite's own objects, never `provision_all_pending`.
+
+DOCUMENTATION:
+
+* `terraform destroy` on provisioned policy needs **two passes**. The guide previously said deletions stay in draft; running it against a live PCE showed that understates the problem — anything the still-active policy references cannot be deleted at all, so the destroy fails partway. Documents the working sequence, and to capture the HREFs before the first destroy since `terraform show -json` cannot recover them afterwards.
+* Document both refusal tokens. A label held by a rule set scope fails with `label_still_has_associated_rule_set`; one held by a label group fails with `label_referenced_by_label_group`. The guide previously implied rule sets were the only thing that pins an object.
+
 ## 2.0.4 (August 3, 2026)
 
 **No shipped code changes.** Only a test file was added, so the binary is

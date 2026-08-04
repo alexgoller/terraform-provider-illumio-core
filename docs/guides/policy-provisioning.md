@@ -172,6 +172,17 @@ Labels, IP lists and services used by a provisioned rule set are all affected:
 the rule set is gone from draft but still live, so the PCE correctly refuses to
 remove what it depends on. You are left with a partial teardown.
 
+The refusal comes in more than one form, depending on what holds the reference:
+
+```
+label_still_has_associated_rule_set    a rule set scope holds the label
+label_referenced_by_label_group        a label group holds the label
+```
+
+Both mean the same thing — Terraform's view and the **active** policy have
+diverged, and the PCE is enforcing referential integrity against what is live.
+It is not only rule sets that pin an object.
+
 The working sequence is:
 
 ```bash

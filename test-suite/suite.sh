@@ -61,6 +61,25 @@ desc_of() { echo "${STEPS[$1-1]#*:}"; }
 verify_step() {
   local n="$1" addr href
   addr="$(addr_of "$n")"
+
+  # The provisioning resource has no href of its own - it records the policy
+  # version it created - so it is reported from state before the href lookup.
+  if [ "$addr" = "illumio-core_provisioning.policy" ]; then
+    terraform show -json | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+for r in d.get('values',{}).get('root_module',{}).get('resources',[]):
+    if r['address']=='${addr}':
+        v=r['values']
+        print(f\"    policy version {v.get('version')}  ({v.get('version_href')})\")
+        print(f\"    provisioned_at {v.get('provisioned_at')}\")
+        print(f\"    pending after provisioning: {v.get('pending_hrefs')}\")
+        break
+else:
+    print('    not in state')"
+    return 0
+  fi
+
   href="$(terraform show -json 2>/dev/null | python3 -c "
 import json,sys
 try: d=json.load(sys.stdin)
@@ -73,18 +92,6 @@ for r in d.get('values',{}).get('root_module',{}).get('resources',[]):
   if [ -z "$href" ]; then
     echo "    not in state"
     return 1
-  fi
-
-  if [ "$addr" = "illumio-core_provisioning.policy" ]; then
-    terraform show -json | python3 -c "
-import json,sys
-d=json.load(sys.stdin)
-for r in d['values']['root_module']['resources']:
-    if r['address']=='${addr}':
-        v=r['values']
-        print(f\"    policy version {v.get('version')}  ({v.get('version_href')})\")
-        print(f\"    pending after provisioning: {v.get('pending_hrefs')}\")"
-    return 0
   fi
 
   pce "${API}${href}" | python3 -c "
@@ -143,8 +150,15 @@ cmd_status() {
   done
 }
 
-# Destroy is two-pass on provisioned policy: objects the active policy still
-# references cannot be deleted until their deletion is provisioned.
+# Destroy is two-pass on provisioned policy. Anything the still-active policy
+# references is refused until its deletion is provisioned, and the refusal comes
+# in more than one form:
+#
+#   label_still_has_associated_rule_set    a rule set scope holds the label
+#   label_referenced_by_label_group        a label group holds the label
+#
+# Both mean the same thing: Terraform's view and the active policy have
+# diverged, and the PCE is enforcing referential integrity against what is live.
 cmd_teardown() {
   echo "── capturing hrefs before anything leaves state"
   terraform show -json | python3 -c "
@@ -165,6 +179,8 @@ print(f'    {len(hrefs)} provisionable objects recorded')"
   echo "── pass 2: provision the pending deletions"
   python3 - <<'PY' > /tmp/suite_cs.json
 import json
+# Only ever provision this suite's own objects. Anything else pending on a
+# shared PCE belongs to someone else and must not be activated.
 cs={}
 for h in json.load(open('/tmp/suite_hrefs.json')):
     cs.setdefault(h.split('/sec_policy/')[1].split('/')[1], []).append({"href": h})

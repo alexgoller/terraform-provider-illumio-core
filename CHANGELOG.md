@@ -1,3 +1,9 @@
+## Unreleased
+
+BUG FIXES:
+
+* Fix `go test ./...` failing without PCE credentials. `TestAccResourceIllumioVS_StateUpgradeV1` calls its setup before the `resource.TestCase`, so the `TF_ACC` guard that skips acceptance tests never applied to it and the whole package failed. It now skips when `TF_ACC` is unset, and still fails loudly when `TF_ACC` is set without credentials.
+
 ## 2.0.5 (August 4, 2026)
 
 **No shipped code changes.** Only tests and documentation, so the binary is

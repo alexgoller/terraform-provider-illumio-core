@@ -5,6 +5,7 @@ package illumiocore
 import (
 	"context"
 	"fmt"
+	"os"
 	"reflect"
 	"testing"
 
@@ -57,6 +58,13 @@ func TestResourceIllumioVirtualServiceStateUpgradeV1(t *testing.T) {
 }
 
 func TestAccResourceIllumioVS_StateUpgradeV1(t *testing.T) {
+	// resource.ParallelTest skips unless TF_ACC is set, but the setup below
+	// runs before the TestCase, so that guard never applies here. Without
+	// this, `go test ./...` fails for anyone without PCE credentials.
+	if os.Getenv(resource.EnvTfAcc) == "" {
+		t.Skipf("Acceptance tests skipped unless env '%s' set", resource.EnvTfAcc)
+	}
+
 	resourceName := "illumio-core_virtual_service.vs_test"
 	vsName := acctest.RandomWithPrefix(prefixVS)
 

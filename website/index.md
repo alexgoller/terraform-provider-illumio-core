@@ -139,6 +139,7 @@ a mirror with a team over HTTPS and migrating to and from upstream, are in the
 
 | Guide | Covers |
 |---|---|
+| [Organizing policy](guides/policy-architecture.html) | Structuring policy as three pillars across many teams: precedence, scope contracts, state boundaries, ownership |
 | [Using this fork](guides/using-this-fork.html) | Installing it instead of the upstream provider, distributing it without a registry, migrating both ways |
 | [Deny rules](guides/deny-rules.html) | `illumio-core_deny_rule`, override-deny, the narrower actor set, ICMP |
 | [Policy provisioning](guides/policy-provisioning.html) | `illumio-core_provisioning` in place of the `provision` binary |

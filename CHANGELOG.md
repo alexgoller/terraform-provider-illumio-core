@@ -1,4 +1,6 @@
-## Unreleased
+## 2.0.11 (August 7, 2026)
+
+**No shipped code changes.** Functionally identical to 2.0.10.
 
 DOCUMENTATION:
 

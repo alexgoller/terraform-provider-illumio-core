@@ -1,3 +1,22 @@
+## 2.0.7 (August 7, 2026)
+
+**No shipped code changes.** The provider binary is functionally identical to
+2.0.6. This release exists to be publishable to the Terraform Registry, which
+requires every release to be signed.
+
+BUILD:
+
+* Sign the checksum file. A release signing key is now configured, so releases
+  carry `terraform-provider-illumio-core_<version>_SHA256SUMS.sig` — a binary
+  detached GPG signature, as the Registry requires. Attempting to publish 2.0.6
+  failed with `missing SHA256SUMS.sig file`, because it was built before the key
+  existed. The release workflow already handled both cases: it signs when a
+  `GPG_PRIVATE_KEY` secret is present and skips signing when it is not, so no
+  workflow change was needed.
+* Publish `terraform-provider-illumio-core_<version>_manifest.json` as a release
+  asset. The Registry requires the manifest under that versioned name, not only
+  as a file in the repository root.
+
 ## 2.0.6 (August 7, 2026)
 
 **No shipped code changes.** The provider binary is functionally identical to

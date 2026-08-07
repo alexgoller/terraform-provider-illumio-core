@@ -1,3 +1,26 @@
+## Unreleased
+
+DOCUMENTATION:
+
+* Document that `replace_triggered_by` must name **every** object in `hrefs`, not
+  only the rule sets, and the rules as well. An object listed only in `hrefs` is
+  provisioned when it is created and never again: editing it in place leaves it
+  in draft while the apply reports `0 added, 1 changed, 0 destroyed` and says
+  nothing about the object being inactive. Reproduced on a 25.2 PCE for both a
+  security rule and an IP list.
+* Document that `replace_triggered_by` supplies ordering as well as the trigger.
+  Referencing a rule set's HREF orders provisioning after the rule set, but the
+  rules inside it are siblings of the provisioning resource rather than
+  ancestors, so nothing would otherwise order them. Terraform's documentation
+  describes `replace_triggered_by` only in terms of planned actions, but
+  `terraform graph` shows the dependency edge, so no `depends_on` is required.
+
+BUG FIXES:
+
+* `test-suite/main.tf` listed the IP lists, services and label group in `hrefs`
+  only, so editing any of them would have left it in draft. They are now in
+  `replace_triggered_by` too.
+
 ## 2.0.10 (August 7, 2026)
 
 **No shipped code changes.** Functionally identical to 2.0.9. This release exists

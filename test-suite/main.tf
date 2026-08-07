@@ -201,6 +201,10 @@ resource "illumio-core_provisioning" "policy" {
 
   update_description = "tf-suite"
 
+  # Every object in `hrefs` must appear here as well, plus the rules, whose
+  # changes do not alter their rule set's href. An object listed only in `hrefs`
+  # is provisioned when it is created and then never again: editing its contents
+  # leaves it in draft, and the apply still reports success.
   lifecycle {
     replace_triggered_by = [
       illumio-core_rule_set.rs,
@@ -209,6 +213,11 @@ resource "illumio-core_provisioning" "policy" {
       illumio-core_deny_rule.no_ssh,
       illumio-core_deny_rule.override_ssh,
       illumio-core_enforcement_boundary.eb,
+      illumio-core_ip_list.corporate,
+      illumio-core_ip_list.untrusted,
+      illumio-core_service.https,
+      illumio-core_service.ssh,
+      illumio-core_label_group.roles,
     ]
   }
 }

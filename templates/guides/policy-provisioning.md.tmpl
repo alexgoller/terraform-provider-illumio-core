@@ -59,16 +59,22 @@ created.
 
 ## `replace_triggered_by` is not optional
 
-**A policy object's HREF does not change when its contents change.** At plan
-time the object has not been updated in the PCE yet, so it is not yet in the
-pending set, so no provisioning is planned. Without `replace_triggered_by`:
+**A policy object's HREF does not change when its contents change.** Editing a
+rule, an IP list's ranges or a service's ports updates the object in place, so
+the `hrefs` set is byte-for-byte identical and the provisioning resource has no
+reason to plan anything. At plan time the object has not been updated in the PCE
+yet either, so it is not in the pending set.
 
-- apply #1 updates the rule set and leaves it **in draft**
-- only the *next* plan notices and provisions it
+The result is that a successful `terraform apply` silently leaves policy
+inactive:
 
-That means a successful `terraform apply` can silently leave policy inactive.
-`lifecycle.replace_triggered_by` makes Terraform plan the provisioning run in
-the same apply as the change:
+```
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+```
+
+with the object still in draft, and nothing in the output saying so.
+
+`lifecycle.replace_triggered_by` fixes this:
 
 ```hcl
 lifecycle {
@@ -79,9 +85,66 @@ lifecycle {
 }
 ```
 
-List every policy resource whose changes should trigger provisioning.
 Replacement is destroy-then-create, and because delete is a no-op and create
 provisions, replacement is exactly the desired behaviour.
+
+### The rule: `hrefs` is not enough on its own
+
+**Every object named in `hrefs` must also appear in `replace_triggered_by`,
+along with the rules, which have no href of their own in `hrefs`.**
+
+An object listed only in `hrefs` is provisioned when it is first created and
+then never again. This is easy to miss because creation works perfectly — the
+gap only opens on the first edit.
+
+The two lists do different jobs:
+
+| | Purpose |
+|---|---|
+| `hrefs` | *What* to provision — the change subset sent to the PCE |
+| `replace_triggered_by` | *When* to provision — what makes the resource run again |
+
+### It also fixes ordering, which is easy to overlook
+
+Referencing a rule set's `href` orders provisioning after the **rule set**, but
+the rules inside it are siblings of the provisioning resource, not ancestors:
+
+```
+illumio-core_rule_set.app
+   ├── illumio-core_security_rule.web_to_db     (via rule_set_href)
+   └── illumio-core_provisioning.policy         (via hrefs)
+```
+
+Nothing there orders the two branches, so provisioning could run before the rule
+is written. Listing the rule in `replace_triggered_by` adds the missing edge.
+Terraform's own documentation describes `replace_triggered_by` in terms of
+planned actions and does not mention ordering, but the graph shows the edge:
+
+```
+$ terraform graph        # rule listed in replace_triggered_by
+"illumio-core_provisioning.policy" -> "illumio-core_security_rule.ringfence";
+
+$ terraform graph        # rule omitted
+"illumio-core_provisioning.policy" -> "illumio-core_rule_set.rs";
+"illumio-core_provisioning.policy" -> "illumio-core_service.https";
+```
+
+So `replace_triggered_by` supplies both the trigger and the ordering. No
+`depends_on` is needed.
+
+### Verified against a live PCE
+
+All three behaviours were confirmed on a 25.2 PCE, not inferred:
+
+| Configuration | Change made | Result |
+|---|---|---|
+| Rule in `replace_triggered_by` | create everything | one apply, nothing left pending, rule active |
+| Rule **omitted** | edit the rule's description | `0 added, 1 changed`, provisioning never ran, **rule set left in draft** |
+| Rule restored | edit again | provisioning destroyed and recreated in the same apply, pending cleared |
+| IP list in `hrefs` only | edit its description | provisioning never ran, **IP list left in draft** |
+
+The last row is the one that catches people: it is not specific to rules. Any
+provisionable object edited in place behaves this way.
 
 ## What `plan` shows
 

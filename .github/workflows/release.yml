@@ -87,13 +87,19 @@ jobs:
           others=$(git tag --list 'v*' | sed 's/^v//' | grep -v "^${version}$" | tr '\n' ' ')
           python3 scripts/mirror-index.py dist "${version}" --also-list ${others}
 
-      - name: Attach the mirror index to the release
-        run: |
-          version="${GITHUB_REF_NAME#v}"
-          gh release upload "${GITHUB_REF_NAME}" \
-            "dist/index.json" "dist/${version}.json" --clobber
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Deliberately a workflow artifact rather than a release asset. The
+      # Terraform Registry validates every asset on a release and rejects any
+      # name that is not terraform-provider-illumio-core_*, so index.json and
+      # <version>.json cannot live there. Download them from the run, or
+      # regenerate locally with scripts/build-mirror.sh.
+      - name: Upload the mirror index as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: network-mirror-index
+          path: |
+            dist/index.json
+            dist/*.json
+          if-no-files-found: error
 
       - name: Summarise what was published
         run: |

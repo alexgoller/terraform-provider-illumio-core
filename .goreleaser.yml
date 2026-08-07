@@ -5,8 +5,13 @@
 #   terraform-provider-illumio-core_<version>_<os>_<arch>.zip   the provider
 #   terraform-provider-illumio-core_<version>_SHA256SUMS        checksums
 #   terraform-provider-illumio-core_<version>_SHA256SUMS.sig    when a GPG key is configured
-#   provision_<version>_<os>_<arch>.zip                         deprecated helper binary
-#   import_<version>_<os>_<arch>.zip                            PCE scraper helper
+#   terraform-provider-illumio-core_<version>_manifest.json     registry metadata
+#
+# Nothing else. The Terraform Registry validates every asset attached to a
+# release and rejects any whose name does not start with the provider name -
+# so helper binaries and mirror index files must not be published here. The
+# `provision` and `import` helpers are built from source with `go build
+# ./cmd/...`; the mirror index is a workflow artifact, see release.yml.
 #
 # The provider archive and binary names are not free choices: Terraform requires
 # the archive to be <name>_<version>_<os>_<arch>.zip containing a binary called
@@ -59,33 +64,6 @@ builds:
       - goos: windows
         goarch: arm
 
-  # Helper binaries. These are operator tools rather than the provider, so they
-  # are built for the platforms an operator runs, not for the full matrix.
-  - id: provision
-    main: ./cmd/provision
-    binary: provision
-    env:
-      - CGO_ENABLED=0
-    mod_timestamp: '{{ .CommitTimestamp }}'
-    flags:
-      - -trimpath
-    ldflags:
-      - '-s -w'
-    goos: [linux, darwin, windows]
-    goarch: [amd64, arm64]
-
-  - id: import
-    main: ./cmd/import
-    binary: import
-    env:
-      - CGO_ENABLED=0
-    mod_timestamp: '{{ .CommitTimestamp }}'
-    flags:
-      - -trimpath
-    ldflags:
-      - '-s -w'
-    goos: [linux, darwin, windows]
-    goarch: [amd64, arm64]
 
 archives:
   - id: terraform-provider-illumio-core
@@ -102,21 +80,16 @@ archives:
       - none*
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
 
-  - id: provision
-    ids: [provision]
-    formats: [zip]
-    name_template: 'provision_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
 
-  - id: import
-    ids: [import]
-    formats: [zip]
-    name_template: 'import_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
 
 checksum:
-  # Only the provider archives. The Terraform Registry and the network mirror
-  # expect this file to describe the provider and nothing else.
   ids:
     - terraform-provider-illumio-core
+  # The Registry checks that every release asset has a checksum, and the
+  # manifest is a release asset - so it has to be listed here too.
+  extra_files:
+    - glob: 'terraform-registry-manifest.json'
+      name_template: '{{ .ProjectName }}_{{ .Version }}_manifest.json'
   name_template: '{{ .ProjectName }}_{{ .Version }}_SHA256SUMS'
   algorithm: sha256
 

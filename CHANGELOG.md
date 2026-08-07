@@ -1,3 +1,27 @@
+## 2.0.10 (August 7, 2026)
+
+**No shipped code changes.** Functionally identical to 2.0.9. This release exists
+so the Terraform Registry renders correct documentation.
+
+DOCUMENTATION:
+
+* The provider is published to the Terraform Registry as
+  `alexgoller/illumio-core`, a separate provider from the upstream
+  `illumio/illumio-core` with its own version stream and signing key. Installing
+  is now `source = "alexgoller/illumio-core"` rather than a provider mirror.
+* Document migrating with `terraform state replace-provider`, in both directions.
+* Fix the provider landing page, which is what the Registry renders. Through
+  2.0.9 it instructed readers to use `source = "illumio/illumio-core"` — the
+  upstream provider. The page is generated from `examples/`, so the fix is in the
+  74 example `provider.tf` files.
+* Demote provider mirrors, `dev_overrides` and private registries to a section
+  for airgapped networks and unreleased builds.
+* Rewrite the version-numbering warning. Pinning exactly and scoping a mirror
+  with `include`/`exclude` mattered while the fork was served under upstream's
+  own source address; with its own namespace that collision is gone. This fork's
+  `2.x` line remains unrelated to upstream's `1.x`.
+* `scripts/build-mirror.sh` builds under the `alexgoller` namespace.
+
 ## 2.0.9 (August 7, 2026)
 
 **No shipped code changes.** Functionally identical to 2.0.8. This release makes

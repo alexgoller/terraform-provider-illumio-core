@@ -9,9 +9,31 @@
 > This is a fork of [`illumio/terraform-provider-illumio-core`](https://github.com/illumio/terraform-provider-illumio-core).
 > It is a superset of the upstream provider — nothing was removed and no schema
 > changed incompatibly — adding deny rules, Terraform-native policy
-> provisioning, and reconcile fixes. It is not published to the Terraform
-> Registry; see [Using this fork](https://alexgoller.github.io/terraform-provider-illumio-core/guides/using-this-fork.html)
-> for installation.
+> provisioning, and reconcile fixes. It is published to the Terraform Registry
+> as [`alexgoller/illumio-core`](https://registry.terraform.io/providers/alexgoller/illumio-core/latest),
+> a separate provider from the upstream one.
+
+```hcl
+terraform {
+  required_providers {
+    illumio-core = {
+      source  = "alexgoller/illumio-core"
+      version = "2.0.9"
+    }
+  }
+}
+```
+
+Already using the upstream provider? Change `source` and run:
+
+```bash
+terraform state replace-provider \
+  registry.terraform.io/illumio/illumio-core \
+  registry.terraform.io/alexgoller/illumio-core
+```
+
+See [Using this fork](https://alexgoller.github.io/terraform-provider-illumio-core/guides/using-this-fork.html)
+for details.
 
 The Terraform Illumio provider allows users to define HCL configuration to manage resources in the Illumio Policy Compute Engine (PCE).  
 
@@ -42,7 +64,7 @@ The following versions of the Illumio Core Policy Compute Engine are currently s
 ## Getting Started  
 
 - [Documentation site](https://alexgoller.github.io/terraform-provider-illumio-core/)
-- [Installing this fork](https://alexgoller.github.io/terraform-provider-illumio-core/guides/using-this-fork.html)
+- [Installing and migrating](https://alexgoller.github.io/terraform-provider-illumio-core/guides/using-this-fork.html)
 - [Provider development](DEVELOPMENT.md)
 - [Usage examples](./examples/README.md)
 

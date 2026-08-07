@@ -2,9 +2,9 @@
 #
 # Build this fork into a Terraform provider mirror.
 #
-# The fork is not on the Terraform Registry, so `source = "illumio/illumio-core"`
-# would otherwise always resolve to the upstream provider. A mirror serves the
-# fork under that same address, so existing configurations work unchanged.
+# The fork is published as `alexgoller/illumio-core`, so a mirror is only needed
+# for airgapped networks or to test an unreleased build. It serves the provider
+# under its own registry address.
 #
 # Produces, under ./mirror:
 #
@@ -27,7 +27,7 @@
 set -euo pipefail
 
 VERSION="${VERSION:-2.0.9}"
-NAMESPACE="${NAMESPACE:-illumio}"
+NAMESPACE="${NAMESPACE:-alexgoller}"
 TYPE="illumio-core"
 HOSTNAME_="${HOSTNAME_:-registry.terraform.io}"
 OUT="${OUT:-mirror}"

@@ -2,15 +2,47 @@
 page_title: "Using this fork instead of illumio/illumio-core"
 subcategory: ""
 description: |-
-  How to install and use this fork of terraform-provider-illumio-core, what it adds over the upstream provider, and how to migrate to and from it.
+  How to install this fork of terraform-provider-illumio-core from the Terraform Registry, what it adds over the upstream provider, and how to migrate to and from it.
 ---
 
 # Using this fork instead of `illumio/illumio-core`
 
-This is a fork of [`illumio/terraform-provider-illumio-core`](https://github.com/illumio/terraform-provider-illumio-core).
-It is **not published to the Terraform Registry**, so `source = "illumio/illumio-core"`
-will always resolve to the upstream provider, never to this one. Installing the
-fork therefore means telling Terraform explicitly where to find it.
+This is a fork of [`illumio/terraform-provider-illumio-core`](https://github.com/illumio/terraform-provider-illumio-core),
+published to the Terraform Registry as **`alexgoller/illumio-core`**.
+
+It is a **separate provider** from the upstream `illumio/illumio-core`: a
+different namespace, an independent version stream, and its own signing key.
+Publishing it changed nothing about the upstream provider, and the two can even
+be used side by side in different configurations.
+
+## Installing
+
+```hcl
+terraform {
+  required_providers {
+    illumio-core = {
+      source  = "alexgoller/illumio-core"
+      version = "2.0.9"
+    }
+  }
+}
+```
+
+```bash
+terraform init
+```
+
+That is the whole installation. Releases are GPG-signed, so Terraform verifies
+them and writes a normal `.terraform.lock.hcl`.
+
+The provider is published for 17 platforms — linux, darwin, windows, freebsd and
+openbsd across `386`, `amd64`, `arm` and `arm64`. Linux builds are statically
+linked, so they run on glibc and musl distributions alike.
+
+~> **`source` is the only thing that distinguishes the two providers.** Both are
+configured as `illumio-core` in HCL and expose the same resource names, so a
+configuration reads identically either way. If you are unsure which one a
+workspace uses, `terraform providers` prints the full source address.
 
 ## What this fork adds
 
@@ -18,123 +50,80 @@ fork therefore means telling Terraform explicitly where to find it.
 |---|---|
 | `illumio-core_deny_rule` resource + `illumio-core_deny_rule` / `illumio-core_deny_rules` data sources | Deny rules and override-deny rules are not supported upstream at all |
 | `illumio-core_provisioning` resource | Provisioning becomes a Terraform resource: state-tracked, visible in `plan`, and works in Terraform Cloud/CI, where the `provision` binary cannot |
+| Adopt-on-create, and import by hostname | Existing PCE objects can be brought under Terraform without opaque-HREF imports |
 | `provision` binary correctness fixes | Upstream could drop a policy change and still exit 0 |
 | Build fix | Upstream `main` does not compile from a fresh clone |
 
 Each of these is described in detail in
 [Differences from the upstream provider](differences-from-upstream.html).
 
-~> **Version numbering.** This fork releases as `2.0.9`, which sorts **above**
-upstream's 1.x line, and it is served under the same `illumio/illumio-core`
-source address. Two consequences:
->
-> - **Always pin the version exactly** (`version = "2.0.9"`, not `>= 2.0` or
->   `~> 2.0`).
-> - **Always scope the mirror** with the `include`/`exclude` pair shown below, so
->   only this provider comes from the mirror and every other provider still
->   comes from the registry.
->
-> Without both, a configuration that asks for `>= 1.0` could resolve to this fork
-> from a mirror without saying so.
+~> **Version numbers are not comparable between the two providers.** This fork's
+`2.x` line and upstream's `1.x` line are unrelated: a higher number does not mean
+newer or a superset. The `2.x` numbering predates publication, when the fork had
+to sort above upstream to be served from a mirror under the same address. It is
+kept for continuity.
 
-## Installing the fork
+## Migrating from the upstream provider
 
-### Option 1 — build from source with a filesystem mirror (recommended)
-
-Best for real use: it works with `terraform init` and lockfiles, and does not
-print a warning on every command.
-
-```bash
-git clone https://github.com/alexgoller/terraform-provider-illumio-core.git
-cd terraform-provider-illumio-core
-go build -o terraform-provider-illumio-core
-```
-
-Install it into the local plugin directory. Pick a version number for the fork
-— it does not have to match upstream, and using a distinctive one such as
-`2.0.9` makes it obvious which provider is in use:
-
-```bash
-# Linux / macOS. Adjust OS_ARCH to match your machine, e.g. darwin_arm64,
-# darwin_amd64, linux_amd64.
-OS_ARCH="$(go env GOOS)_$(go env GOARCH)"
-DEST=~/.terraform.d/plugins/registry.terraform.io/illumio/illumio-core/2.0.9/${OS_ARCH}
-
-mkdir -p "$DEST"
-cp terraform-provider-illumio-core "$DEST/"
-```
-
-Then pin that version in your configuration:
+Change the `source`, then rewrite the provider address recorded in state:
 
 ```hcl
 terraform {
   required_providers {
     illumio-core = {
-      source  = "illumio/illumio-core"
+      source  = "alexgoller/illumio-core" # was "illumio/illumio-core"
       version = "2.0.9"
     }
   }
 }
 ```
 
-`terraform init` will find the local build. Because the version is pinned to one
-that does not exist upstream, Terraform can never silently fall back to the
-registry copy.
+```bash
+terraform state replace-provider \
+  registry.terraform.io/illumio/illumio-core \
+  registry.terraform.io/alexgoller/illumio-core
 
-### Option 2 — development overrides
-
-Best for quick evaluation. No `terraform init` required, but Terraform prints a
-warning on every command and **ignores the dependency lock file**, so do not use
-it for production state.
-
-Create a CLI configuration file:
-
-```hcl
-# dev.tfrc
-provider_installation {
-  dev_overrides {
-    "illumio/illumio-core" = "/absolute/path/to/build/directory"
-  }
-  direct {}
-}
+terraform init
+terraform plan
 ```
 
-The path is the **directory** containing the binary, not the binary itself.
+`terraform plan` should report **no changes**. The resource schemas are
+compatible, so nothing is recreated. If a plan proposes changes, stop and read
+[Differences from the upstream provider](differences-from-upstream.html) before
+applying.
+
+Migrating back is the same operation with the arguments reversed:
 
 ```bash
-export TF_CLI_CONFIG_FILE=/absolute/path/to/dev.tfrc
-terraform plan   # no terraform init needed
+terraform state replace-provider \
+  registry.terraform.io/alexgoller/illumio-core \
+  registry.terraform.io/illumio/illumio-core
 ```
 
-### Option 3 — private registry
+Configurations that use this fork's extra resources must have those removed from
+the configuration and from state before moving back, since upstream does not
+define them:
 
-If you run a private Terraform registry (Terraform Enterprise, Artifactory,
-Cloudsmith), publish the fork there under your own namespace and reference it
-normally:
-
-```hcl
-terraform {
-  required_providers {
-    illumio-core = {
-      source  = "your-org/illumio-core"
-      version = ">= 2.0.9"
-    }
-  }
-}
+```bash
+terraform state rm illumio-core_provisioning.policy
+terraform state rm illumio-core_deny_rule.example
 ```
 
-This is the only approach that works cleanly for Terraform Cloud remote runs,
-because dev overrides and filesystem mirrors are not available there.
+Neither removal touches the PCE. `illumio-core_provisioning`'s delete is a no-op
+by design, and removing a deny rule from state leaves the rule in place on the
+PCE — delete it in the PCE UI if you no longer want it.
 
 ### Verifying which provider you are using
 
 ```bash
 terraform providers
-terraform version
 ```
 
-A quick functional check: the fork registers resources upstream does not have,
-so this succeeds only on the fork.
+The source address is printed in full, so `registry.terraform.io/alexgoller/illumio-core`
+confirms the fork.
+
+A functional check, for a workspace whose configuration you cannot see: the fork
+registers resources upstream does not have, so this succeeds only on the fork.
 
 ```hcl
 data "illumio-core_deny_rules" "check" {
@@ -144,10 +133,14 @@ data "illumio-core_deny_rules" "check" {
 
 On the upstream provider it fails with `Invalid data source type`.
 
-## Distributing the fork to testers (no registry)
+## Installing without the registry
 
-While the fork is not published to a registry, the supported way to install it
-is a **provider mirror**. `scripts/build-mirror.sh` builds one:
+Only needed for airgapped networks, or to test an unreleased build. Everyone
+else should use the registry, which is simpler and verifies signatures.
+
+### A provider mirror
+
+`scripts/build-mirror.sh` builds one from source:
 
 ```bash
 # Host platform only
@@ -155,94 +148,79 @@ scripts/build-mirror.sh
 
 # A specific set, or everything
 PLATFORMS="darwin_arm64 linux_amd64" scripts/build-mirror.sh
-PLATFORMS=all VERSION=0.0.2 scripts/build-mirror.sh
+PLATFORMS=all VERSION=2.0.9 scripts/build-mirror.sh
 ```
 
-It produces `mirror/registry.terraform.io/illumio/illumio-core/` containing a
-`.zip` per platform plus the `index.json` / `<version>.json` files of the
-provider network mirror protocol. The same directory works either way.
+It produces `mirror/registry.terraform.io/alexgoller/illumio-core/` containing a
+`.zip` per platform plus the `index.json` and `<version>.json` files of the
+provider network mirror protocol. The same directory serves as either a
+filesystem mirror or a network mirror.
 
-Serving the fork under `registry.terraform.io/illumio/illumio-core` is
-deliberate: existing configurations keep `source = "illumio/illumio-core"` and
-need no edits. Only the version pin changes.
-
-### Local testing — filesystem mirror
-
-Put this in `~/.terraformrc`:
+Point `~/.terraformrc` at it:
 
 ```hcl
 provider_installation {
   filesystem_mirror {
     path    = "/absolute/path/to/mirror"
-    include = ["registry.terraform.io/illumio/illumio-core"]
+    include = ["registry.terraform.io/alexgoller/illumio-core"]
   }
   direct {
-    exclude = ["registry.terraform.io/illumio/illumio-core"]
+    exclude = ["registry.terraform.io/alexgoller/illumio-core"]
   }
 }
 ```
 
-```hcl
-terraform {
-  required_providers {
-    illumio-core = {
-      source  = "illumio/illumio-core"
-      version = "2.0.9"
-    }
-  }
-}
-```
-
-`terraform init` then installs the fork:
-
-```
-- Installing illumio/illumio-core v2.0.9...
-- Installed illumio/illumio-core v2.0.9 (unauthenticated)
-```
-
-Unlike `dev_overrides`, this is a real install: `init` works normally and a
-`.terraform.lock.hcl` is written.
-
-### Sharing with a team — network mirror
-
-Serve the `mirror/` directory from any static HTTPS host (S3, GitHub Pages,
-nginx):
+For a team, serve the same directory over HTTPS and use `network_mirror` with
+the identical `include`/`exclude` pair:
 
 ```hcl
 provider_installation {
   network_mirror {
     url     = "https://example.com/terraform/"
-    include = ["registry.terraform.io/illumio/illumio-core"]
+    include = ["registry.terraform.io/alexgoller/illumio-core"]
   }
   direct {
-    exclude = ["registry.terraform.io/illumio/illumio-core"]
+    exclude = ["registry.terraform.io/alexgoller/illumio-core"]
   }
 }
 ```
 
-The `include`/`exclude` pair matters: it routes **only** this provider to the
-mirror, leaving every other provider coming from the registry as normal.
+The `include`/`exclude` pair routes **only** this provider to the mirror, leaving
+every other provider coming from the registry as normal.
 
-### Things to know
+### Development overrides
 
-- **`(unauthenticated)` is expected.** Registry providers are GPG-signed by the
-  publisher; mirrored providers are not. It is a statement of fact, not a
-  warning that something is wrong.
-- **Network mirrors must be HTTPS.** Terraform rejects `http://` URLs with
+For iterating on the provider itself. `dev_overrides` bypasses `init` entirely
+and prints a warning on every command, so it is not suitable for real use:
+
+```hcl
+provider_installation {
+  dev_overrides {
+    "alexgoller/illumio-core" = "/absolute/path/to/built/binary/dir"
+  }
+  direct {}
+}
+```
+
+```bash
+TF_CLI_CONFIG_FILE=dev.tfrc terraform plan
+```
+
+### Things to know about mirrors
+
+- **`(unauthenticated)` is expected from a mirror.** Registry installs are
+  GPG-signed and verified; mirrored ones are not. Installing from
+  `alexgoller/illumio-core` on the registry *is* verified.
+- **Network mirrors must be HTTPS.** Terraform rejects `http://` with
   `Invalid URL for provider installation source`, so a plain local HTTP server
   cannot be used for testing.
-- **`terraform providers lock` does not work against a scoped mirror.** It
-  fails with `the previously-selected version 2.0.9 is no longer available`,
-  because the provider is excluded from `direct` installation. `terraform init`
-  still records a hash for the platform it ran on. For a mixed-platform team,
-  run `init` once per platform and combine the resulting lock entries, or accept
-  the "incomplete lock file information" warning during testing.
-- **Pick a version that upstream will never publish** (`2.0.9` here). Terraform
-  resolves by version, so a distinctive one makes it impossible to silently get
-  the upstream provider instead.
-- **Bump the version whenever you rebuild**, or clear `.terraform/` in
-  consuming configurations. Terraform caches by version, so rebuilding the same
-  version does not reliably reach existing workspaces.
+- **`terraform providers lock` does not work against a scoped mirror.** It fails
+  with `the previously-selected version is no longer available`, because the
+  provider is excluded from `direct` installation. Use the registry if you need
+  a complete multi-platform lock file.
+- **Bump the version whenever you rebuild**, or clear `.terraform/` in consuming
+  configurations. Terraform caches by version, so rebuilding the same version
+  does not reliably reach existing workspaces.
 
 ## Provider configuration
 
@@ -265,34 +243,6 @@ All the usual environment variables still work: `ILLUMIO_PCE_HOST`,
 `ILLUMIO_API_KEY_USERNAME`, `ILLUMIO_API_KEY_SECRET`, `ILLUMIO_PCE_ORG_ID`,
 `ILLUMIO_ALLOW_INSECURE_TLS`, `ILLUMIO_CA_FILE`, `ILLUMIO_PROXY_URL`,
 `ILLUMIO_PROXY_CREDENTIALS`.
-
-## Migrating from the upstream provider
-
-The fork is a superset of upstream: no resource or data source was removed, and
-no schema changed incompatibly. Existing configuration and state work unchanged.
-
-1. Install the fork (above).
-2. Run `terraform plan`. It should report no changes. If it does not, stop and
-   investigate before applying — that would indicate an unintended schema
-   difference and should be reported as a bug.
-3. Adopt the new features when you want them; nothing is mandatory.
-
-### Migrating back to upstream
-
-Also non-destructive, **provided you are not using the fork-only resources**.
-Remove any `illumio-core_deny_rule` and `illumio-core_provisioning` resources
-from your configuration and state first:
-
-```bash
-terraform state rm illumio-core_provisioning.policy
-terraform state rm illumio-core_deny_rule.example
-```
-
-Removing `illumio-core_provisioning` from state has no effect on the PCE — its
-delete is a no-op by design. Removing a deny rule from state leaves the rule in
-place on the PCE; delete it in the PCE UI if you no longer want it.
-
-Then reinstate the upstream provider and re-run `terraform init -upgrade`.
 
 ## Using the new features
 

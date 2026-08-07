@@ -251,10 +251,11 @@ needing a PCE now skip instead.
 
 ## Distribution
 
-The fork is not published to the Terraform Registry, so
-`source = "illumio/illumio-core"` resolves to the upstream provider unless
-Terraform is told otherwise. `scripts/build-mirror.sh` builds a provider mirror
-that serves the fork under the same source address.
+The fork is published to the Terraform Registry as `alexgoller/illumio-core`,
+a separate provider from the upstream `illumio/illumio-core` with its own
+version stream and signing key. `scripts/build-mirror.sh` still builds a
+provider mirror, which is needed only for airgapped networks or to test an
+unreleased build.
 
 See [Using this fork](using-this-fork.html).
 

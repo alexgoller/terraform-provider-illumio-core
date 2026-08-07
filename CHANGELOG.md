@@ -1,3 +1,36 @@
+## 2.0.9 (August 7, 2026)
+
+**No shipped code changes.** Functionally identical to 2.0.8. This release makes
+the published artifacts acceptable to the Terraform Registry.
+
+BUG FIXES:
+
+* Stop publishing anything other than the provider to a release. The Registry
+  validates *every* asset attached to a release and rejects any name that does
+  not start with the provider name, so the `provision` and `import` helper
+  archives and the network mirror `index.json` and `<version>.json` each failed
+  with `invalid provider name`. A release now carries only the provider
+  archives, `SHA256SUMS`, `SHA256SUMS.sig` and `manifest.json`.
+* Include the manifest in `SHA256SUMS`. Every release asset needs a checksum, and
+  `terraform-provider-illumio-core_<version>_manifest.json` had none, so the
+  Registry reported `missing SHA256 checksum`.
+
+CHANGES:
+
+* The `provision` and `import` helpers are no longer attached to releases. Build
+  them from source with `go build ./cmd/provision` or `go build ./cmd/import`.
+  No published release ever carried them - the release pipeline did not work
+  until 2.0.6 - so nothing that previously existed has been withdrawn.
+* The network mirror index is now a workflow artifact on the release run rather
+  than a release asset. `scripts/build-mirror.sh` still generates it locally, and
+  installing from the Registry does not need it.
+
+TESTING:
+
+* Fail the build if any archive would be rejected by the Registry as an invalid
+  provider name, so a stray asset fails a pull request rather than a publish
+  attempt.
+
 ## 2.0.8 (August 7, 2026)
 
 **No shipped code changes.** Functionally identical to 2.0.7. Releases are signed

@@ -74,6 +74,17 @@ jobs:
             fail=1
           fi
 
+          # The Terraform Registry validates every asset attached to a release
+          # and rejects any name that is not terraform-provider-{NAME}_*. A
+          # stray archive here becomes "invalid provider name" at publish time.
+          for zip in dist/*.zip; do
+            case "$(basename "${zip}")" in
+              terraform-provider-illumio-core_*) ;;
+              *) echo "::error::$(basename "${zip}") would be rejected by the registry as an invalid provider name"
+                 fail=1 ;;
+            esac
+          done
+
           # Terraform requires each archive to hold exactly one file, the
           # provider binary named terraform-provider-illumio-core_v<version>.
           # Anything else changes the h1: hash and diverges from the archives

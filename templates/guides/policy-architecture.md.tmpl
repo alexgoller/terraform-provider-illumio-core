@@ -383,10 +383,21 @@ resource "illumio-core_provisioning" "scope" {
   update_description = "payments prod"
 
   lifecycle {
-    replace_triggered_by = [module.scope.rule_set]
+    replace_triggered_by = [
+      module.scope.rule_set,
+      module.scope.ringfence_rule,
+      illumio-core_security_rule.from_payments_kerberos,
+    ]
   }
 }
 ```
+
+~> **`replace_triggered_by` must name every rule, not just the rule set.** A
+rule's changes do not alter its rule set's HREF, so `hrefs` shows no diff and
+provisioning does not run — the apply succeeds and the rule stays in draft. The
+same applies to any object listed only in `hrefs`: it is provisioned once, on
+creation, and never again. See
+[policy provisioning](policy-provisioning.html) for the tested behaviour.
 
 Provisioning sends a `change_subset` naming those hrefs, so activating one team's
 policy leaves every other team's pending draft untouched. That is what makes
@@ -473,6 +484,7 @@ predicted.
 | A label lookup without `match_type = "exact"` | `prod` also matches `non-prod` and `preprod` |
 | Indexing `items[0]` instead of using `one()` | An ambiguous lookup resolves silently instead of failing the plan |
 | Granting a containment exception with an allow rule | Cannot work against `override = true`; the exception belongs in the containment layer |
+| Listing an object in `hrefs` but not in `replace_triggered_by` | It is provisioned on creation and never again; later edits stay in draft and the apply still succeeds |
 | Renaming a label value | The taxonomy is a published interface; add, don't rename |
 
 ## See also

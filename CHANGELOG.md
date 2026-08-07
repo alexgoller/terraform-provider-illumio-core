@@ -1,3 +1,22 @@
+## 2.0.8 (August 7, 2026)
+
+**No shipped code changes.** Functionally identical to 2.0.7. Releases are signed
+from this version onward.
+
+BUG FIXES:
+
+* Fix the release workflow producing unsigned releases even with a signing key
+  configured. The GoReleaser arguments were built with
+  `${{ cond && '' || '--skip=sign' }}`, and GitHub's ternary returns the
+  right-hand side whenever the left is falsy — an empty string is falsy, so
+  `--skip=sign` was passed on *both* paths. 2.0.7 was published unsigned as a
+  result, with the key imported correctly and the log reading `skipping sign`.
+  The non-empty branch now sits on the left of `&&`.
+* Fail the release if a signing key is configured but no signature is produced.
+  The workflow now checks that `_SHA256SUMS.sig` exists, is binary rather than
+  ASCII armored, and verifies with `gpg --verify` before publishing. The
+  inverted condition was invisible precisely because nothing checked the output.
+
 ## 2.0.7 (August 7, 2026)
 
 **No shipped code changes.** The provider binary is functionally identical to

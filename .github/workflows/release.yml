@@ -50,12 +50,34 @@ jobs:
           # Pinned to the v2 line: the config is version 2, and `--rm-dist` was
           # removed in v2 in favour of `--clean`.
           version: '~> v2'
+          # The non-empty branch must sit on the left of `&&`. GitHub's ternary
+          # is `cond && A || B`, which returns B whenever A is falsy — and an
+          # empty string is falsy. Written as `cond && '' || '--skip=sign'` it
+          # yields --skip=sign in *both* cases, silently producing unsigned
+          # releases with a signing key correctly configured.
           args: >-
             release --clean
-            ${{ env.HAS_GPG_KEY == 'true' && '' || '--skip=sign' }}
+            ${{ env.HAS_GPG_KEY != 'true' && '--skip=sign' || '' }}
         env:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify the release is actually signed
+        if: env.HAS_GPG_KEY == 'true'
+        run: |
+          set -euo pipefail
+          sig=$(ls dist/*_SHA256SUMS.sig 2>/dev/null || true)
+          if [ -z "${sig}" ]; then
+            echo "::error::A signing key is configured but no .sig was produced."
+            echo "::error::The Terraform Registry rejects releases without one."
+            exit 1
+          fi
+          if head -c 30 "${sig}" | grep -q "BEGIN PGP"; then
+            echo "::error::Signature is ASCII armored; the registry requires binary."
+            exit 1
+          fi
+          gpg --verify "${sig}" dist/*_SHA256SUMS
+          echo "signed and verified: ${sig}"
 
       - name: Build the network mirror index
         run: |

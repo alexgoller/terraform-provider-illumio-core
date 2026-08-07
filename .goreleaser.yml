@@ -137,6 +137,11 @@ signs:
 release:
   draft: false
   prerelease: auto
+  extra_files:
+    # The Terraform Registry requires the manifest as a release asset under a
+    # versioned name, not just as a file in the repository root.
+    - glob: 'terraform-registry-manifest.json'
+      name_template: '{{ .ProjectName }}_{{ .Version }}_manifest.json'
 
 changelog:
   disable: true

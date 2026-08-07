@@ -1,4 +1,46 @@
-## Unreleased
+## 2.0.6 (August 7, 2026)
+
+**No shipped code changes.** The provider binary is functionally identical to
+2.0.5. What changed is how it is built and what a release contains.
+
+~> **The archives differ from 2.0.5 in content, not just version.** Provider
+archives now hold the binary alone; through 2.0.5 they also carried `README.md`,
+`LICENSE` and `CHANGELOG.md`. Terraform's `h1:` lock hash is computed over the
+archive contents, so upgrading changes the recorded hash. Run
+`terraform providers lock` if a pinned lock file rejects the new archive.
+
+BUILD:
+
+* The release pipeline now runs. Every release from 2.0.0 to 2.0.5 failed at the
+  GPG import step, which left GoReleaser skipped entirely — those artifacts were
+  built by hand. Three faults were stacked: the GPG step was unconditional and no
+  signing key is configured, `.goreleaser.yml` was a version 0 schema that
+  GoReleaser v2 refuses to load, and the workflow passed `--rm-dist`, removed in
+  v2 in favour of `--clean`. Signing is now optional — releases publish unsigned
+  unless a `GPG_PRIVATE_KEY` secret is set, which is needed only for the
+  Terraform Registry.
+* Provider archives contain the binary alone. `files: []` reads as *unset* in
+  GoReleaser and fell back to its defaults, so archives carried documentation
+  files that changed their `h1:` hash and diverged from what
+  `scripts/build-mirror.sh` produces for the same version.
+* Build for 17 platforms, up from 10: adds `freebsd_386`, `freebsd_arm`,
+  `freebsd_arm64`, `openbsd_386`, `openbsd_arm`, `openbsd_arm64` and
+  `windows_arm64` alongside the existing linux, darwin and windows builds.
+* Build the `provision` and `import` helpers with `CGO_ENABLED=0`. They were
+  dynamically linked, so the linux builds would not run on musl-based
+  distributions such as Alpine.
+* Drop `-X main.version` and `-X main.commit`; neither symbol is declared in this
+  module, so both were silent no-ops.
+* Drop the `go mod tidy` release hook, which could leave `go.mod` inconsistent
+  with the committed `vendor/` directory partway through a release.
+
+TESTING:
+
+* Add a `build` workflow running on every push and pull request: `go build`,
+  `go vet`, `go test`, and a full snapshot release. It asserts that each provider
+  archive holds exactly one correctly named file and that the linux binary is
+  statically linked. Nothing exercised `.goreleaser.yml` until a tag was pushed,
+  which is how the release pipeline stayed broken across six releases.
 
 BUG FIXES:
 

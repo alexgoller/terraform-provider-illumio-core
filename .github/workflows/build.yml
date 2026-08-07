@@ -1,0 +1,120 @@
+# Build and test on every push and pull request.
+#
+# This exists because the release pipeline was broken for six consecutive
+# releases without anyone noticing: nothing exercised .goreleaser.yml until a
+# tag was pushed, and by then the failure was easy to mistake for a one-off. The
+# snapshot build below runs the same configuration the release uses, so a
+# breaking change to it fails a pull request instead of a release.
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        # Acceptance tests are skipped unless TF_ACC is set, so this runs the
+        # unit tests without needing PCE credentials.
+        run: go test ./... -timeout 10m
+
+  release-config:
+    name: release config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Validate .goreleaser.yml
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: '~> v2'
+          args: check
+
+      - name: Snapshot build — the full platform matrix
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: '~> v2'
+          args: release --snapshot --clean --skip=publish,sign
+
+      - name: Check the artifacts are shaped the way Terraform expects
+        run: |
+          set -euo pipefail
+          fail=0
+
+          count=$(ls dist/terraform-provider-illumio-core_*.zip | wc -l | tr -d ' ')
+          echo "provider archives: ${count}"
+          if [ "${count}" -lt 17 ]; then
+            echo "::error::expected at least 17 provider archives, found ${count}"
+            fail=1
+          fi
+
+          # Terraform requires each archive to hold exactly one file, the
+          # provider binary named terraform-provider-illumio-core_v<version>.
+          # Anything else changes the h1: hash and diverges from the archives
+          # scripts/build-mirror.sh produces.
+          for zip in dist/terraform-provider-illumio-core_*.zip; do
+            files=$(unzip -Z1 "${zip}" | wc -l | tr -d ' ')
+            name=$(unzip -Z1 "${zip}" | head -1)
+            if [ "${files}" -ne 1 ]; then
+              echo "::error::${zip} contains ${files} files, expected 1"
+              fail=1
+            fi
+            case "${name}" in
+              terraform-provider-illumio-core_v*) ;;
+              *) echo "::error::${zip} holds '${name}', expected terraform-provider-illumio-core_v<version>"
+                 fail=1 ;;
+            esac
+          done
+
+          # linux must be static, or it breaks on musl distributions.
+          unzip -q -o dist/terraform-provider-illumio-core_*_linux_amd64.zip -d /tmp/probe
+          bin=$(ls /tmp/probe/terraform-provider-illumio-core_v*)
+          if file "${bin}" | grep -q "dynamically linked"; then
+            echo "::error::linux_amd64 provider is dynamically linked; CGO_ENABLED=0 is not taking effect"
+            fail=1
+          fi
+          file "${bin}"
+
+          exit "${fail}"
+
+      - name: Check the mirror index generator
+        run: |
+          version=$(ls dist/terraform-provider-illumio-core_*_linux_amd64.zip \
+            | sed -E 's/.*core_(.+)_linux_amd64\.zip/\1/')
+          python3 scripts/mirror-index.py dist "${version}"
+          VERSION="${version}" python3 - <<'PY'
+          import json, os
+          version = os.environ["VERSION"]
+          doc = json.load(open(f"dist/{version}.json"))
+          archives = doc["archives"]
+          assert archives, "no archives indexed"
+          for platform, entry in archives.items():
+              assert entry["hashes"][0].startswith("zh:"), platform
+          print(f"  indexed {len(archives)} platforms")
+          PY

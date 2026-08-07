@@ -7,6 +7,14 @@ description: |-
 
 # ILLUMIO-CORE Provider
 
+~> This is a **fork** of the upstream `illumio/illumio-core` provider, published
+separately as `alexgoller/illumio-core`. It is a superset: nothing was removed
+and no schema changed incompatibly. It adds deny rules and override-deny rules,
+a Terraform-native `illumio-core_provisioning` resource, adopt-on-create for
+existing PCE objects, and workload import by hostname. See
+[Using this fork](guides/using-this-fork) for installation and for migrating to
+or from the upstream provider.
+
 The Illumio Terraform provider can be used to manage resources and policy objects on the Illumio Policy Compute Engine (PCE). Users can represent their infrastructure and policy as code and manage the PCE state using Terraform. The resulting configuration can be leveraged in a broader security automation pipeline to manage network policy in a flexible, consistent, and reliable way. At a minimum, the PCE URL and API key credentials must be provided to connect the provider to the PCE.
 
 ## Provider Configuration
@@ -17,7 +25,7 @@ To connect to the PCE, the provider must be configured at minimum with the `pce_
 terraform {
   required_providers {
     illumio-core = {
-      source  = "illumio/illumio-core"
+      source  = "alexgoller/illumio-core"
     }
   }
 }
@@ -38,7 +46,7 @@ Proxy, TLS, and HTTP timeout configuration for the PCE connection can be specifi
 terraform {
   required_providers {
     illumio-core = {
-      source  = "illumio/illumio-core"
+      source  = "alexgoller/illumio-core"
     }
   }
 }
@@ -73,7 +81,7 @@ The following HCL (try it out by copying it to a `main.tf` file locally!) sets u
 terraform {
   required_providers {
     illumio-core = {
-      source  = "illumio/illumio-core"
+      source  = "alexgoller/illumio-core"
     }
   }
 }

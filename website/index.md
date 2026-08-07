@@ -96,43 +96,40 @@ recreates it — Terraform's normal behaviour.
 
 ## Getting started
 
-This fork is **not published to the Terraform Registry**, so
-`source = "illumio/illumio-core"` resolves to the upstream provider unless you
-tell Terraform otherwise. Build a provider mirror:
-
-```bash
-git clone https://github.com/alexgoller/terraform-provider-illumio-core.git
-cd terraform-provider-illumio-core
-scripts/build-mirror.sh
-```
-
-Then point Terraform at it in `~/.terraformrc`:
-
-```hcl
-provider_installation {
-  filesystem_mirror {
-    path    = "/absolute/path/to/mirror"
-    include = ["registry.terraform.io/illumio/illumio-core"]
-  }
-  direct {
-    exclude = ["registry.terraform.io/illumio/illumio-core"]
-  }
-}
-```
+This fork is published to the Terraform Registry as
+[`alexgoller/illumio-core`](https://registry.terraform.io/providers/alexgoller/illumio-core/latest)
+— a separate provider from the upstream `illumio/illumio-core`, with its own
+version stream and signing key.
 
 ```hcl
 terraform {
   required_providers {
     illumio-core = {
-      source  = "illumio/illumio-core"
+      source  = "alexgoller/illumio-core"
       version = "2.0.9"
     }
   }
 }
 ```
 
-`terraform init` now installs the fork. The full instructions, including sharing
-a mirror with a team over HTTPS and migrating to and from upstream, are in the
+```bash
+terraform init
+```
+
+Releases are GPG-signed and published for 17 platforms — linux, darwin, windows,
+freebsd and openbsd across `386`, `amd64`, `arm` and `arm64`.
+
+**Already using the upstream provider?** Change `source`, then rewrite the
+address recorded in state:
+
+```bash
+terraform state replace-provider \
+  registry.terraform.io/illumio/illumio-core \
+  registry.terraform.io/alexgoller/illumio-core
+```
+
+`terraform plan` should then report no changes. Airgapped installs and the
+mirror route are covered in the
 [Using this fork](guides/using-this-fork.html) guide.
 
 ## Documentation
@@ -140,7 +137,7 @@ a mirror with a team over HTTPS and migrating to and from upstream, are in the
 | Guide | Covers |
 |---|---|
 | [Organizing policy](guides/policy-architecture.html) | Structuring policy as three pillars across many teams: precedence, scope contracts, state boundaries, ownership |
-| [Using this fork](guides/using-this-fork.html) | Installing it instead of the upstream provider, distributing it without a registry, migrating both ways |
+| [Using this fork](guides/using-this-fork.html) | Installing from the registry, migrating to and from upstream, airgapped installs |
 | [Deny rules](guides/deny-rules.html) | `illumio-core_deny_rule`, override-deny, the narrower actor set, ICMP |
 | [Policy provisioning](guides/policy-provisioning.html) | `illumio-core_provisioning` in place of the `provision` binary |
 | [Adopting existing objects](guides/adopting-existing-objects.html) | Declaring labels, IP lists, label groups and rule sets that already exist |

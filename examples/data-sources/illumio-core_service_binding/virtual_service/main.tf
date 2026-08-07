@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     illumio-core = {
-      source  = "illumio/illumio-core"
+      source  = "alexgoller/illumio-core"
     }
   }
 }

@@ -60,3 +60,6 @@ _site/
 test-suite/.terraform/
 test-suite/.terraform.lock.hcl
 test-suite/terraform.tfstate*
+
+# goreleaser build output
+dist/

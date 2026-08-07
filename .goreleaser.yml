@@ -1,81 +1,142 @@
-# Visit https://goreleaser.com for documentation on how to customize this
-# behavior.
-before:
-  hooks:
-    # this is just an example and not a requirement for provider building/publishing
-    - go mod tidy
+# GoReleaser configuration — see https://goreleaser.com
+#
+# Produces, for every tagged release:
+#
+#   terraform-provider-illumio-core_<version>_<os>_<arch>.zip   the provider
+#   terraform-provider-illumio-core_<version>_SHA256SUMS        checksums
+#   terraform-provider-illumio-core_<version>_SHA256SUMS.sig    when a GPG key is configured
+#   provision_<version>_<os>_<arch>.zip                         deprecated helper binary
+#   import_<version>_<os>_<arch>.zip                            PCE scraper helper
+#
+# The provider archive and binary names are not free choices: Terraform requires
+# the archive to be <name>_<version>_<os>_<arch>.zip containing a binary called
+# <name>_v<version>. Both the Terraform Registry and the network mirror protocol
+# rely on that shape, as does scripts/build-mirror.sh.
+version: 2
+
+# No `before` hooks. `vendor/` is committed, so a `go mod tidy` here could leave
+# go.mod and vendor/ inconsistent and fail the build partway through a release.
+# Tidying is a development action, not a release action.
+
 builds:
-- id: provision
-  main: ./cmd/provision
-  binary: provision
-  goos:
-    - openbsd
-    - freebsd
-    - windows
-    - linux
-    - darwin
-  goarch:
-    - amd64
-    - '386'
-    - arm
-    - arm64
-  ignore:
-    - goos: darwin
-      goarch: '386'
-- id: terraform-provider-illumio-core
-  env:
-    # goreleaser does not work with CGO, it could also complicate
-    # usage by users in CI/CD systems like Terraform Cloud where
-    # they are unable to install libraries.
-    - CGO_ENABLED=0
-  mod_timestamp: '{{ .CommitTimestamp }}'
-  flags:
-    - -trimpath
-  ldflags:
-    - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}}'
-  goos:
-    - openbsd
-    - freebsd
-    - windows
-    - linux
-    - darwin
-  goarch:
-    - amd64
-    - '386'
-    - arm
-    - arm64
-  ignore:
-    - goos: darwin
-      goarch: '386'
-  binary: '{{ .ProjectName }}_v{{ .Version }}'
+  - id: terraform-provider-illumio-core
+    main: .
+    binary: '{{ .ProjectName }}_v{{ .Version }}'
+    env:
+      # CGO off keeps the binary static, so one linux build runs on any
+      # distribution — glibc or musl, Debian or Alpine. Terraform Cloud and most
+      # CI images cannot install libraries, so a dynamically linked provider
+      # would be unusable there.
+      - CGO_ENABLED=0
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    flags:
+      - -trimpath
+    ldflags:
+      # No -X here: neither main.version nor main.commit is declared in this
+      # module, so setting them was a silent no-op. Terraform takes the provider
+      # version from the archive and binary name, not from the binary itself.
+      - '-s -w'
+    goos:
+      - linux
+      - darwin
+      - windows
+      - freebsd
+      - openbsd
+    goarch:
+      - '386'
+      - amd64
+      - arm
+      - arm64
+    # goarm is deliberately left at its default of 6. Terraform names the 32-bit
+    # ARM platform "arm", so building both v6 and v7 would produce two archives
+    # competing for one filename, and a name carrying the variant
+    # (linux_armv7) is not a platform Terraform recognises.
+    ignore:
+      - goos: darwin
+        goarch: '386'
+      - goos: darwin
+        goarch: arm
+      - goos: windows
+        goarch: arm
+
+  # Helper binaries. These are operator tools rather than the provider, so they
+  # are built for the platforms an operator runs, not for the full matrix.
+  - id: provision
+    main: ./cmd/provision
+    binary: provision
+    env:
+      - CGO_ENABLED=0
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    flags:
+      - -trimpath
+    ldflags:
+      - '-s -w'
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+
+  - id: import
+    main: ./cmd/import
+    binary: import
+    env:
+      - CGO_ENABLED=0
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    flags:
+      - -trimpath
+    ldflags:
+      - '-s -w'
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+
 archives:
-- id: provision
-  format: zip
-  builds: ['provision']
-  name_template: 'provision_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
-- id: terraform-provider-illumio-core
-  format: zip
-  builds: ['terraform-provider-illumio-core']
-  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  - id: terraform-provider-illumio-core
+    ids: [terraform-provider-illumio-core]
+    formats: [zip]
+    # Binary only. GoReleaser would otherwise add README/LICENSE/CHANGELOG, and
+    # Terraform's h1: lock hash is a dirhash over the archive contents - so an
+    # archive carrying extra files hashes differently from the one
+    # scripts/build-mirror.sh produces for the same version.
+    # `files: []` does not work — GoReleaser reads an empty list as "unset" and
+    # falls back to its defaults. A pattern matching nothing is the documented
+    # way to get a binary-only archive.
+    files:
+      - none*
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+
+  - id: provision
+    ids: [provision]
+    formats: [zip]
+    name_template: 'provision_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+
+  - id: import
+    ids: [import]
+    formats: [zip]
+    name_template: 'import_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+
 checksum:
+  # Only the provider archives. The Terraform Registry and the network mirror
+  # expect this file to describe the provider and nothing else.
   ids:
     - terraform-provider-illumio-core
   name_template: '{{ .ProjectName }}_{{ .Version }}_SHA256SUMS'
   algorithm: sha256
+
 signs:
+  # Skipped automatically when no GPG key is configured — the release workflow
+  # passes --skip=sign in that case. A signature is required to publish to the
+  # Terraform Registry, but not to install from a mirror or a GitHub release.
   - artifacts: checksum
     args:
-      # if you are using this in a GitHub action or some other automated pipeline, you
-      # need to pass the batch flag to indicate its not interactive.
       - "--batch"
       - "--local-user"
-      - "{{ .Env.GPG_FINGERPRINT }}" # set this environment variable for your signing key
+      - "{{ .Env.GPG_FINGERPRINT }}"
       - "--output"
       - "${signature}"
       - "--detach-sign"
       - "${artifact}"
+
 release:
-  # If you want to manually examine the release before its live, uncomment this line:
-  # draft: true
+  draft: false
+  prerelease: auto
+
 changelog:
-  skip: true
+  disable: true

@@ -1,45 +1,92 @@
-# This GitHub action can publish assets for release when a tag is created.
-# Currently its setup to run on any tag that matches the pattern "v*" (ie. v0.1.0).
+# Build and publish release artifacts when a v* tag is pushed.
 #
-# This uses an action (hashicorp/ghaction-import-gpg) that assumes you set your
-# private key in the `GPG_PRIVATE_KEY` secret and passphrase in the `PASSPHRASE`
-# secret. If you would rather own your own GPG handling, please fork this action
-# or use an alternative one for key handling.
-#
-# You will need to pass the `--batch` flag to `gpg` in your signing step
-# in `goreleaser` to indicate this is being used in a non-interactive mode.
-#
+# Signing is optional. If the GPG_PRIVATE_KEY secret is set the checksum file is
+# signed, which is a prerequisite for publishing to the Terraform Registry. If it
+# is not set the release still happens, unsigned — which is what a mirror or a
+# direct download from the release page needs. Previously the workflow failed at
+# the GPG step and GoReleaser never ran at all.
 name: release
+
 on:
   push:
     tags:
       - 'v*'
+
+permissions:
+  contents: write
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    env:
+      # Secrets cannot be read from a step-level `if`, so the presence of a
+      # signing key is hoisted into a job-level variable here.
+      HAS_GPG_KEY: ${{ secrets.GPG_PRIVATE_KEY != '' }}
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: Unshallow
-        run: git fetch --prune --unshallow
-      - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/checkout@v4
         with:
-          go-version: '>=1.20'
-      - name: Install/Update Packages
-        run: sudo apt-get install -y ca-certificates wget
+          # GoReleaser resolves the previous tag, so it needs full history.
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
       - name: Import GPG key
         id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v5.0.0
+        if: env.HAS_GPG_KEY == 'true'
+        uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
+
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v4
+        uses: goreleaser/goreleaser-action@v6
         with:
-          version: latest
-          args: release --rm-dist
+          # Pinned to the v2 line: the config is version 2, and `--rm-dist` was
+          # removed in v2 in favour of `--clean`.
+          version: '~> v2'
+          args: >-
+            release --clean
+            ${{ env.HAS_GPG_KEY == 'true' && '' || '--skip=sign' }}
         env:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
-          # GitHub sets this automatically
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build the network mirror index
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          # Name every released version in index.json, not just this one, so the
+          # index describes the whole mirror.
+          others=$(git tag --list 'v*' | sed 's/^v//' | grep -v "^${version}$" | tr '\n' ' ')
+          python3 scripts/mirror-index.py dist "${version}" --also-list ${others}
+
+      - name: Attach the mirror index to the release
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          gh release upload "${GITHUB_REF_NAME}" \
+            "dist/index.json" "dist/${version}.json" --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summarise what was published
+        run: |
+          {
+            echo "### Release ${GITHUB_REF_NAME}"
+            echo
+            if [ "${HAS_GPG_KEY}" = "true" ]; then
+              echo "Checksums signed with the configured GPG key."
+            else
+              echo "**Unsigned** — no \`GPG_PRIVATE_KEY\` secret is configured."
+              echo "Signing is required only for the Terraform Registry."
+            fi
+            echo
+            echo '| Artifact | Count |'
+            echo '|---|---|'
+            echo "| provider archives | $(ls dist/terraform-provider-illumio-core_*.zip | wc -l) |"
+            echo "| helper archives | $(ls dist/provision_*.zip dist/import_*.zip 2>/dev/null | wc -l) |"
+          } >> "$GITHUB_STEP_SUMMARY"

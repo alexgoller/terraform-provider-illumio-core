@@ -8,7 +8,10 @@
 
 terraform {
   required_providers {
-    illumio-core = { source = "illumio/illumio-core" }
+    illumio-core = {
+      source  = "alexgoller/illumio-core"
+      version = "2.0.11"
+    }
   }
 }
 

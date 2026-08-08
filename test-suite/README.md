@@ -1,5 +1,8 @@
 # Stepwise acceptance suite
 
+The results of the most recent full run against a live PCE are in
+[REPORT.md](REPORT.md).
+
 Creates one resource at a time against a real PCE, reads each one back from the
 API to confirm it, then tears everything down in reverse.
 

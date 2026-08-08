@@ -28,6 +28,7 @@ func resourceIllumioIPList() *schema.Resource {
 		Description:   "Manages Illumio IP List",
 
 		Schema: map[string]*schema.Schema{
+			"pending_deletion": pendingDeletionSchema(),
 			"href": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -326,6 +327,8 @@ func resourceIllumioIPListRead(ctx context.Context, d *schema.ResourceData, m in
 	if err != nil {
 		return handleReadError(err, d, "illumio-core_ip_list")
 	}
+
+	diagnostics = append(diagnostics, recordPendingDeletion(d, data, "illumio-core_ip_list")...)
 
 	d.SetId(gabsString(data, "href"))
 	for _, key := range []string{

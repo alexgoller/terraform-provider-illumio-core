@@ -100,6 +100,7 @@ resource "illumio-core_virtual_service" "example" {
 - `href` (String) URI of Virtual Service
 - `id` (String) The ID of this resource
 - `pce_fqdn` (String) PCE FQDN for this container cluster. Used in Supercluster only
+- `pending_deletion` (Boolean) True when the object has been deleted in the PCE but the deletion has not been provisioned yet. The object is still active and Terraform still manages it; provisioning the pending deletion removes it for real
 - `update_type` (String) Update type
 - `updated_at` (String) Timestamp when this virtual service was last updated
 - `updated_by` (Map of String) User who last updated this virtual service

@@ -78,6 +78,7 @@ resource "illumio-core_enforcement_boundary" "example" {
 - `deleted_by` (Map of String) User who last deleted this Enforcement Boundary
 - `href` (String) URI of this Enforcement Boundary
 - `id` (String) The ID of this resource
+- `pending_deletion` (Boolean) True when the object has been deleted in the PCE but the deletion has not been provisioned yet. The object is still active and Terraform still manages it; provisioning the pending deletion removes it for real
 - `updated_at` (String) Timestamp when this Enforcement Boundary was last updated
 - `updated_by` (Map of String) User who last updated this Enforcement Boundary
 

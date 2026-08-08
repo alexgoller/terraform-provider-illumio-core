@@ -23,6 +23,7 @@ func resourceIllumioService() *schema.Resource {
 		Description:   "Manages Illumio Security Service",
 		SchemaVersion: 1,
 		Schema: map[string]*schema.Schema{
+			"pending_deletion": pendingDeletionSchema(),
 			"href": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -388,6 +389,8 @@ func resourceIllumioServiceRead(ctx context.Context, d *schema.ResourceData, m i
 	if err != nil {
 		return handleReadError(err, d, "illumio-core_service")
 	}
+
+	diags = append(diags, recordPendingDeletion(d, data, "illumio-core_service")...)
 
 	for _, key := range []string{
 		"href",

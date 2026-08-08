@@ -24,6 +24,7 @@ func resourceIllumioLabelGroup() *schema.Resource {
 		Description:   "Manages Illumio Label Group",
 
 		Schema: map[string]*schema.Schema{
+			"pending_deletion": pendingDeletionSchema(),
 			"href": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -204,6 +205,8 @@ func resourceIllumioLabelGroupRead(ctx context.Context, d *schema.ResourceData, 
 	if err != nil {
 		return handleReadError(err, d, "illumio-core_label_group")
 	}
+
+	diagnostics = append(diagnostics, recordPendingDeletion(d, data, "illumio-core_label_group")...)
 	// set computed/optional values from api response
 	for _, key := range []string{
 		"href",

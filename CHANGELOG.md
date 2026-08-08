@@ -1,3 +1,30 @@
+## Unreleased
+
+FEATURES:
+
+* Warn when a policy object has been deleted in the PCE but the deletion has not
+  been provisioned. Deleting a provisioned object does not remove it: the PCE
+  marks the draft copy `update_type: delete` and leaves the active copy in place,
+  so nothing returns 404, the usual drift path never fires, and `terraform plan`
+  reported no changes while the object was on its way out. Provisionable
+  resources now carry a computed `pending_deletion` attribute and emit a warning
+  naming the object and how to recover.
+
+DOCUMENTATION:
+
+* Document why Terraform cannot repair this itself. There is no per-object way to
+  cancel a pending deletion — a `PUT` of the original body returns 204 and leaves
+  `update_type` at `delete`, while `DELETE /sec_policy/pending` and
+  `POST /sec_policy/{version}/restore` are both organization-wide. Recreating is
+  not possible either: the replacement fails with `ip_list_name_not_unique` while
+  the original is pending deletion, so dropping the resource from state would
+  turn a silent drift into a failing apply.
+* Document the recovery procedure and its blast radius: recreating a rule set
+  recreates its rules, and recreating a label re-points every workload and scope
+  that references it.
+* Document detecting this between Terraform runs by polling `sec_policy/pending`,
+  which a plan-time warning cannot cover, and preventing it with scoped PCE roles.
+
 ## 2.0.11 (August 7, 2026)
 
 **No shipped code changes.** Functionally identical to 2.0.10.

@@ -35,6 +35,7 @@ func resourceIllumioVirtualService() *schema.Resource {
 				Description:      "Name of the virtual service. The name should be between 1 to 255 characters",
 				ValidateDiagFunc: nameValidation,
 			},
+			"pending_deletion": pendingDeletionSchema(),
 			"href": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -636,6 +637,8 @@ func resourceIllumioVirtualServiceRead(ctx context.Context, d *schema.ResourceDa
 	if err != nil {
 		return handleReadError(err, d, "illumio-core_virtual_service")
 	}
+
+	diagnostics := recordPendingDeletion(d, data, "illumio-core_virtual_service")
 	var fields = []string{
 		"href",
 		"apply_to",
@@ -708,7 +711,7 @@ func resourceIllumioVirtualServiceRead(ctx context.Context, d *schema.ResourceDa
 		d.Set(key, nil)
 	}
 
-	return diag.Diagnostics{}
+	return diagnostics
 }
 
 func resourceIllumioVirtualServiceUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

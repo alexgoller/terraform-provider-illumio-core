@@ -214,14 +214,30 @@ reports the situation and leaves the decision to a human.
 2. If it was not, provision the pending deletion — scoped to that object, never
    `provision_all_pending` — and then `terraform apply` to recreate it.
 
-The replacement has a **new HREF**, and anything referencing it is updated in the
-same apply. Judge the blast radius before running it:
+The replacement has a **new HREF**. In practice this costs little, because the
+PCE will not let a referenced object be deleted in the first place:
 
-| Deleted object | What recreating it costs |
+| Attempted deletion | Result |
 |---|---|
-| IP list, service, label group | the object itself, plus a diff on every rule referencing it |
-| Rule set | **its rules are recreated too**, since they are children of the rule set |
-| Label | every workload and scope referencing it is re-pointed |
+| IP list used by a rule | `406 ip_list_referenced` |
+| Service used by a rule | `406 service_referenced` |
+| Label used by a rule set scope | `406 label_still_has_associated_rule_set` |
+| Label held by a label group | `406 label_referenced_by_label_group` |
+| Label assigned to a workload | `406 label_still_has_associated_agent_info` |
+
+So an object can only reach `update_type: delete` when **nothing references it**,
+and recreating it therefore has nothing to re-point. Referential integrity does
+most of the work here.
+
+Two consequences worth knowing:
+
+- **Rule sets and enforcement boundaries are the realistic case.** They are
+  referrers rather than referents, so they can always be deleted. Recreating a
+  rule set recreates its rules inside the new rule set, which is ordinarily fine
+  — nothing outside points at a rule.
+- **Labels never enter this state at all.** They live at `/orgs/{org}/labels/`,
+  outside `/sec_policy/`, so they are not provisioned and have no `update_type`.
+  A label deletion either succeeds immediately or is refused outright.
 
 ### Catching it reliably
 

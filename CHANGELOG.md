@@ -19,9 +19,15 @@ DOCUMENTATION:
   not possible either: the replacement fails with `ip_list_name_not_unique` while
   the original is pending deletion, so dropping the resource from state would
   turn a silent drift into a failing apply.
-* Document the recovery procedure and its blast radius: recreating a rule set
-  recreates its rules, and recreating a label re-points every workload and scope
-  that references it.
+* Document the recovery procedure, and that its blast radius is small: the PCE
+  refuses to delete a referenced object at all (`ip_list_referenced`,
+  `service_referenced`, `label_still_has_associated_rule_set`,
+  `label_referenced_by_label_group`, `label_still_has_associated_agent_info`), so
+  an object can only reach `update_type: delete` when nothing references it and
+  the replacement has nothing to re-point. Rule sets and enforcement boundaries
+  are the realistic case, being referrers rather than referents. Labels never
+  enter this state, since they live outside `/sec_policy/` and are not
+  provisioned.
 * Document detecting this between Terraform runs by polling `sec_policy/pending`,
   which a plan-time warning cannot cover, and preventing it with scoped PCE roles.
 

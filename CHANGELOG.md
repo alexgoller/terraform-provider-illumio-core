@@ -1,4 +1,8 @@
-## Unreleased
+## 2.1.0 (August 8, 2026)
+
+First release since 2.0.5 with a behavioural change rather than only build or
+documentation work, hence the minor bump. The new attribute is computed and
+additive, so upgrading needs no configuration change.
 
 FEATURES:
 

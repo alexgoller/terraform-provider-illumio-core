@@ -1,5 +1,8 @@
 # Acceptance test report — PCE 25.2.10
 
+~> This records the run made against provider **2.0.11**. Later releases are
+not covered by it; rerun the suite to refresh.
+
 Latest full run of `test-suite/`. Regenerate by running the suite and updating
 this file; see [README.md](README.md) for how to run individual steps.
 

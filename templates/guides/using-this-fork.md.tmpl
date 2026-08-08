@@ -22,7 +22,7 @@ terraform {
   required_providers {
     illumio-core = {
       source  = "alexgoller/illumio-core"
-      version = "2.0.11"
+      version = "2.1.0"
     }
   }
 }
@@ -72,7 +72,7 @@ terraform {
   required_providers {
     illumio-core = {
       source  = "alexgoller/illumio-core" # was "illumio/illumio-core"
-      version = "2.0.11"
+      version = "2.1.0"
     }
   }
 }
@@ -148,7 +148,7 @@ scripts/build-mirror.sh
 
 # A specific set, or everything
 PLATFORMS="darwin_arm64 linux_amd64" scripts/build-mirror.sh
-PLATFORMS=all VERSION=2.0.11 scripts/build-mirror.sh
+PLATFORMS=all VERSION=2.1.0 scripts/build-mirror.sh
 ```
 
 It produces `mirror/registry.terraform.io/alexgoller/illumio-core/` containing a

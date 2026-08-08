@@ -72,6 +72,7 @@ resource "illumio-core_label_group" "example" {
 - `deleted_by` (Map of String) User who deleted this label group
 - `href` (String) URI of this label group
 - `id` (String) The ID of this resource.
+- `pending_deletion` (Boolean) True when the object has been deleted in the PCE but the deletion has not been provisioned yet. The object is still active and Terraform still manages it; provisioning the pending deletion removes it for real
 - `update_type` (String) Type of update
 - `updated_at` (String) Timestamp when this label group was last updated
 - `updated_by` (Map of String) User who last updated this label group

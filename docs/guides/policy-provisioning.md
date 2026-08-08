@@ -146,6 +146,121 @@ All three behaviours were confirmed on a 25.2 PCE, not inferred:
 The last row is the one that catches people: it is not specific to rules. Any
 provisionable object edited in place behaves this way.
 
+## Objects deleted outside Terraform
+
+Deleting a policy object in the PCE UI does **not** remove it if the object has
+already been provisioned. The PCE marks the draft copy `update_type: delete` and
+leaves the active copy in place until someone provisions the deletion:
+
+```
+DELETE /orgs/1/sec_policy/draft/ip_lists/152   -> 204
+GET    /orgs/1/sec_policy/draft/ip_lists/152   -> 200   update_type: delete
+GET    /orgs/1/sec_policy/active/ip_lists/152  -> 200
+```
+
+Nothing returns 404, so the ordinary drift path — read, get 404, drop from state,
+recreate on the next apply — never triggers.
+
+### What the provider does
+
+Every provisionable resource carries a computed `pending_deletion` attribute and
+warns when it is set:
+
+```
+Warning: [illumio-core_ip_list] /orgs/1/sec_policy/draft/ip_lists/159 is marked
+for deletion in the PCE
+```
+
+`pending_deletion` is readable from `terraform show -json`, which is what a
+pipeline should assert on:
+
+```bash
+terraform show -json \
+  | jq -e '[.values.root_module.resources[]
+            | select(.values.pending_deletion == true)] | length == 0'
+```
+
+The warning appears on `terraform plan` and `terraform refresh`. It does **not**
+appear on an `apply` that has no changes to make, because that exits before
+reporting refresh diagnostics — so do not rely on apply output alone.
+
+### Why Terraform cannot simply fix it
+
+Both obvious repairs are unavailable:
+
+- **Cancelling the deletion.** There is no per-object way to do it. A `PUT` of the
+  original body returns `204` and leaves `update_type` at `delete`.
+  `DELETE /sec_policy/pending` reverts every pending change in the organization,
+  and `POST /sec_policy/{version}/restore` rolls back a whole policy version —
+  both would discard other people's work on a shared PCE.
+- **Recreating it.** Dropping the resource from state so the next apply recreates
+  it does not work, because names must be unique and the original still exists:
+
+  ```
+  POST /orgs/1/sec_policy/draft/ip_lists  -> 406
+  [{"token": "ip_list_name_not_unique", "message": "IP List name must be unique"}]
+  ```
+
+  That would turn a silent drift into a failing apply.
+
+So the object's HREF cannot be preserved. Once the deletion is provisioned the
+object is gone, and its replacement necessarily gets a new HREF. The provider
+reports the situation and leaves the decision to a human.
+
+### Recovering
+
+1. Decide whether the deletion was intended. If it was, remove the resource from
+   the configuration and run `terraform apply`.
+2. If it was not, provision the pending deletion — scoped to that object, never
+   `provision_all_pending` — and then `terraform apply` to recreate it.
+
+The replacement has a **new HREF**. In practice this costs little, because the
+PCE will not let a referenced object be deleted in the first place:
+
+| Attempted deletion | Result |
+|---|---|
+| IP list used by a rule | `406 ip_list_referenced` |
+| Service used by a rule | `406 service_referenced` |
+| Label used by a rule set scope | `406 label_still_has_associated_rule_set` |
+| Label held by a label group | `406 label_referenced_by_label_group` |
+| Label assigned to a workload | `406 label_still_has_associated_agent_info` |
+
+So an object can only reach `update_type: delete` when **nothing references it**,
+and recreating it therefore has nothing to re-point. Referential integrity does
+most of the work here.
+
+Two consequences worth knowing:
+
+- **Rule sets and enforcement boundaries are the realistic case.** They are
+  referrers rather than referents, so they can always be deleted. Recreating a
+  rule set recreates its rules inside the new rule set, which is ordinarily fine
+  — nothing outside points at a rule.
+- **Labels never enter this state at all.** They live at `/orgs/{org}/labels/`,
+  outside `/sec_policy/`, so they are not provisioned and have no `update_type`.
+  A label deletion either succeeds immediately or is refused outright.
+
+### Catching it reliably
+
+`terraform plan` warns only about objects already in state, and only when it is
+run. On a shared PCE the reliable detector is the pending set itself:
+
+```bash
+curl -s -u "$KEY:$SECRET" "$PCE/api/v2/orgs/1/sec_policy/pending" \
+  | jq '[.. | objects | select(.href) | .href]'
+```
+
+Run that on a schedule, filter to the HREFs Terraform manages, and alert on
+anything marked for deletion that your configuration still declares. This catches
+deletions between Terraform runs, which a plan-time warning cannot.
+
+### Preventing it
+
+The durable fix is authorization rather than detection. Scoped PCE roles —
+`limited_ruleset_manager` bound to an application's labels — stop people deleting
+inside label scopes that Terraform owns. That does not constrain an
+organization-wide admin, but it removes the common accident, which is someone
+tidying up in a scope that is not theirs.
+
 ## What `plan` shows
 
 Provisioning state is visible in the plan for the first time. The resource

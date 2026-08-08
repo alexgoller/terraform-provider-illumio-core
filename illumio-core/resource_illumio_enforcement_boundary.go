@@ -29,6 +29,7 @@ func resourceIllumioEnforcementBoundary() *schema.Resource {
 		Description:   "Manages Illumio Enforcement Boundary",
 
 		Schema: map[string]*schema.Schema{
+			"pending_deletion": pendingDeletionSchema(),
 			"href": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -339,6 +340,8 @@ func resourceIllumioEnforcementBoundaryRead(ctx context.Context, d *schema.Resou
 	if err != nil {
 		return handleReadError(err, d, "illumio-core_enforcement_boundary")
 	}
+
+	diagnostics = append(diagnostics, recordPendingDeletion(d, data, "illumio-core_enforcement_boundary")...)
 
 	for _, key := range []string{
 		"href",

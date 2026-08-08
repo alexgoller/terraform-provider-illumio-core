@@ -24,6 +24,7 @@ func resourceIllumioRuleSet() *schema.Resource {
 		SchemaVersion: 1,
 		Description:   "Manages Illumio Ruleset",
 		Schema: map[string]*schema.Schema{
+			"pending_deletion": pendingDeletionSchema(),
 			"href": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -462,6 +463,8 @@ func resourceIllumioRuleSetRead(ctx context.Context, d *schema.ResourceData, m i
 	if err != nil {
 		return handleReadError(err, d, "illumio-core_rule_set")
 	}
+
+	diagnostics = append(diagnostics, recordPendingDeletion(d, data, "illumio-core_rule_set")...)
 
 	for _, key := range []string{
 		"href",

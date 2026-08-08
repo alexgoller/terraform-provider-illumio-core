@@ -56,6 +56,7 @@ resource "illumio-core_service" "example" {
 - `description_url` (String) Description URL Read-only to prevent XSS attacks
 - `href` (String) URI of the service
 - `id` (String) The ID of this resource
+- `pending_deletion` (Boolean) True when the object has been deleted in the PCE but the deletion has not been provisioned yet. The object is still active and Terraform still manages it; provisioning the pending deletion removes it for real
 - `update_type` (String) Type of update
 - `updated_at` (String) Timestamp when this Service was last updated
 - `updated_by` (Map of String) User who last updated this Service

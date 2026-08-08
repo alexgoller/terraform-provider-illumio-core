@@ -59,6 +59,7 @@ resource "illumio-core_ip_list" "example" {
 - `deleted_by` (Map of String) User who last deleted this IP List
 - `href` (String) URI of this IP List
 - `id` (String) The ID of this resource.
+- `pending_deletion` (Boolean) True when the object has been deleted in the PCE but the deletion has not been provisioned yet. The object is still active and Terraform still manages it; provisioning the pending deletion removes it for real
 - `updated_at` (String) Timestamp when this IP List was last updated
 - `updated_by` (Map of String) User who last updated this IP List
 

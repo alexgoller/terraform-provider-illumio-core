@@ -1,6 +1,6 @@
 # Vulnerability Disclosure  
 
-The Illumio team and community take security bugs in all Illumio projects seriously. If you believe you have found a potential security vulnerability in the provider or in the Illumio Core product, please reach out directly to the [Illumio App Integrations Team](mailto:app-integrations@illumio.com). **Please do not file a public issue.**  
+The Illumio team and community take security bugs in all Illumio projects seriously. If you believe you have found a potential security vulnerability in the provider or in the Illumio Segmentation product, please reach out directly to the [Illumio App Integrations Team](mailto:app-integrations@illumio.com). **Please do not file a public issue.**  
 
 Please include any configuration and/or code you used to find the problem and the shortest amount of configuration/code necessary to reproduce it.  
 

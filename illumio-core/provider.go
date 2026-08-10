@@ -41,7 +41,7 @@ var (
 	fileMutex sync.Mutex
 )
 
-// Provider - Illumio Core Provider
+// Provider - Illumio Segmentation Provider
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{

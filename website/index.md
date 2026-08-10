@@ -1,10 +1,10 @@
 ---
 layout: default
 title: "Overview"
-description: "Terraform provider for Illumio Core, with deny rules, Terraform-native policy provisioning, and reconcile fixes."
+description: "Terraform provider for Illumio Segmentation, with deny rules, Terraform-native policy provisioning, and reconcile fixes."
 ---
 
-# Illumio Core Terraform Provider
+# Illumio Segmentation Terraform Provider
 
 A fork of [`illumio/terraform-provider-illumio-core`](https://github.com/illumio/terraform-provider-illumio-core)
 that manages Illumio PCE security policy from Terraform.

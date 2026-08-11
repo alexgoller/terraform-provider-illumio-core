@@ -1,3 +1,14 @@
+## Unreleased
+
+DOCUMENTATION:
+
+* Refer to the product as **Illumio Segmentation** rather than Illumio Core. Only
+  prose changed: the provider address, resource names, repository name and every
+  `illumio-core_*` identifier are unchanged, since those are Terraform addresses
+  rather than product names. The registry landing page's heading is now a literal
+  "Illumio Segmentation Provider" instead of being derived from the provider's
+  short name, which still renders as ILLUMIO-CORE.
+
 ## 2.1.0 (August 8, 2026)
 
 First release since 2.0.5 with a behavioural change rather than only build or

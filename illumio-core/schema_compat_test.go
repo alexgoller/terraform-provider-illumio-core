@@ -137,3 +137,108 @@ func TestOldestReleaseLacksTheFieldsThatBrokeIt(t *testing.T) {
 		}
 	}
 }
+
+// A security rule payload must also be sendable to the oldest supported PCE.
+// network_type was added to the resource after a customer needed the UI's
+// "All networks" option, which the provider had no way to express; it exists in
+// every archived release, so it needs no version gating — but the payload as a
+// whole still has to stay within what that release accepts.
+func TestSecurityRulePayloadIsCompatibleWithOldestRelease(t *testing.T) {
+	allowed := schemaProperties(t, oldestArchivedRelease, "sec_policy_rule_sets_sec_rules_post")
+
+	r := resourceIllumioSecurityRule()
+	d := schema.TestResourceDataRaw(t, r.Schema, map[string]interface{}{
+		"rule_set_href":      "/orgs/1/sec_policy/draft/rule_sets/3",
+		"enabled":            true,
+		"unscoped_consumers": false,
+		"network_type":       "all",
+		"resolve_labels_as": []interface{}{map[string]interface{}{
+			"providers": []interface{}{"workloads"},
+			"consumers": []interface{}{"workloads"},
+		}},
+		"providers": []interface{}{map[string]interface{}{"actors": "ams"}},
+		"consumers": []interface{}{map[string]interface{}{"actors": "ams"}},
+		"ingress_services": []interface{}{
+			map[string]interface{}{"proto": "6", "port": "443"},
+		},
+	})
+
+	secRule, diags := expandIllumioSecurityRule(d)
+	if diags.HasError() {
+		t.Fatalf("expand failed: %v", *diags)
+	}
+
+	body, err := json.Marshal(secRule)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var payload map[string]interface{}
+	if err := json.Unmarshal(body, &payload); err != nil {
+		t.Fatal(err)
+	}
+
+	var rejected []string
+	for field := range payload {
+		if !allowed[field] {
+			rejected = append(rejected, field)
+		}
+	}
+	sort.Strings(rejected)
+
+	if len(rejected) > 0 {
+		t.Errorf("security rule payload carries %v, which PCE %s does not have.\npayload: %s",
+			rejected, oldestArchivedRelease, body)
+	}
+}
+
+// network_type must reach the PCE when configured, and must be absent when it
+// is not — otherwise Terraform would write "brn" over whatever the PCE chose.
+func TestSecurityRuleNetworkTypeIsSentOnlyWhenConfigured(t *testing.T) {
+	allowed := schemaProperties(t, oldestArchivedRelease, "sec_policy_rule_sets_sec_rules_post")
+	if !allowed["network_type"] {
+		t.Fatalf("network_type is absent from %s — it would need version gating", oldestArchivedRelease)
+	}
+
+	r := resourceIllumioSecurityRule()
+	base := map[string]interface{}{
+		"rule_set_href":      "/orgs/1/sec_policy/draft/rule_sets/3",
+		"enabled":            true,
+		"unscoped_consumers": false,
+		"resolve_labels_as": []interface{}{map[string]interface{}{
+			"providers": []interface{}{"workloads"},
+			"consumers": []interface{}{"workloads"},
+		}},
+		"providers": []interface{}{map[string]interface{}{"actors": "ams"}},
+		"consumers": []interface{}{map[string]interface{}{"actors": "ams"}},
+		"ingress_services": []interface{}{
+			map[string]interface{}{"proto": "6", "port": "443"},
+		},
+	}
+
+	// State holds a value, as it would after a read, but nothing is configured.
+	// This is exactly the condition that broke deny rules on 25.2: the gate must
+	// keep the field out of the payload even though d.Get returns it.
+	withState := map[string]interface{}{}
+	for k, v := range base {
+		withState[k] = v
+	}
+	withState["network_type"] = "brn"
+
+	d := schema.TestResourceDataRaw(t, r.Schema, withState)
+	if got := d.Get("network_type").(string); got != "brn" {
+		t.Fatalf("precondition failed: state should hold %q, got %q", "brn", got)
+	}
+	secRule, diags := expandIllumioSecurityRule(d)
+	if diags.HasError() {
+		t.Fatalf("expand failed: %v", *diags)
+	}
+	if secRule.NetworkType != "" {
+		t.Errorf("network_type = %q with nothing configured, want it omitted", secRule.NetworkType)
+	}
+	body, _ := json.Marshal(secRule)
+	var payload map[string]interface{}
+	_ = json.Unmarshal(body, &payload)
+	if _, present := payload["network_type"]; present {
+		t.Errorf("network_type present in the payload when unconfigured: %s", body)
+	}
+}

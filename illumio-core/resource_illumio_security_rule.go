@@ -336,6 +336,13 @@ func securityRuleResourceBaseSchemaMap() map[string]*schema.Schema {
 				},
 			},
 		},
+		"network_type": {
+			Type:             schema.TypeString,
+			Optional:         true,
+			Computed:         true,
+			ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice(validRuleNetworkTypes, false)),
+			Description:      "Network types this rule applies to. Allowed values are \"brn\" (bridged), \"non_brn\" and \"all\" (the UI's \"All networks\"). The PCE defaults to \"brn\"",
+		},
 		"unscoped_consumers": {
 			Type:        schema.TypeBool,
 			Optional:    true,
@@ -440,6 +447,12 @@ func expandIllumioSecurityRule(d *schema.ResourceData) (*models.SecurityRule, *d
 		MachineAuth:           PtrTo(d.Get("machine_auth").(bool)),
 		UnscopedConsumers:     PtrTo(d.Get("unscoped_consumers").(bool)),
 		UseWorkloadSubnets:    &useWorkloadSubnets,
+	}
+
+	// Only send network_type when the configuration sets it, so the PCE keeps
+	// its own default rather than having "brn" written back implicitly.
+	if isConfigured(d, "network_type") {
+		secRule.NetworkType = d.Get("network_type").(string)
 	}
 
 	if secRule.HasConflicts() {
@@ -666,6 +679,7 @@ func resourceIllumioSecurityRuleRead(ctx context.Context, d *schema.ResourceData
 		"stateless",
 		"machine_auth",
 		"unscoped_consumers",
+		"network_type",
 		"update_type",
 		"created_at",
 		"updated_at",
@@ -791,6 +805,12 @@ func resourceIllumioSecurityRuleUpdate(ctx context.Context, d *schema.ResourceDa
 		Providers:             povs,
 		Consumers:             cons,
 		UseWorkloadSubnets:    &useWorkloadSubnets,
+	}
+
+	// Only send network_type when the configuration sets it, so the PCE keeps
+	// its own default rather than having "brn" written back implicitly.
+	if isConfigured(d, "network_type") {
+		secRule.NetworkType = d.Get("network_type").(string)
 	}
 
 	if secRule.HasConflicts() {

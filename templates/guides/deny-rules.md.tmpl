@@ -304,12 +304,12 @@ ingress_services {
 }
 
 ingress_services {
-  proto = "6"      # TCP
+  proto = "6" # TCP
   port  = "22"
 }
 
 ingress_services {
-  proto   = "17"   # UDP
+  proto   = "17" # UDP
   port    = "3389"
   to_port = "3395"
 }
@@ -611,3 +611,51 @@ deny rule: `sec_connect`, `stateless`, `machine_auth`,
 
 `name`, `external_data_set` and `external_data_reference` are not present on a
 deny rule returned by the PCE, so they are not configurable either.
+
+## Network location awareness (`network_type`)
+
+Endpoints can be on the corporate network or off it, and a rule can be scoped to
+either. `network_type` is how you express that — it is the UI's **All networks**
+option under Rule Options.
+
+| Value | Applies when the endpoint is |
+|---|---|
+| `brn` | on the corporate network — **the PCE's default** |
+| `non_brn` | off the corporate network |
+| `all` | either — the UI's "All networks" |
+
+```hcl
+resource "illumio-core_security_rule" "remote_access" {
+  rule_set_href = illumio-core_rule_set.app.href
+  enabled       = true
+  network_type  = "all"
+
+  resolve_labels_as {
+    providers = ["workloads"]
+    consumers = ["workloads"]
+  }
+
+  providers { actors = "ams" }
+
+  consumers {
+    ip_list { href = illumio-core_ip_list.corporate.href }
+  }
+
+  ingress_services { href = illumio-core_service.https.href }
+}
+```
+
+!> **`all` and `non_brn` require IP lists.** Off the corporate network the PCE
+cannot resolve workload identity the same way, so it accepts only IP lists as
+actors on those rules. Anything else is rejected:
+
+```
+406 non_brn_must_use_ip_list
+A rule with Network Type "All" or "Non-Corporate" (Endpoints only) must have
+only IP lists on consumers or providers
+```
+
+The field is omitted from the request entirely unless the configuration sets it,
+so the PCE keeps its own default rather than having `brn` written back
+implicitly. `illumio-core_deny_rule` has carried the same argument since deny
+rules were added.

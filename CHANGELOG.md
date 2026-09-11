@@ -1,4 +1,22 @@
-## Unreleased
+## 2.2.0 (September 11, 2026)
+
+FEATURES:
+
+* Add `network_type` to `illumio-core_security_rule` and both security rule data
+  sources. This is network location awareness for endpoints — the UI's **All
+  networks** option under Rule Options — and it was reachable on deny rules but
+  not on allow rules, so a rule the UI could express had no equivalent in
+  Terraform. Allowed values are `brn` (on the corporate network, the PCE's
+  default), `non_brn` (off it) and `all`.
+
+  The field is present in every archived release, so it needs no version gating,
+  but it is sent only when the configuration sets it — otherwise Terraform would
+  write `brn` back over whatever the PCE chose. A regression test asserts that
+  and fails if the gate is removed.
+
+  Note that `all` and `non_brn` require IP lists as actors; the PCE rejects
+  anything else with `non_brn_must_use_ip_list`. The deny rules guide documents
+  this.
 
 DOCUMENTATION:
 

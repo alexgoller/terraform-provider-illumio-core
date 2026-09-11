@@ -155,6 +155,7 @@ data "illumio-core_security_rules" "web_application_rules" {
 
 - `id` (String) The ID of this resource
 - `items` (List of Object) list of Security Rule hrefs (see [below for nested schema](#nestedatt--items))
+- `network_type` (String) Network types this rule applies to: `brn` (corporate network), `non_brn` or `all`
 
 <a id="nestedatt--items"></a>
 ### Nested Schema for `items`

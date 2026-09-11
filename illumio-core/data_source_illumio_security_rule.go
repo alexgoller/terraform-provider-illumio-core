@@ -277,6 +277,11 @@ func securityRuleDatasourceSchema(hrefRequired bool) map[string]*schema.Schema {
 				},
 			},
 		},
+		"network_type": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "Network types this rule applies to: \"brn\", \"non_brn\" or \"all\"",
+		},
 		"unscoped_consumers": {
 			Type:        schema.TypeBool,
 			Computed:    true,
@@ -437,6 +442,7 @@ func datasourceIllumioSecurityRuleRead(ctx context.Context, d *schema.ResourceDa
 		"stateless",
 		"machine_auth",
 		"unscoped_consumers",
+		"network_type",
 		"update_type",
 		"created_at",
 		"updated_at",

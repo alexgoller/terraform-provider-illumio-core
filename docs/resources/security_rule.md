@@ -86,6 +86,7 @@ resource "illumio-core_security_rule" "example" {
 - `external_data_set` (String) External data set identifier
 - `ingress_services` (Block Set) Collection of Ingress Service. If resolve_label_as.providers list includes "workloads" then ingress_service is required. Only one of the {"href"} or {"proto", "port", "to_port"} parameter combination is allowed (see [below for nested schema](#nestedblock--ingress_services))
 - `machine_auth` (Boolean) Determines whether machine authentication is enabled. Default value: false
+- `network_type` (String) Network types this rule applies to, for network location awareness on endpoints. `brn` means the endpoint is on the corporate network, `non_brn` off it, and `all` both — the UI's "All networks". The PCE defaults to `brn`. Note that `all` and `non_brn` require IP lists on the providers or consumers; the PCE rejects other actors with `non_brn_must_use_ip_list`
 - `sec_connect` (Boolean) Determines whether a secure connection is established. Default value: false
 - `stateless` (Boolean) Determines whether packet filtering is stateless for the rule. Default value: false
 - `unscoped_consumers` (Boolean) If false (the default), the created Rule will be an intra-scope rule. If true, it will be extra-scope. Default value: false

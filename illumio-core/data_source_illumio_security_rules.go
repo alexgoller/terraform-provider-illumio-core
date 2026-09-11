@@ -82,6 +82,7 @@ func extractRules(data *gabs.Container) []map[string]any {
 		"stateless",
 		"machine_auth",
 		"unscoped_consumers",
+		"network_type",
 		"update_type",
 		"created_at",
 		"updated_at",

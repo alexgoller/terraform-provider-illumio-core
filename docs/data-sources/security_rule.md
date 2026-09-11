@@ -93,16 +93,17 @@ data "illumio-core_security_rule" "core_services_ringfence" {
 - `id` (String) The ID of this resource
 - `ingress_services` (List of Object) Collection of Ingress Service (see [below for nested schema](#nestedatt--ingress_services))
 - `machine_auth` (Boolean) Determines whether machine authentication is enabled
+- `network_type` (String) Network types this rule applies to: `brn` (corporate network), `non_brn` or `all`
 - `providers` (Set of Object) providers for Security Rule (see [below for nested schema](#nestedatt--providers))
 - `resolve_labels_as` (List of Object) resolve label as for Security rule (see [below for nested schema](#nestedatt--resolve_labels_as))
 - `rule_set_href` (String) URI of the containing Rule Set
 - `sec_connect` (Boolean) Determines whether a secure connection is established
 - `stateless` (Boolean) Determines whether packet filtering is stateless for the rule
 - `unscoped_consumers` (Boolean) Set the scope for rule consumers to All
-- `use_workload_subnets` (Set of String) Whether to use workload subnets instead of IP addresses for providers/consumers
 - `update_type` (String) Type of update
 - `updated_at` (String) Timestamp when this security rule was last updated
 - `updated_by` (Map of String) User who last updated this security rule
+- `use_workload_subnets` (Set of String) Whether to use workload subnets instead of IP addresses for providers/consumers
 
 <a id="nestedatt--consumers"></a>
 ### Nested Schema for `consumers`

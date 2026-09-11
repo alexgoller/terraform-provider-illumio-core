@@ -22,7 +22,8 @@ var (
 	validDenyRuleIngSerProtos = []string{"6", "17"}
 
 	// Network types a deny rule can apply to, per rule_network_type.
-	validDenyRuleNetworkTypes = []string{"brn", "non_brn", "all"}
+	// Shared with security rules: both come from rule_network_type.schema.json.
+	validRuleNetworkTypes = []string{"brn", "non_brn", "all"}
 
 	// The authoritative deny_rule_actor schema permits only these selectors.
 	// Notably it has no virtual_service or virtual_server, unlike allow rules.
@@ -88,7 +89,7 @@ func denyRuleResourceSchemaMap() map[string]*schema.Schema {
 			Type:             schema.TypeString,
 			Optional:         true,
 			Computed:         true,
-			ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice(validDenyRuleNetworkTypes, false)),
+			ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice(validRuleNetworkTypes, false)),
 			Description:      "Network types this rule applies to. Allowed values are \"brn\", \"non_brn\" and \"all\". The PCE defaults to \"brn\"",
 		},
 		"unscoped_consumers": {

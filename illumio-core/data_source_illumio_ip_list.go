@@ -18,14 +18,18 @@ func datasourceIllumioIPList() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"href": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				Description:      "URI of the IP List",
 				ValidateDiagFunc: isIPListHref,
+				Computed:         true,
+				ExactlyOneOf:     []string{"href", "name"},
 			},
 			"name": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Name of the IP List",
+				Optional:     true,
+				ExactlyOneOf: []string{"href", "name"},
+				Type:         schema.TypeString,
+				Computed:     true,
+				Description:  "Name of the IP List",
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -139,7 +143,15 @@ func datasourceIllumioIPListRead(ctx context.Context, d *schema.ResourceData, m 
 	illumioClient := pConfig.IllumioClient
 
 	// orgID := pConfig.OrgID
-	href := d.Get("href").(string)
+	href, err := resolveDataSourceHref(d, illumioClient, lookupSpec{
+		collection:   "/orgs/%d/sec_policy/%s/ip_lists",
+		policyScoped: true,
+		fields:       []string{"name"},
+		kind:         "IP list",
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {

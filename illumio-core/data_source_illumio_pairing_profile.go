@@ -18,14 +18,18 @@ func datasourceIllumioPairingProfile() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"href": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				Description:      "URI of this pairing profile",
 				ValidateDiagFunc: isPairingProfileHref,
+				Computed:         true,
+				ExactlyOneOf:     []string{"href", "name"},
 			},
 			"name": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "The short friendly name of the pairing profile",
+				Optional:     true,
+				ExactlyOneOf: []string{"href", "name"},
+				Type:         schema.TypeString,
+				Computed:     true,
+				Description:  "The short friendly name of the pairing profile",
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -194,7 +198,15 @@ func dataSourceIllumioPairingProfileRead(ctx context.Context, d *schema.Resource
 	pConfig, _ := m.(Config)
 	illumioClient := pConfig.IllumioClient
 
-	href := d.Get("href").(string)
+	href, err := resolveDataSourceHref(d, illumioClient, lookupSpec{
+		collection:   "/orgs/%d/pairing_profiles",
+		policyScoped: false,
+		fields:       []string{"name"},
+		kind:         "pairing profile",
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {

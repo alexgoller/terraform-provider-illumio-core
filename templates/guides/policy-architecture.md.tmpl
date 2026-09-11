@@ -117,21 +117,14 @@ Application teams should not write scopes by hand:
 variable "app" { type = string } # required — no default
 variable "env" { type = string } # required — no default
 
-data "illumio-core_labels" "app" {
-  key        = "app"
-  value      = var.app
-  match_type = "exact"
+data "illumio-core_label" "app" {
+  key   = "app"
+  value = var.app
 }
 
-data "illumio-core_labels" "env" {
-  key        = "env"
-  value      = var.env
-  match_type = "exact"
-}
-
-locals {
-  app_href = one(data.illumio-core_labels.app.items[*].href)
-  env_href = one(data.illumio-core_labels.env.items[*].href)
+data "illumio-core_label" "env" {
+  key   = "env"
+  value = var.env
 }
 
 resource "illumio-core_rule_set" "this" {
@@ -139,8 +132,8 @@ resource "illumio-core_rule_set" "this" {
   enabled = true
 
   scopes {
-    label { href = local.app_href }
-    label { href = local.env_href }
+    label { href = data.illumio-core_label.app.href }
+    label { href = data.illumio-core_label.env.href }
   }
 }
 ```
@@ -322,54 +315,43 @@ Split them by whether access needs a decision:
 The dividing question is whether the service's owner would ever say no. If they
 would, it belongs in a scope with an `inbound.tf`.
 
-## Looking things up: exact matching
+## Looking things up by name
 
-The singular data sources — `illumio-core_label`, `illumio-core_service`,
-`illumio-core_label_group`, `illumio-core_ip_list` — take **`href` only**. Their
-`key`, `value` and `name` attributes are computed outputs, not lookup filters. To
-find an object by name you need the plural data source.
-
-!> **`illumio-core_labels` defaults to `match_type = "partial"`.** A filter for
-`value = "prod"` also matches `non-prod`, `preprod` and `production`. Since the
-result is a list you then index into, the wrong environment can end up in a
-production scope with nothing reporting an error. **Always set
-`match_type = "exact"`.**
+Reference objects by their real names. The singular data sources resolve a name
+to exactly one object:
 
 ```hcl
-data "illumio-core_labels" "env" {
-  key        = "env"
-  value      = var.env
-  match_type = "exact"
+data "illumio-core_label" "env" {
+  key   = "env"
+  value = var.env
 }
 
-locals {
-  env_href = one(data.illumio-core_labels.env.items[*].href)
-}
-```
-
-`one()` is doing real work: it returns the single element and **errors if the
-filter matched more than one**, converting an ambiguous lookup into a failed plan
-rather than an arbitrary `items[0]`.
-
-`illumio-core_services`, `illumio-core_label_groups` and `illumio-core_ip_lists`
-have **no `match_type` argument** — their `name` filter is always a partial
-match. Pin those with an explicit comparison:
-
-```hcl
-data "illumio-core_services" "smb" {
+data "illumio-core_service" "smb" {
   name = "SMB"
 }
-
-locals {
-  smb_href = one([
-    for s in data.illumio-core_services.smb.items : s.href if s.name == "SMB"
-  ])
-}
 ```
 
-Make this the house pattern: every cross-directory lookup ends in `one()`, so a
-renamed or duplicated object fails the plan instead of resolving to something
-plausible.
+Matching is **exact**, and matching anything other than one object is an error.
+That matters more than it sounds: the PCE filters names by substring, so asking
+it for `prod` also returns `non-prod`, `preprod` and `production` — and on a real
+PCE the exact match is not necessarily first in the list. A lookup that quietly
+took the first result would put the wrong environment in a production scope with
+nothing reporting a problem.
+
+A name that matches nothing lists what does exist, scoped to the same label key:
+
+```
+Error: no label matches key = "env", value = "prd". Did you mean one of:
+key = "env", value = "prod"; key = "env", value = "preprod", and 2 more?
+```
+
+A name that matches several fails rather than guessing, and tells you to use
+`href` to disambiguate.
+
+~> **Requires provider 2.3.0 or later.** Before that the singular data sources
+took `href` only, and names had to be resolved through the plural data source
+with `match_type = "exact"` and `one()`. That pattern still works, and remains
+the way to select *several* objects at once.
 
 ## Why separate states are safe
 
@@ -481,8 +463,7 @@ predicted.
 | `provision_all_pending = true` on a shared PCE | Activates other teams' unreviewed drafts |
 | One state for all policy | Every team's apply blocks every other; blast radius is the estate |
 | A scope with `app` but no `env` | Silently widens across every environment, and nothing reports it |
-| A label lookup without `match_type = "exact"` | `prod` also matches `non-prod` and `preprod` |
-| Indexing `items[0]` instead of using `one()` | An ambiguous lookup resolves silently instead of failing the plan |
+| Indexing `items[0]` on a plural data source | The PCE matches names by substring, so the first result is not necessarily the one you named |
 | Granting a containment exception with an allow rule | Cannot work against `override = true`; the exception belongs in the containment layer |
 | Listing an object in `hrefs` but not in `replace_triggered_by` | It is provisioned on creation and never again; later edits stay in draft and the apply still succeeds |
 | Renaming a label value | The taxonomy is a published interface; add, don't rename |

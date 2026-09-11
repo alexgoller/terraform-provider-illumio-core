@@ -1,3 +1,34 @@
+## 2.3.0 (September 11, 2026)
+
+FEATURES:
+
+* Look data sources up by name instead of by HREF. Ten singular data sources —
+  `label`, `label_type`, `label_group`, `service`, `ip_list`, `rule_set`,
+  `enforcement_boundary`, `virtual_service`, `pairing_profile` and `workload` —
+  now accept their natural identifier as an alternative to `href`:
+
+  ```hcl
+  data "illumio-core_label" "env" {
+    key   = "env"
+    value = "prod"
+  }
+  ```
+
+  Previously this needed the plural data source, a `match_type = "exact"` filter,
+  an index into `items`, and `one()` to catch ambiguity. `href` still works
+  unchanged, and the plural data sources remain the way to select several objects
+  at once.
+
+  Matching is **exact**, and matching anything other than one object is an error.
+  This is not a detail: the PCE filters names by substring, so a query for `prod`
+  also returns `non-prod`, `preprod` and `production` — and on a live 26.3 PCE the
+  exact match came back *last*, so taking the first result would have silently
+  selected the wrong environment.
+
+  A name that matches nothing lists what does exist, narrowed to the same label
+  key, rather than reporting a bare "not found". A name that matches several
+  fails and says to use `href` to disambiguate.
+
 ## 2.2.0 (September 11, 2026)
 
 FEATURES:

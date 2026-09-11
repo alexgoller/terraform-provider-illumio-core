@@ -18,14 +18,18 @@ func datasourceIllumioLabelType() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"href": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				Description:      "URI of this label type",
 				ValidateDiagFunc: isLabelTypeHref,
+				Computed:         true,
+				ExactlyOneOf:     []string{"href", "key"},
 			},
 			"key": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: `Key in key-value pair. The value must be a string between 1 and 64 characters long`,
+				Optional:     true,
+				ExactlyOneOf: []string{"href", "key"},
+				Type:         schema.TypeString,
+				Computed:     true,
+				Description:  `Key in key-value pair. The value must be a string between 1 and 64 characters long`,
 			},
 			"display_name": {
 				Type:        schema.TypeString,
@@ -150,7 +154,15 @@ func dataSourceIllumioLabelTypeRead(ctx context.Context, d *schema.ResourceData,
 	pConfig, _ := m.(Config)
 	illumioClient := pConfig.IllumioClient
 
-	href := d.Get("href").(string)
+	href, err := resolveDataSourceHref(d, illumioClient, lookupSpec{
+		collection:   "/orgs/%d/label_dimensions",
+		policyScoped: false,
+		fields:       []string{"key"},
+		kind:         "label type",
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {

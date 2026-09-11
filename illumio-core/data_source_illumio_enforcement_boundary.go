@@ -19,14 +19,18 @@ func datasourceIllumioEnforcementBoundary() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"href": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				Description:      "URI of this Enforcement Boundary",
 				ValidateDiagFunc: isEnforcementBoundaryHref,
+				Computed:         true,
+				ExactlyOneOf:     []string{"href", "name"},
 			},
 			"name": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Name of the Enforcement Boundary",
+				Optional:     true,
+				ExactlyOneOf: []string{"href", "name"},
+				Type:         schema.TypeString,
+				Computed:     true,
+				Description:  "Name of the Enforcement Boundary",
 			},
 			"enabled": {
 				Type:        schema.TypeBool,
@@ -181,7 +185,15 @@ func datasourceIllumioEnforcementBoundaryRead(ctx context.Context, d *schema.Res
 	illumioClient := pConfig.IllumioClient
 
 	// orgID := pConfig.OrgID
-	href := d.Get("href").(string)
+	href, err := resolveDataSourceHref(d, illumioClient, lookupSpec{
+		collection:   "/orgs/%d/sec_policy/%s/enforcement_boundaries",
+		policyScoped: true,
+		fields:       []string{"name"},
+		kind:         "enforcement boundary",
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {

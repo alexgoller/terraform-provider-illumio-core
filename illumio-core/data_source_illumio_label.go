@@ -18,9 +18,11 @@ func datasourceIllumioLabel() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"href": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				Description:      "URI of this label",
 				ValidateDiagFunc: isLabelHref,
+				Computed:         true,
+				ExactlyOneOf:     []string{"href", "key"},
 			},
 			"deleted": {
 				Type:        schema.TypeBool,
@@ -28,14 +30,19 @@ func datasourceIllumioLabel() *schema.Resource {
 				Description: "Flag to indicate whether deleted or not",
 			},
 			"key": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Key in key-value pair",
+				Optional:     true,
+				Computed:     true,
+				ExactlyOneOf: []string{"href", "key"},
+				RequiredWith: []string{"value"},
+				Type:         schema.TypeString,
+				Description:  "Key in key-value pair. Set together with value to look the label up by name instead of href",
 			},
 			"value": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Value in key-value pair",
+				Optional:     true,
+				RequiredWith: []string{"key"},
+				Type:         schema.TypeString,
+				Computed:     true,
+				Description:  "Value in key-value pair. Set together with key to look the label up by name instead of href",
 			},
 			"external_data_set": {
 				Type:        schema.TypeString,
@@ -83,7 +90,15 @@ func dataSourceIllumioLabelRead(ctx context.Context, d *schema.ResourceData, m i
 	illumioClient := pConfig.IllumioClient
 
 	// orgID := pConfig.OrgID
-	href := d.Get("href").(string)
+	href, err := resolveDataSourceHref(d, illumioClient, lookupSpec{
+		collection:   "/orgs/%d/labels",
+		policyScoped: false,
+		fields:       []string{"key", "value"},
+		kind:         "label",
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {

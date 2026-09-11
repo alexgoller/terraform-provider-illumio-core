@@ -19,14 +19,18 @@ func datasourceIllumioVirtualService() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"href": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				ValidateDiagFunc: isVirtualServiceHref,
 				Description:      "URI of the virtual service",
+				Computed:         true,
+				ExactlyOneOf:     []string{"href", "name"},
 			},
 			"name": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Name of the virtual service",
+				Optional:     true,
+				ExactlyOneOf: []string{"href", "name"},
+				Type:         schema.TypeString,
+				Computed:     true,
+				Description:  "Name of the virtual service",
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -218,7 +222,15 @@ func dataSourceIllumioVirtualServiceRead(ctx context.Context, d *schema.Resource
 	illumioClient := pConfig.IllumioClient
 	// orgID := pConfig.OrgID
 
-	href := d.Get("href").(string)
+	href, err := resolveDataSourceHref(d, illumioClient, lookupSpec{
+		collection:   "/orgs/%d/sec_policy/%s/virtual_services",
+		policyScoped: true,
+		fields:       []string{"name"},
+		kind:         "virtual service",
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {
 		return diag.FromErr(err)

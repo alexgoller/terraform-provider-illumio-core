@@ -17,9 +17,11 @@ func datasourceIllumioRuleSet() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"href": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				Description:      "URI of Ruleset",
 				ValidateDiagFunc: isRuleSetHref,
+				Computed:         true,
+				ExactlyOneOf:     []string{"href", "name"},
 			},
 			"created_at": {
 				Type:        schema.TypeString,
@@ -66,9 +68,11 @@ func datasourceIllumioRuleSet() *schema.Resource {
 				Description: "Type of update",
 			},
 			"name": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Name of Ruleset",
+				Optional:     true,
+				ExactlyOneOf: []string{"href", "name"},
+				Type:         schema.TypeString,
+				Computed:     true,
+				Description:  "Name of Ruleset",
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -266,7 +270,15 @@ func datasourceIllumioRuleSetRead(ctx context.Context, d *schema.ResourceData, m
 	pConfig, _ := m.(Config)
 	illumioClient := pConfig.IllumioClient
 
-	href := d.Get("href").(string)
+	href, err := resolveDataSourceHref(d, illumioClient, lookupSpec{
+		collection:   "/orgs/%d/sec_policy/%s/rule_sets",
+		policyScoped: true,
+		fields:       []string{"name"},
+		kind:         "rule set",
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {

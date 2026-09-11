@@ -18,9 +18,11 @@ func datasourceIllumioWorkload() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"href": {
 				Type:             schema.TypeString,
-				Required:         true,
+				Optional:         true,
 				ValidateDiagFunc: isWorkloadHref,
 				Description:      "URI of the Workload",
+				Computed:         true,
+				ExactlyOneOf:     []string{"href", "hostname", "name"},
 			},
 			"deleted": {
 				Type:        schema.TypeBool,
@@ -28,9 +30,11 @@ func datasourceIllumioWorkload() *schema.Resource {
 				Description: "This indicates that the workload has been deleted",
 			},
 			"name": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Name of the Workload",
+				Optional:     true,
+				ExactlyOneOf: []string{"href", "hostname", "name"},
+				Type:         schema.TypeString,
+				Computed:     true,
+				Description:  "Name of the Workload",
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -38,9 +42,11 @@ func datasourceIllumioWorkload() *schema.Resource {
 				Description: "Description of the Workload",
 			},
 			"hostname": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "The hostname of this workload",
+				Optional:     true,
+				ExactlyOneOf: []string{"href", "hostname", "name"},
+				Type:         schema.TypeString,
+				Computed:     true,
+				Description:  "The hostname of this workload",
 			},
 			"service_principal_name": {
 				Type:        schema.TypeString,
@@ -556,7 +562,15 @@ func dataSourceIllumioWorkloadRead(ctx context.Context, d *schema.ResourceData, 
 	illumioClient := pConfig.IllumioClient
 
 	// orgID := pConfig.OrgID
-	href := d.Get("href").(string)
+	href, err := resolveDataSourceHref(d, illumioClient, lookupSpec{
+		collection:   "/orgs/%d/workloads",
+		policyScoped: false,
+		fields:       []string{"hostname", "name"},
+		kind:         "workload",
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	_, data, err := illumioClient.Get(href, nil)
 	if err != nil {

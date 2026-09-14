@@ -5,8 +5,8 @@ resource "illumio-core_service" "win_rdp" {
     service_name = "TermService"
     process_name = "svchost.exe"
     # Illumio uses the IANA protocol numbers to identify the service proto
-    proto        = "6"  # TCP
-    port         = "3389"
+    proto = "6" # TCP
+    port  = "3389"
   }
 }
 
@@ -21,13 +21,13 @@ resource "illumio-core_service" "win_kerb" {
 
   windows_services {
     service_name = "kerberos"
-    proto        = "17"  # UDP
+    proto        = "17" # UDP
     port         = "88"
   }
 }
 
 data "illumio-core_services" "windows_services" {
-	# supports partial match lookups
+  # supports partial match lookups
   name = "S-WIN"
 
   # explicitly define the dependencies to ensure the resources

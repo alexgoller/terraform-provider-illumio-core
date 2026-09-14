@@ -4,19 +4,19 @@ resource "illumio-core_ip_list" "aws_vpc" {
 
   ip_ranges {
     // from_ip can be a CIDR range or individual IP
-    from_ip = "10.10.0.0/18"
+    from_ip     = "10.10.0.0/18"
     description = "AWS VPC block"
   }
 
   ip_ranges {
-    from_ip = "10.10.0.1"
-    to_ip   = "10.10.15.255"
+    from_ip     = "10.10.0.1"
+    to_ip       = "10.10.15.255"
     description = "Designated management subnet"
-    exclusion = true
+    exclusion   = true
   }
 
   fqdns {
-    fqdn = "*.aws.illum.io"
+    fqdn        = "*.aws.illum.io"
     description = "Wildcard domain for AWS instances"
   }
 }
@@ -26,7 +26,7 @@ resource "illumio-core_ip_list" "aws_vpc_mgmt" {
   description = "AWS VPC management IPs"
 
   ip_ranges {
-    from_ip = "10.10.0.0/20"
+    from_ip     = "10.10.0.0/20"
     description = "AWS VPC management subnet"
   }
 }
@@ -36,7 +36,7 @@ resource "illumio-core_ip_list" "aws_vpc_dev" {
   description = "AWS VPC devtest IPs"
 
   ip_ranges {
-    from_ip = "10.10.16.0/20"
+    from_ip     = "10.10.16.0/20"
     description = "AWS VPC devtest subnet"
   }
 }
@@ -46,7 +46,7 @@ resource "illumio-core_ip_list" "aws_vpc_staging" {
   description = "AWS VPC staging IPs"
 
   ip_ranges {
-    from_ip = "10.10.32.0/20"
+    from_ip     = "10.10.32.0/20"
     description = "AWS VPC staging subnet"
   }
 }
@@ -56,13 +56,13 @@ resource "illumio-core_ip_list" "aws_vpc_prod" {
   description = "AWS VPC prod IPs"
 
   ip_ranges {
-    from_ip = "10.10.48.0/20"
+    from_ip     = "10.10.48.0/20"
     description = "AWS VPC production subnet"
   }
 }
 
 data "illumio-core_ip_lists" "aws_vpc" {
-	# supports partial match lookups
+  # supports partial match lookups
   name = "IPL-AWS-VPC"
 
   # explicitly define the dependencies to ensure the resources

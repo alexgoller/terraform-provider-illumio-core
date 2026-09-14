@@ -6,7 +6,7 @@ resource "illumio-core_service" "mysql" {
 
   service_ports {
     # Illumio uses the IANA protocol numbers to identify the service proto
-    proto = "6"  # TCP
+    proto = "6" # TCP
     port  = "3306"
   }
 }
@@ -28,7 +28,7 @@ resource "illumio-core_service" "http" {
 
 data "illumio-core_services" "all_services" {
   # all PCE instances define a default Service covering all service ports
-  name = "All Services"
+  name        = "All Services"
   max_results = 1
 }
 

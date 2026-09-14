@@ -29,7 +29,7 @@ resource "illumio-core_service" "mysql" {
 
   service_ports {
     # Illumio uses the IANA protocol numbers to identify the service proto
-    proto = "6"  # TCP
+    proto = "6" # TCP
     port  = "3306"
   }
 }
@@ -79,7 +79,7 @@ resource "illumio-core_security_rule" "web_mysql" {
 # use the ip_lists data source to search against the /ip_lists endpoint by name
 data "illumio-core_ip_lists" "default" {
   # all PCE instances define a special default IP list covering all addresses
-  name = "Any (0.0.0.0/0 and ::/0)"
+  name        = "Any (0.0.0.0/0 and ::/0)"
   max_results = 1
 }
 

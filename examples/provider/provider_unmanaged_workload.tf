@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     illumio-core = {
-      source  = "alexgoller/illumio-core"
+      source = "alexgoller/illumio-core"
     }
   }
 }
@@ -33,10 +33,10 @@ variable "pce_api_secret" {
 }
 
 provider "illumio-core" {
-    pce_host     = var.pce_url
-    org_id       = var.pce_org_id
-    api_username = var.pce_api_key
-    api_secret   = var.pce_api_secret
+  pce_host     = var.pce_url
+  org_id       = var.pce_org_id
+  api_username = var.pce_api_key
+  api_secret   = var.pce_api_secret
 }
 
 # Define labels to be used by the workload

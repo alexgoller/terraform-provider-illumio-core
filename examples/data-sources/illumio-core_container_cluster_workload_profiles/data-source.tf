@@ -51,15 +51,15 @@ resource "illumio-core_container_cluster_workload_profile" "kube_core_services" 
 }
 
 data "illumio-core_container_cluster_workload_profiles" "kube_profiles" {
-	container_cluster_href = illumio-core_container_cluster.kube.href
+  container_cluster_href = illumio-core_container_cluster.kube.href
   max_results            = 2
 
   # despite the explicit dependency on the container cluster itself,
   # the implicit dependencies on its workload profiles need to
   # be explicitly defined here to ensure the profiles are created
   # before the data source is populated
-	depends_on = [
-		illumio-core_container_cluster_workload_profile.kube_sandbox,
-		illumio-core_container_cluster_workload_profile.kube_core_services,
-	]
+  depends_on = [
+    illumio-core_container_cluster_workload_profile.kube_sandbox,
+    illumio-core_container_cluster_workload_profile.kube_core_services,
+  ]
 }

@@ -114,6 +114,35 @@ jobs:
 
           exit "${fail}"
 
+      - name: Validate the policy workflow examples
+        run: |
+          set -euo pipefail
+          # terraform fmt only checks layout. Schema errors - an argument in the
+          # wrong block, a misspelled attribute - need validate, and these
+          # examples are complete configurations, so they can be validated.
+          go build -o /tmp/tfbin/terraform-provider-illumio-core .
+          cat > /tmp/dev.tfrc <<'TFRC'
+          provider_installation {
+            dev_overrides { "alexgoller/illumio-core" = "/tmp/tfbin" }
+            direct {}
+          }
+          TFRC
+          export TF_CLI_CONFIG_FILE=/tmp/dev.tfrc
+          fail=0
+          for dir in examples/policy_workflows/*/; do
+            ls "${dir}"*.tf >/dev/null 2>&1 || continue
+            if ( cd "${dir}" && terraform validate -no-color >/tmp/val.log 2>&1 ); then
+              echo "  ok      ${dir}"
+            else
+              echo "::error::${dir} is not a valid configuration"
+              grep -A3 "Error" /tmp/val.log | head -12
+              fail=1
+            fi
+          done
+          terraform fmt -check -recursive examples/ || {
+            echo "::error::examples are not terraform fmt canonical"; fail=1; }
+          exit "${fail}"
+
       - name: Check the mirror index generator
         run: |
           version=$(ls dist/terraform-provider-illumio-core_*_linux_amd64.zip \

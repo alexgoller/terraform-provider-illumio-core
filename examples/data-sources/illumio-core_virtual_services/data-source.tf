@@ -29,7 +29,7 @@ resource "illumio-core_service" "mysql" {
 
   service_ports {
     # Illumio uses the IANA protocol numbers to identify the service proto
-    proto = "6"  # TCP
+    proto = "6" # TCP
     port  = "3389"
   }
 }
@@ -68,7 +68,7 @@ resource "illumio-core_virtual_service" "hrm_db" {
 
   service_ports {
     # Illumio uses the IANA protocol numbers to identify the service proto
-    proto = "6"  # TCP
+    proto = "6" # TCP
     port  = "5432"
   }
 

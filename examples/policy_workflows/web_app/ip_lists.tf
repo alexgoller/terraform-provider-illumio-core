@@ -5,19 +5,19 @@ resource "illumio-core_ip_list" "lab_internal" {
   description = "Lab VPC IPs"
 
   ip_ranges {
-    from_ip = "172.22.0.0/19"
+    from_ip     = "172.22.0.0/19"
     description = "Lab IP subnet"
   }
 
   fqdns {
-    fqdn = "*.lab.illum.io"
+    fqdn        = "*.lab.illum.io"
     description = "Lab domains"
   }
 }
 
 data "illumio-core_ip_lists" "default" {
   # all PCE instances define a default global IP list
-  name = "Any (0.0.0.0/0 and ::/0)"
+  name        = "Any (0.0.0.0/0 and ::/0)"
   max_results = 1
 }
 

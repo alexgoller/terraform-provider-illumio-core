@@ -2,9 +2,22 @@
 
 This directory contains basic usage examples for each resource and data source type in the Illumio Terraform provider. Each example is self-contained and can be applied to the PCE without modification.  
 
-## Policy Workflows  
+## Policy Workflows
 
-The `policy_workflows` folder contains examples that define more complete use-cases. They may be helpful to understand how Illumio objects interact and how complex configuration can be created and managed with Terraform.  
+The `policy_workflows` folder contains complete, runnable configurations that
+show how Illumio objects fit together. Each one is a standalone Terraform
+configuration with its own README.
+
+| Workflow | Shows |
+|---|---|
+| [`ringfence`](policy_workflows/ringfence/) | The smallest useful policy: one application, one scope, nothing else may reach it |
+| [`tiered_app`](policy_workflows/tiered_app/) | `web -> app -> db` with allow rules, a deny rule for lateral movement, and an override-deny |
+| [`containment`](policy_workflows/containment/) | Estate-wide SMB/RDP/WinRM containment with a security-owned exemption list |
+| [`remote_access`](policy_workflows/remote_access/) | `network_type` — rules for endpoints on and off the corporate network |
+| [`web_app`](policy_workflows/web_app/) | A two-tier web application across two datacenters |
+
+Each is validated in CI with `terraform validate`, so the configurations here
+are known to match the provider schema.
 
 ## Running the Examples  
 

@@ -9,8 +9,8 @@ resource "illumio-core_container_cluster" "kube_gcp" {
 }
 
 data "illumio-core_container_clusters" "kube_clusters" {
-	# lookup all Kube clusters by name with a partial match
-  name = "CC-KUBE-"
+  # lookup all Kube clusters by name with a partial match
+  name        = "CC-KUBE-"
   max_results = 2
 
   # the implicit dependency on the container cluster resources

@@ -278,9 +278,9 @@ resource "illumio-core_deny_rule" "no_smb" {
   description   = "SMB is not a peer-to-peer protocol"
 
   providers {
+    exclusion = true
     label_group {
-      href      = illumio-core_label_group.smb_servers.href
-      exclusion = true
+      href = illumio-core_label_group.smb_servers.href
     }
   }
 

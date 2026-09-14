@@ -120,7 +120,11 @@ jobs:
           # terraform fmt only checks layout. Schema errors - an argument in the
           # wrong block, a misspelled attribute - need validate, and these
           # examples are complete configurations, so they can be validated.
+          # -o needs the directory to exist, or the binary is never written and
+          # the dev override below points at nothing.
+          mkdir -p /tmp/tfbin
           go build -o /tmp/tfbin/terraform-provider-illumio-core .
+          test -x /tmp/tfbin/terraform-provider-illumio-core
           cat > /tmp/dev.tfrc <<'TFRC'
           provider_installation {
             dev_overrides { "alexgoller/illumio-core" = "/tmp/tfbin" }
@@ -135,7 +139,9 @@ jobs:
               echo "  ok      ${dir}"
             else
               echo "::error::${dir} is not a valid configuration"
-              grep -A3 "Error" /tmp/val.log | head -12
+              # `|| true` matters: with pipefail a grep that matches nothing
+              # would abort the step before the reason is ever printed.
+              cat /tmp/val.log || true
               fail=1
             fi
           done

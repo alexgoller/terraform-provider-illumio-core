@@ -50,6 +50,12 @@ jobs:
           go-version-file: go.mod
           cache: true
 
+      # Terraform is not preinstalled on the runner image; the example
+      # validation below needs it.
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
       - name: Validate .goreleaser.yml
         uses: goreleaser/goreleaser-action@v6
         with:

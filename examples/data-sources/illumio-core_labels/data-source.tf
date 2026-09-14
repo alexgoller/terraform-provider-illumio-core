@@ -14,7 +14,7 @@ resource "illumio-core_label" "loc_cloud_azure" {
 }
 
 data "illumio-core_labels" "loc_cloud" {
-	# supports partial match lookups
+  # supports partial match lookups
   value = "L-CLOUD"
 
   # explicitly define the dependencies to ensure the resources

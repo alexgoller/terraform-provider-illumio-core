@@ -1,21 +1,21 @@
 resource "illumio-core_label" "role_cluster_worker" {
-	key   = "role"
-	value = "R-CLUSTER-WORKER"
+  key   = "role"
+  value = "R-CLUSTER-WORKER"
 }
 
 resource "illumio-core_label" "app_jenkins" {
-	key   = "app"
-	value = "A-JENKINS"
+  key   = "app"
+  value = "A-JENKINS"
 }
 
 resource "illumio-core_label" "env_dev" {
-	key   = "env"
-	value = "E-DEV"
+  key   = "env"
+  value = "E-DEV"
 }
 
 resource "illumio-core_label" "loc_eu" {
-	key   = "loc"
-	value = "L-EU"
+  key   = "loc"
+  value = "L-EU"
 }
 
 resource "illumio-core_unmanaged_workload" "example" {

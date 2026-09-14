@@ -25,7 +25,7 @@ resource "illumio-core_rule_set" "core_services_prod" {
 # use the services data source to search against the /services endpoint by name
 data "illumio-core_services" "all_services" {
   # all PCE instances define a default Service covering all service ports
-  name = "All Services"
+  name        = "All Services"
   max_results = 1
 }
 
@@ -40,7 +40,7 @@ resource "illumio-core_security_rule" "core_services_ringfence" {
   }
 
   consumers {
-    actors = "ams"  # special notation meaning "all managed systems" - affects all workloads
+    actors = "ams" # special notation meaning "all managed systems" - affects all workloads
   }
 
   providers {

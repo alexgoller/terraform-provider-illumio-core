@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     illumio-core = {
-      source  = "alexgoller/illumio-core"
+      source = "alexgoller/illumio-core"
     }
   }
 }
@@ -40,7 +40,7 @@ resource "illumio-core_virtual_service" "hrm_db" {
 
   service_ports {
     # Illumio uses the IANA protocol numbers to identify the service proto
-    proto = "6"  # TCP
+    proto = "6" # TCP
     port  = "5432"
   }
 

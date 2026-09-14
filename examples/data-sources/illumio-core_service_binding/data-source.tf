@@ -42,5 +42,5 @@ resource "illumio-core_service_binding" "hrm_db" {
 }
 
 data "illumio-core_service_binding" "hrm_db" {
-   href = illumio-core_service_binding.hrm_db.href
+  href = illumio-core_service_binding.hrm_db.href
 }

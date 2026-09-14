@@ -51,7 +51,7 @@ resource "illumio-core_label_group" "env_all" {
 }
 
 data "illumio-core_label_groups" "env_groups" {
-	# supports partial match lookups
+  # supports partial match lookups
   name = "LG-E"
 
   # explicitly define the dependencies to ensure the resources

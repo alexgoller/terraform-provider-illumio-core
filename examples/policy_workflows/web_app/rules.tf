@@ -83,7 +83,7 @@ resource "illumio-core_security_rule" "web_dev_inbound" {
   }
 
   consumers {
-    actors = "ams"  # special notation meaning "all managed systems" - affects all workloads
+    actors = "ams" # special notation meaning "all managed systems" - affects all workloads
   }
 
   providers {

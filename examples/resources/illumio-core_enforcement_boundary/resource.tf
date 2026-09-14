@@ -1,7 +1,7 @@
 # use the ip_lists data source to search against the /ip_lists endpoint by name
 data "illumio-core_ip_lists" "default" {
   # all PCE instances define a special default IP list covering all addresses
-  name = "Any (0.0.0.0/0 and ::/0)"
+  name        = "Any (0.0.0.0/0 and ::/0)"
   max_results = 1
 }
 
@@ -11,18 +11,18 @@ resource "illumio-core_service" "rdp" {
 
   service_ports {
     # Illumio uses the IANA protocol numbers to identify the service proto
-    proto = "6"  # TCP
+    proto = "6" # TCP
     port  = "3389"
   }
 
   service_ports {
-    proto = "17"  # UDP
+    proto = "17" # UDP
     port  = "3389"
   }
 }
 
 resource "illumio-core_enforcement_boundary" "example" {
-  name        = "EB-RDP"
+  name = "EB-RDP"
 
   ingress_services {
     href = illumio-core_service.rdp.href
@@ -35,6 +35,6 @@ resource "illumio-core_enforcement_boundary" "example" {
   }
 
   providers {
-    actors = "ams"  # special notation meaning "all managed systems" - affects all workloads
+    actors = "ams" # special notation meaning "all managed systems" - affects all workloads
   }
 }

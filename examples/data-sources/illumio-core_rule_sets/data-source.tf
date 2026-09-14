@@ -42,7 +42,7 @@ resource "illumio-core_rule_set" "core_services_prod" {
 }
 
 data "illumio-core_rule_sets" "core_services" {
-	# supports partial match lookups
+  # supports partial match lookups
   name = "RS-CORE-SERVICES-"
 
   # explicitly define the dependencies to ensure the resources
